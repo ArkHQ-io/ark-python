@@ -90,7 +90,7 @@ class TestEmails:
             from_="dev@stainless.com",
             page=1,
             per_page=1,
-            status="queued",
+            status="pending",
             tag="tag",
             to="dev@stainless.com",
         )
@@ -468,7 +468,7 @@ class TestAsyncEmails:
             from_="dev@stainless.com",
             page=1,
             per_page=1,
-            status="queued",
+            status="pending",
             tag="tag",
             to="dev@stainless.com",
         )

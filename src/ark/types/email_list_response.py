@@ -21,15 +21,14 @@ class DataMessage(BaseModel):
 
     from_: str = FieldInfo(alias="from")
 
-    status: Literal["pending", "sent", "delivered", "bounced", "failed", "delayed", "held"]
+    status: Literal["pending", "sent", "softfail", "hardfail", "bounced", "held"]
     """Current delivery status:
 
     - `pending` - Email accepted, waiting to be processed
     - `sent` - Email transmitted to recipient's mail server
-    - `delivered` - Recipient's server confirmed receipt
-    - `bounced` - Permanently rejected (hard bounce)
-    - `failed` - Delivery failed after all retry attempts
-    - `delayed` - Temporary failure, will retry automatically
+    - `softfail` - Temporary delivery failure, will retry
+    - `hardfail` - Permanent delivery failure
+    - `bounced` - Email bounced back
     - `held` - Held for manual review
     """
 

@@ -15,7 +15,7 @@ class Data(BaseModel):
     id: str
     """Unique message ID (format: msg*{id}*{token})"""
 
-    status: Literal["queued", "sent"]
+    status: Literal["pending", "sent"]
     """Current delivery status"""
 
     to: List[str]
