@@ -206,8 +206,8 @@ class TestEmails:
     @parametrize
     def test_method_send(self, client: Ark) -> None:
         email = client.emails.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
         )
         assert_matches_type(SendEmail, email, path=["response"])
@@ -216,8 +216,8 @@ class TestEmails:
     @parametrize
     def test_method_send_with_all_params(self, client: Ark) -> None:
         email = client.emails.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
             attachments=[
                 {
@@ -229,10 +229,10 @@ class TestEmails:
             bcc=["dev@stainless.com"],
             cc=["dev@stainless.com"],
             headers={"foo": "string"},
-            html='<p>Click <a href="https://myapp.com/reset?token=abc123">here</a> to reset your password. This link expires in 1 hour.</p>',
+            html="<h1>Welcome!</h1><p>Thanks for signing up.</p>",
             reply_to="dev@stainless.com",
-            tag="password-reset",
-            text="Reset your password by visiting: https://myapp.com/reset?token=abc123",
+            tag="tag",
+            text="text",
             idempotency_key="user_123_order_456",
         )
         assert_matches_type(SendEmail, email, path=["response"])
@@ -241,8 +241,8 @@ class TestEmails:
     @parametrize
     def test_raw_response_send(self, client: Ark) -> None:
         response = client.emails.with_raw_response.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
         )
 
@@ -255,8 +255,8 @@ class TestEmails:
     @parametrize
     def test_streaming_response_send(self, client: Ark) -> None:
         with client.emails.with_streaming_response.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
         ) as response:
             assert not response.is_closed
@@ -584,8 +584,8 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_send(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
         )
         assert_matches_type(SendEmail, email, path=["response"])
@@ -594,8 +594,8 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_send_with_all_params(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
             attachments=[
                 {
@@ -607,10 +607,10 @@ class TestAsyncEmails:
             bcc=["dev@stainless.com"],
             cc=["dev@stainless.com"],
             headers={"foo": "string"},
-            html='<p>Click <a href="https://myapp.com/reset?token=abc123">here</a> to reset your password. This link expires in 1 hour.</p>',
+            html="<h1>Welcome!</h1><p>Thanks for signing up.</p>",
             reply_to="dev@stainless.com",
-            tag="password-reset",
-            text="Reset your password by visiting: https://myapp.com/reset?token=abc123",
+            tag="tag",
+            text="text",
             idempotency_key="user_123_order_456",
         )
         assert_matches_type(SendEmail, email, path=["response"])
@@ -619,8 +619,8 @@ class TestAsyncEmails:
     @parametrize
     async def test_raw_response_send(self, async_client: AsyncArk) -> None:
         response = await async_client.emails.with_raw_response.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
         )
 
@@ -633,8 +633,8 @@ class TestAsyncEmails:
     @parametrize
     async def test_streaming_response_send(self, async_client: AsyncArk) -> None:
         async with async_client.emails.with_streaming_response.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
         ) as response:
             assert not response.is_closed
