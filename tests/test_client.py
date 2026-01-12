@@ -728,7 +728,7 @@ class TestArk:
 
         with pytest.raises(APITimeoutError):
             client.emails.with_streaming_response.send(
-                from_="Security <security@myapp.com>", subject="Reset your password", to=["user@example.com"]
+                from_="Acme <hello@acme.com>", subject="Hello World", to=["user@example.com"]
             ).__enter__()
 
         assert _get_open_connections(client) == 0
@@ -740,7 +740,7 @@ class TestArk:
 
         with pytest.raises(APIStatusError):
             client.emails.with_streaming_response.send(
-                from_="Security <security@myapp.com>", subject="Reset your password", to=["user@example.com"]
+                from_="Acme <hello@acme.com>", subject="Hello World", to=["user@example.com"]
             ).__enter__()
         assert _get_open_connections(client) == 0
 
@@ -771,7 +771,7 @@ class TestArk:
         respx_mock.post("/emails").mock(side_effect=retry_handler)
 
         response = client.emails.with_raw_response.send(
-            from_="Security <security@myapp.com>", subject="Reset your password", to=["user@example.com"]
+            from_="Acme <hello@acme.com>", subject="Hello World", to=["user@example.com"]
         )
 
         assert response.retries_taken == failures_before_success
@@ -795,8 +795,8 @@ class TestArk:
         respx_mock.post("/emails").mock(side_effect=retry_handler)
 
         response = client.emails.with_raw_response.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
             extra_headers={"x-stainless-retry-count": Omit()},
         )
@@ -823,8 +823,8 @@ class TestArk:
         respx_mock.post("/emails").mock(side_effect=retry_handler)
 
         response = client.emails.with_raw_response.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
             extra_headers={"x-stainless-retry-count": "42"},
         )
@@ -1564,7 +1564,7 @@ class TestAsyncArk:
 
         with pytest.raises(APITimeoutError):
             await async_client.emails.with_streaming_response.send(
-                from_="Security <security@myapp.com>", subject="Reset your password", to=["user@example.com"]
+                from_="Acme <hello@acme.com>", subject="Hello World", to=["user@example.com"]
             ).__aenter__()
 
         assert _get_open_connections(async_client) == 0
@@ -1576,7 +1576,7 @@ class TestAsyncArk:
 
         with pytest.raises(APIStatusError):
             await async_client.emails.with_streaming_response.send(
-                from_="Security <security@myapp.com>", subject="Reset your password", to=["user@example.com"]
+                from_="Acme <hello@acme.com>", subject="Hello World", to=["user@example.com"]
             ).__aenter__()
         assert _get_open_connections(async_client) == 0
 
@@ -1607,7 +1607,7 @@ class TestAsyncArk:
         respx_mock.post("/emails").mock(side_effect=retry_handler)
 
         response = await client.emails.with_raw_response.send(
-            from_="Security <security@myapp.com>", subject="Reset your password", to=["user@example.com"]
+            from_="Acme <hello@acme.com>", subject="Hello World", to=["user@example.com"]
         )
 
         assert response.retries_taken == failures_before_success
@@ -1633,8 +1633,8 @@ class TestAsyncArk:
         respx_mock.post("/emails").mock(side_effect=retry_handler)
 
         response = await client.emails.with_raw_response.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
             extra_headers={"x-stainless-retry-count": Omit()},
         )
@@ -1661,8 +1661,8 @@ class TestAsyncArk:
         respx_mock.post("/emails").mock(side_effect=retry_handler)
 
         response = await client.emails.with_raw_response.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
             extra_headers={"x-stainless-retry-count": "42"},
         )

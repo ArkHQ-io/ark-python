@@ -33,8 +33,8 @@ client = Ark(
 )
 
 send_email = client.emails.send(
-    from_="Security <security@myapp.com>",
-    subject="Reset your password",
+    from_="Acme <hello@acme.com>",
+    subject="Hello World",
     to=["user@example.com"],
 )
 print(send_email.data)
@@ -61,8 +61,8 @@ client = AsyncArk(
 
 async def main() -> None:
     send_email = await client.emails.send(
-        from_="Security <security@myapp.com>",
-        subject="Reset your password",
+        from_="Acme <hello@acme.com>",
+        subject="Hello World",
         to=["user@example.com"],
     )
     print(send_email.data)
@@ -99,8 +99,8 @@ async def main() -> None:
         http_client=DefaultAioHttpClient(),
     ) as client:
         send_email = await client.emails.send(
-            from_="Security <security@myapp.com>",
-            subject="Reset your password",
+            from_="Acme <hello@acme.com>",
+            subject="Hello World",
             to=["user@example.com"],
         )
         print(send_email.data)
@@ -135,8 +135,8 @@ client = Ark()
 
 try:
     client.emails.send(
-        from_="Security <security@myapp.com>",
-        subject="Reset your password",
+        from_="Acme <hello@acme.com>",
+        subject="Hello World",
         to=["user@example.com"],
     )
 except ark.APIConnectionError as e:
@@ -182,8 +182,8 @@ client = Ark(
 
 # Or, configure per-request:
 client.with_options(max_retries=5).emails.send(
-    from_="Security <security@myapp.com>",
-    subject="Reset your password",
+    from_="Acme <hello@acme.com>",
+    subject="Hello World",
     to=["user@example.com"],
 )
 ```
@@ -209,8 +209,8 @@ client = Ark(
 
 # Override per-request:
 client.with_options(timeout=5.0).emails.send(
-    from_="Security <security@myapp.com>",
-    subject="Reset your password",
+    from_="Acme <hello@acme.com>",
+    subject="Hello World",
     to=["user@example.com"],
 )
 ```
@@ -254,8 +254,8 @@ from ark import Ark
 
 client = Ark()
 response = client.emails.with_raw_response.send(
-    from_="Security <security@myapp.com>",
-    subject="Reset your password",
+    from_="Acme <hello@acme.com>",
+    subject="Hello World",
     to=["user@example.com"],
 )
 print(response.headers.get('X-My-Header'))
@@ -276,8 +276,8 @@ To stream the response body, use `.with_streaming_response` instead, which requi
 
 ```python
 with client.emails.with_streaming_response.send(
-    from_="Security <security@myapp.com>",
-    subject="Reset your password",
+    from_="Acme <hello@acme.com>",
+    subject="Hello World",
     to=["user@example.com"],
 ) as response:
     print(response.headers.get("X-My-Header"))
