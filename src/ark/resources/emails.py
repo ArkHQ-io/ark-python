@@ -113,7 +113,7 @@ class EmailsResource(SyncAPIResource):
         from_: str | Omit = omit,
         page: int | Omit = omit,
         per_page: int | Omit = omit,
-        status: Literal["queued", "sent", "delivered", "bounced", "failed", "delayed", "held"] | Omit = omit,
+        status: Literal["pending", "sent", "softfail", "hardfail", "bounced", "held"] | Omit = omit,
         tag: str | Omit = omit,
         to: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -149,12 +149,11 @@ class EmailsResource(SyncAPIResource):
           status:
               Filter by delivery status:
 
-              - `queued` - Email accepted and waiting to be sent
+              - `pending` - Email accepted, waiting to be processed
               - `sent` - Email transmitted to recipient's mail server
-              - `delivered` - Recipient's server confirmed receipt
-              - `bounced` - Permanently rejected (hard bounce)
-              - `failed` - Delivery failed after all retry attempts
-              - `delayed` - Temporary failure, will retry
+              - `softfail` - Temporary delivery failure, will retry
+              - `hardfail` - Permanent delivery failure
+              - `bounced` - Email bounced back
               - `held` - Held for manual review
 
           tag: Filter by tag
@@ -288,7 +287,7 @@ class EmailsResource(SyncAPIResource):
     ) -> SendEmail:
         """Send a single email message.
 
-        The email is queued for immediate delivery and
+        The email is accepted for immediate delivery and
         typically delivered within seconds.
 
         **Example use case:** Send a password reset email to a user.
@@ -304,8 +303,15 @@ class EmailsResource(SyncAPIResource):
         - `POST /emails/{id}/retry` - Retry failed delivery
 
         Args:
-          from_: Sender email. Can include name: "Name <email@domain.com>" Must be from a
-              verified domain.
+          from_: Sender email address. Must be from a verified domain.
+
+              **Supported formats:**
+
+              - Email only: `hello@yourdomain.com`
+              - With display name: `Acme <hello@yourdomain.com>`
+              - With quoted name: `"Acme Support" <support@yourdomain.com>`
+
+              The domain portion must match a verified sending domain in your account.
 
           subject: Email subject line
 
@@ -542,7 +548,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         from_: str | Omit = omit,
         page: int | Omit = omit,
         per_page: int | Omit = omit,
-        status: Literal["queued", "sent", "delivered", "bounced", "failed", "delayed", "held"] | Omit = omit,
+        status: Literal["pending", "sent", "softfail", "hardfail", "bounced", "held"] | Omit = omit,
         tag: str | Omit = omit,
         to: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -578,12 +584,11 @@ class AsyncEmailsResource(AsyncAPIResource):
           status:
               Filter by delivery status:
 
-              - `queued` - Email accepted and waiting to be sent
+              - `pending` - Email accepted, waiting to be processed
               - `sent` - Email transmitted to recipient's mail server
-              - `delivered` - Recipient's server confirmed receipt
-              - `bounced` - Permanently rejected (hard bounce)
-              - `failed` - Delivery failed after all retry attempts
-              - `delayed` - Temporary failure, will retry
+              - `softfail` - Temporary delivery failure, will retry
+              - `hardfail` - Permanent delivery failure
+              - `bounced` - Email bounced back
               - `held` - Held for manual review
 
           tag: Filter by tag
@@ -717,7 +722,7 @@ class AsyncEmailsResource(AsyncAPIResource):
     ) -> SendEmail:
         """Send a single email message.
 
-        The email is queued for immediate delivery and
+        The email is accepted for immediate delivery and
         typically delivered within seconds.
 
         **Example use case:** Send a password reset email to a user.
@@ -733,8 +738,15 @@ class AsyncEmailsResource(AsyncAPIResource):
         - `POST /emails/{id}/retry` - Retry failed delivery
 
         Args:
-          from_: Sender email. Can include name: "Name <email@domain.com>" Must be from a
-              verified domain.
+          from_: Sender email address. Must be from a verified domain.
+
+              **Supported formats:**
+
+              - Email only: `hello@yourdomain.com`
+              - With display name: `Acme <hello@yourdomain.com>`
+              - With quoted name: `"Acme Support" <support@yourdomain.com>`
+
+              The domain portion must match a verified sending domain in your account.
 
           subject: Email subject line
 

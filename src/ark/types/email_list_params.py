@@ -25,15 +25,14 @@ class EmailListParams(TypedDict, total=False):
     per_page: Annotated[int, PropertyInfo(alias="perPage")]
     """Results per page (max 100)"""
 
-    status: Literal["queued", "sent", "delivered", "bounced", "failed", "delayed", "held"]
+    status: Literal["pending", "sent", "softfail", "hardfail", "bounced", "held"]
     """Filter by delivery status:
 
-    - `queued` - Email accepted and waiting to be sent
+    - `pending` - Email accepted, waiting to be processed
     - `sent` - Email transmitted to recipient's mail server
-    - `delivered` - Recipient's server confirmed receipt
-    - `bounced` - Permanently rejected (hard bounce)
-    - `failed` - Delivery failed after all retry attempts
-    - `delayed` - Temporary failure, will retry
+    - `softfail` - Temporary delivery failure, will retry
+    - `hardfail` - Permanent delivery failure
+    - `bounced` - Email bounced back
     - `held` - Held for manual review
     """
 
