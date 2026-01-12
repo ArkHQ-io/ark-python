@@ -1,0 +1,87 @@
+# File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+from typing import Dict, List, Optional
+from datetime import datetime
+from typing_extensions import Literal
+
+from pydantic import Field as FieldInfo
+
+from .._models import BaseModel
+from .api_meta import APIMeta
+from .delivery import Delivery
+
+__all__ = ["EmailRetrieveResponse", "Data"]
+
+
+class Data(BaseModel):
+    id: str
+    """Internal message ID"""
+
+    token: str
+    """
+    Unique message token used to retrieve this email via API. Combined with id to
+    form the full message identifier: msg*{id}*{token} Use this token with GET
+    /emails/{emailId} where emailId = "msg*{id}*{token}"
+    """
+
+    from_: str = FieldInfo(alias="from")
+    """Sender address"""
+
+    scope: Literal["outgoing", "incoming"]
+    """Message direction"""
+
+    status: Literal["pending", "sent", "delivered", "bounced", "failed", "delayed", "held"]
+    """Current delivery status:
+
+    - `pending` - Email accepted, waiting to be processed
+    - `sent` - Email transmitted to recipient's mail server
+    - `delivered` - Recipient's server confirmed receipt
+    - `bounced` - Permanently rejected (hard bounce)
+    - `failed` - Delivery failed after all retry attempts
+    - `delayed` - Temporary failure, will retry automatically
+    - `held` - Held for manual review
+    """
+
+    subject: str
+    """Email subject line"""
+
+    timestamp: float
+    """Unix timestamp when the email was sent"""
+
+    timestamp_iso: datetime = FieldInfo(alias="timestampIso")
+    """ISO 8601 formatted timestamp"""
+
+    to: str
+    """Recipient address"""
+
+    deliveries: Optional[List[Delivery]] = None
+    """Delivery attempt history (included if expand=deliveries)"""
+
+    headers: Optional[Dict[str, str]] = None
+    """Email headers (included if expand=headers)"""
+
+    html_body: Optional[str] = FieldInfo(alias="htmlBody", default=None)
+    """HTML body content (included if expand=content)"""
+
+    message_id: Optional[str] = FieldInfo(alias="messageId", default=None)
+    """SMTP Message-ID header"""
+
+    plain_body: Optional[str] = FieldInfo(alias="plainBody", default=None)
+    """Plain text body (included if expand=content)"""
+
+    spam: Optional[bool] = None
+    """Whether the message was flagged as spam"""
+
+    spam_score: Optional[float] = FieldInfo(alias="spamScore", default=None)
+    """Spam score (if applicable)"""
+
+    tag: Optional[str] = None
+    """Optional categorization tag"""
+
+
+class EmailRetrieveResponse(BaseModel):
+    data: Data
+
+    meta: APIMeta
+
+    success: Literal[True]
