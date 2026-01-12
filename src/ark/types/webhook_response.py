@@ -1,6 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import List, Optional
+from typing import List
 from datetime import datetime
 from typing_extensions import Literal
 
@@ -45,9 +45,6 @@ class Data(BaseModel):
     """Webhook endpoint URL"""
 
     uuid: str
-
-    signed: Optional[bool] = None
-    """Whether the webhook payloads are signed (always true for new webhooks)"""
 
 
 class WebhookResponse(BaseModel):
