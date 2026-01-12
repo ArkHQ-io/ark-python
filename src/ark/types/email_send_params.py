@@ -13,9 +13,15 @@ __all__ = ["EmailSendParams", "Attachment"]
 
 class EmailSendParams(TypedDict, total=False):
     from_: Required[Annotated[str, PropertyInfo(alias="from")]]
-    """Sender email.
+    """Sender email address. Must be from a verified domain.
 
-    Can include name: "Name <email@domain.com>" Must be from a verified domain.
+    **Supported formats:**
+
+    - Email only: `hello@yourdomain.com`
+    - With display name: `Acme <hello@yourdomain.com>`
+    - With quoted name: `"Acme Support" <support@yourdomain.com>`
+
+    The domain portion must match a verified sending domain in your account.
     """
 
     subject: Required[str]

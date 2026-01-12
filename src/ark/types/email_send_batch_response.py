@@ -17,14 +17,14 @@ class DataMessages(BaseModel):
 
 
 class Data(BaseModel):
+    accepted: int
+    """Successfully accepted emails"""
+
     failed: int
     """Failed emails"""
 
     messages: Dict[str, DataMessages]
     """Map of recipient email to message info"""
-
-    queued: int
-    """Successfully queued emails"""
 
     total: int
     """Total emails in the batch"""
