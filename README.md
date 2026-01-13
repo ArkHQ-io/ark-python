@@ -189,9 +189,9 @@ first_page = await client.emails.list(
     per_page=10,
 )
 
-print(f"page number: {first_page.data.pagination.page}")  # => "page number: 1"
+print(f"page number: {first_page.page}")  # => "page number: 1"
 for email in first_page.data:
-    print(email.data)
+    print(email.id)
 
 # Remove `await` for non-async usage.
 ```

@@ -8,28 +8,22 @@ from pydantic import Field as FieldInfo
 from ._models import BaseModel
 from ._base_client import BasePage, PageInfo, BaseSyncPage, BaseAsyncPage
 
-__all__ = [
-    "PageNumberPaginationData",
-    "PageNumberPaginationPagination",
-    "SyncPageNumberPagination",
-    "AsyncPageNumberPagination",
-]
+__all__ = ["PageNumberPaginationMeta", "SyncPageNumberPagination", "AsyncPageNumberPagination"]
 
 _T = TypeVar("_T")
 
 
-class PageNumberPaginationPagination(BaseModel):
-    page: Optional[int] = None
-
-    total_pages: Optional[int] = FieldInfo(alias="totalPages", default=None)
-
-
-class PageNumberPaginationData(BaseModel):
-    pagination: Optional[PageNumberPaginationPagination] = None
+class PageNumberPaginationMeta(BaseModel):
+    request_id: Optional[str] = FieldInfo(alias="requestId", default=None)
 
 
 class SyncPageNumberPagination(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
-    data: Optional[PageNumberPaginationData] = None
+    data: List[_T]
+    page: Optional[int] = None
+    per_page: Optional[int] = FieldInfo(alias="perPage", default=None)
+    total: Optional[int] = None
+    total_pages: Optional[int] = FieldInfo(alias="totalPages", default=None)
+    meta: Optional[PageNumberPaginationMeta] = None
 
     @override
     def _get_page_items(self) -> List[_T]:
@@ -40,19 +34,11 @@ class SyncPageNumberPagination(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
 
     @override
     def next_page_info(self) -> Optional[PageInfo]:
-        current_page = None
-        if self.data is not None:
-            if self.data.pagination is not None:
-                if self.data.pagination.page is not None:
-                    current_page = self.data.pagination.page
+        current_page = self.page
         if current_page is None:
             current_page = 1
 
-        total_pages = None
-        if self.data is not None:
-            if self.data.pagination is not None:
-                if self.data.pagination.total_pages is not None:
-                    total_pages = self.data.pagination.total_pages
+        total_pages = self.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None
 
@@ -60,7 +46,12 @@ class SyncPageNumberPagination(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
 
 
 class AsyncPageNumberPagination(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
-    data: Optional[PageNumberPaginationData] = None
+    data: List[_T]
+    page: Optional[int] = None
+    per_page: Optional[int] = FieldInfo(alias="perPage", default=None)
+    total: Optional[int] = None
+    total_pages: Optional[int] = FieldInfo(alias="totalPages", default=None)
+    meta: Optional[PageNumberPaginationMeta] = None
 
     @override
     def _get_page_items(self) -> List[_T]:
@@ -71,19 +62,11 @@ class AsyncPageNumberPagination(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
 
     @override
     def next_page_info(self) -> Optional[PageInfo]:
-        current_page = None
-        if self.data is not None:
-            if self.data.pagination is not None:
-                if self.data.pagination.page is not None:
-                    current_page = self.data.pagination.page
+        current_page = self.page
         if current_page is None:
             current_page = 1
 
-        total_pages = None
-        if self.data is not None:
-            if self.data.pagination is not None:
-                if self.data.pagination.total_pages is not None:
-                    total_pages = self.data.pagination.total_pages
+        total_pages = self.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None
 
