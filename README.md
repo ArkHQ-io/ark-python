@@ -1,7 +1,7 @@
 # Ark Python API library
 
 <!-- prettier-ignore -->
-[![PyPI version](https://img.shields.io/pypi/v/ark.svg?label=pypi%20(stable))](https://pypi.org/project/ark/)
+[![PyPI version](https://img.shields.io/pypi/v/ark-email.svg?label=pypi%20(stable))](https://pypi.org/project/ark-email/)
 
 The Ark Python library provides convenient access to the Ark REST API from any Python 3.9+
 application. The library includes type definitions for all request params and response fields,
@@ -17,7 +17,7 @@ The REST API documentation can be found on [arkhq.io](https://arkhq.io/docs). Th
 
 ```sh
 # install from PyPI
-pip install ark
+pip install ark-email
 ```
 
 ## Usage
@@ -83,7 +83,7 @@ You can enable this by installing `aiohttp`:
 
 ```sh
 # install from PyPI
-pip install ark[aiohttp]
+pip install ark-email[aiohttp]
 ```
 
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
