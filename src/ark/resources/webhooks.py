@@ -19,10 +19,12 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.success_response import SuccessResponse
-from ..types.webhook_response import WebhookResponse
 from ..types.webhook_list_response import WebhookListResponse
 from ..types.webhook_test_response import WebhookTestResponse
+from ..types.webhook_create_response import WebhookCreateResponse
+from ..types.webhook_delete_response import WebhookDeleteResponse
+from ..types.webhook_update_response import WebhookUpdateResponse
+from ..types.webhook_retrieve_response import WebhookRetrieveResponse
 
 __all__ = ["WebhooksResource", "AsyncWebhooksResource"]
 
@@ -72,7 +74,7 @@ class WebhooksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> WebhookResponse:
+    ) -> WebhookCreateResponse:
         """
         Create a webhook endpoint to receive email event notifications.
 
@@ -129,7 +131,7 @@ class WebhooksResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=WebhookResponse,
+            cast_to=WebhookCreateResponse,
         )
 
     def retrieve(
@@ -142,7 +144,7 @@ class WebhooksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> WebhookResponse:
+    ) -> WebhookRetrieveResponse:
         """
         Get webhook details
 
@@ -162,7 +164,7 @@ class WebhooksResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=WebhookResponse,
+            cast_to=WebhookRetrieveResponse,
         )
 
     def update(
@@ -180,7 +182,7 @@ class WebhooksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> WebhookResponse:
+    ) -> WebhookUpdateResponse:
         """
         Update a webhook
 
@@ -210,7 +212,7 @@ class WebhooksResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=WebhookResponse,
+            cast_to=WebhookUpdateResponse,
         )
 
     def list(
@@ -242,7 +244,7 @@ class WebhooksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuccessResponse:
+    ) -> WebhookDeleteResponse:
         """
         Delete a webhook
 
@@ -262,7 +264,7 @@ class WebhooksResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SuccessResponse,
+            cast_to=WebhookDeleteResponse,
         )
 
     def test(
@@ -368,7 +370,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> WebhookResponse:
+    ) -> WebhookCreateResponse:
         """
         Create a webhook endpoint to receive email event notifications.
 
@@ -425,7 +427,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=WebhookResponse,
+            cast_to=WebhookCreateResponse,
         )
 
     async def retrieve(
@@ -438,7 +440,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> WebhookResponse:
+    ) -> WebhookRetrieveResponse:
         """
         Get webhook details
 
@@ -458,7 +460,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=WebhookResponse,
+            cast_to=WebhookRetrieveResponse,
         )
 
     async def update(
@@ -476,7 +478,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> WebhookResponse:
+    ) -> WebhookUpdateResponse:
         """
         Update a webhook
 
@@ -506,7 +508,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=WebhookResponse,
+            cast_to=WebhookUpdateResponse,
         )
 
     async def list(
@@ -538,7 +540,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuccessResponse:
+    ) -> WebhookDeleteResponse:
         """
         Delete a webhook
 
@@ -558,7 +560,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SuccessResponse,
+            cast_to=WebhookDeleteResponse,
         )
 
     async def test(

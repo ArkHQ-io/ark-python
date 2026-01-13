@@ -16,9 +16,11 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.domain_response import DomainResponse
-from ..types.success_response import SuccessResponse
 from ..types.domain_list_response import DomainListResponse
+from ..types.domain_create_response import DomainCreateResponse
+from ..types.domain_delete_response import DomainDeleteResponse
+from ..types.domain_verify_response import DomainVerifyResponse
+from ..types.domain_retrieve_response import DomainRetrieveResponse
 
 __all__ = ["DomainsResource", "AsyncDomainsResource"]
 
@@ -53,7 +55,7 @@ class DomainsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DomainResponse:
+    ) -> DomainCreateResponse:
         """Add a new domain for sending emails.
 
         Returns DNS records that must be configured
@@ -84,7 +86,7 @@ class DomainsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=DomainResponse,
+            cast_to=DomainCreateResponse,
         )
 
     def retrieve(
@@ -97,7 +99,7 @@ class DomainsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DomainResponse:
+    ) -> DomainRetrieveResponse:
         """
         Get detailed information about a domain including DNS record status
 
@@ -117,7 +119,7 @@ class DomainsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=DomainResponse,
+            cast_to=DomainRetrieveResponse,
         )
 
     def list(
@@ -149,7 +151,7 @@ class DomainsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuccessResponse:
+    ) -> DomainDeleteResponse:
         """Remove a sending domain.
 
         You will no longer be able to send emails from this
@@ -173,7 +175,7 @@ class DomainsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SuccessResponse,
+            cast_to=DomainDeleteResponse,
         )
 
     def verify(
@@ -186,7 +188,7 @@ class DomainsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DomainResponse:
+    ) -> DomainVerifyResponse:
         """Check if DNS records are correctly configured and verify the domain.
 
         Returns the
@@ -210,7 +212,7 @@ class DomainsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=DomainResponse,
+            cast_to=DomainVerifyResponse,
         )
 
 
@@ -244,7 +246,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DomainResponse:
+    ) -> DomainCreateResponse:
         """Add a new domain for sending emails.
 
         Returns DNS records that must be configured
@@ -275,7 +277,7 @@ class AsyncDomainsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=DomainResponse,
+            cast_to=DomainCreateResponse,
         )
 
     async def retrieve(
@@ -288,7 +290,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DomainResponse:
+    ) -> DomainRetrieveResponse:
         """
         Get detailed information about a domain including DNS record status
 
@@ -308,7 +310,7 @@ class AsyncDomainsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=DomainResponse,
+            cast_to=DomainRetrieveResponse,
         )
 
     async def list(
@@ -340,7 +342,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuccessResponse:
+    ) -> DomainDeleteResponse:
         """Remove a sending domain.
 
         You will no longer be able to send emails from this
@@ -364,7 +366,7 @@ class AsyncDomainsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SuccessResponse,
+            cast_to=DomainDeleteResponse,
         )
 
     async def verify(
@@ -377,7 +379,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DomainResponse:
+    ) -> DomainVerifyResponse:
         """Check if DNS records are correctly configured and verify the domain.
 
         Returns the
@@ -401,7 +403,7 @@ class AsyncDomainsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=DomainResponse,
+            cast_to=DomainVerifyResponse,
         )
 
 

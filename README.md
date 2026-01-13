@@ -11,7 +11,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Documentation
 
-The REST API documentation can be found on [arkhq.io](https://arkhq.io/support). The full API of this library can be found in [api.md](api.md).
+The REST API documentation can be found on [arkhq.io](https://arkhq.io/docs). The full API of this library can be found in [api.md](api.md).
 
 ## Installation
 
@@ -32,12 +32,13 @@ client = Ark(
     api_key=os.environ.get("ARK_API_KEY"),  # This is the default and can be omitted
 )
 
-send_email = client.emails.send(
-    from_="Acme <hello@acme.com>",
+response = client.emails.send(
+    from_="hello@yourdomain.com",
     subject="Hello World",
     to=["user@example.com"],
+    html="<h1>Welcome!</h1>",
 )
-print(send_email.data)
+print(response.data)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -60,12 +61,13 @@ client = AsyncArk(
 
 
 async def main() -> None:
-    send_email = await client.emails.send(
-        from_="Acme <hello@acme.com>",
+    response = await client.emails.send(
+        from_="hello@yourdomain.com",
         subject="Hello World",
         to=["user@example.com"],
+        html="<h1>Welcome!</h1>",
     )
-    print(send_email.data)
+    print(response.data)
 
 
 asyncio.run(main())
@@ -98,12 +100,13 @@ async def main() -> None:
         api_key=os.environ.get("ARK_API_KEY"),  # This is the default and can be omitted
         http_client=DefaultAioHttpClient(),
     ) as client:
-        send_email = await client.emails.send(
-            from_="Acme <hello@acme.com>",
+        response = await client.emails.send(
+            from_="hello@yourdomain.com",
             subject="Hello World",
             to=["user@example.com"],
+            html="<h1>Welcome!</h1>",
         )
-        print(send_email.data)
+        print(response.data)
 
 
 asyncio.run(main())
@@ -117,6 +120,81 @@ Nested request parameters are [TypedDicts](https://docs.python.org/3/library/typ
 - Converting to a dictionary, `model.to_dict()`
 
 Typed requests and responses provide autocomplete and documentation within your editor. If you would like to see type errors in VS Code to help catch bugs earlier, set `python.analysis.typeCheckingMode` to `basic`.
+
+## Pagination
+
+List methods in the Ark API are paginated.
+
+This library provides auto-paginating iterators with each list response, so you do not have to request successive pages manually:
+
+```python
+from ark import Ark
+
+client = Ark()
+
+all_emails = []
+# Automatically fetches more pages as needed.
+for email in client.emails.list(
+    page=1,
+    per_page=10,
+):
+    # Do something with email here
+    all_emails.append(email)
+print(all_emails)
+```
+
+Or, asynchronously:
+
+```python
+import asyncio
+from ark import AsyncArk
+
+client = AsyncArk()
+
+
+async def main() -> None:
+    all_emails = []
+    # Iterate through items across all pages, issuing requests as needed.
+    async for email in client.emails.list(
+        page=1,
+        per_page=10,
+    ):
+        all_emails.append(email)
+    print(all_emails)
+
+
+asyncio.run(main())
+```
+
+Alternatively, you can use the `.has_next_page()`, `.next_page_info()`, or `.get_next_page()` methods for more granular control working with pages:
+
+```python
+first_page = await client.emails.list(
+    page=1,
+    per_page=10,
+)
+if first_page.has_next_page():
+    print(f"will fetch next page using these details: {first_page.next_page_info()}")
+    next_page = await first_page.get_next_page()
+    print(f"number of items we just fetched: {len(next_page.data)}")
+
+# Remove `await` for non-async usage.
+```
+
+Or just work directly with the returned data:
+
+```python
+first_page = await client.emails.list(
+    page=1,
+    per_page=10,
+)
+
+print(f"page number: {first_page.page}")  # => "page number: 1"
+for email in first_page.data:
+    print(email.id)
+
+# Remove `await` for non-async usage.
+```
 
 ## Handling errors
 
@@ -135,9 +213,10 @@ client = Ark()
 
 try:
     client.emails.send(
-        from_="Acme <hello@acme.com>",
+        from_="hello@yourdomain.com",
         subject="Hello World",
         to=["user@example.com"],
+        html="<h1>Welcome!</h1>",
     )
 except ark.APIConnectionError as e:
     print("The server could not be reached")
@@ -182,9 +261,10 @@ client = Ark(
 
 # Or, configure per-request:
 client.with_options(max_retries=5).emails.send(
-    from_="Acme <hello@acme.com>",
+    from_="hello@yourdomain.com",
     subject="Hello World",
     to=["user@example.com"],
+    html="<h1>Welcome!</h1>",
 )
 ```
 
@@ -209,9 +289,10 @@ client = Ark(
 
 # Override per-request:
 client.with_options(timeout=5.0).emails.send(
-    from_="Acme <hello@acme.com>",
+    from_="hello@yourdomain.com",
     subject="Hello World",
     to=["user@example.com"],
+    html="<h1>Welcome!</h1>",
 )
 ```
 
@@ -254,9 +335,10 @@ from ark import Ark
 
 client = Ark()
 response = client.emails.with_raw_response.send(
-    from_="Acme <hello@acme.com>",
+    from_="hello@yourdomain.com",
     subject="Hello World",
     to=["user@example.com"],
+    html="<h1>Welcome!</h1>",
 )
 print(response.headers.get('X-My-Header'))
 
@@ -276,9 +358,10 @@ To stream the response body, use `.with_streaming_response` instead, which requi
 
 ```python
 with client.emails.with_streaming_response.send(
-    from_="Acme <hello@acme.com>",
+    from_="hello@yourdomain.com",
     subject="Hello World",
     to=["user@example.com"],
+    html="<h1>Welcome!</h1>",
 ) as response:
     print(response.headers.get("X-My-Header"))
 

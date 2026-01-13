@@ -3,14 +3,17 @@
 from typing_extensions import Literal
 
 from .._models import BaseModel
-from .api_meta import APIMeta
-from .track_domain import TrackDomain
+from .shared.api_meta import APIMeta
 
-__all__ = ["TrackDomainResponse"]
+__all__ = ["WebhookDeleteResponse", "Data"]
 
 
-class TrackDomainResponse(BaseModel):
-    data: TrackDomain
+class Data(BaseModel):
+    message: str
+
+
+class WebhookDeleteResponse(BaseModel):
+    data: Data
 
     meta: APIMeta
 

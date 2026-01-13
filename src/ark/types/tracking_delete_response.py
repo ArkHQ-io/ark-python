@@ -5,14 +5,14 @@ from typing_extensions import Literal
 from .._models import BaseModel
 from .shared.api_meta import APIMeta
 
-__all__ = ["EmailRetryResponse", "Data"]
+__all__ = ["TrackingDeleteResponse", "Data"]
 
 
 class Data(BaseModel):
     message: str
 
 
-class EmailRetryResponse(BaseModel):
+class TrackingDeleteResponse(BaseModel):
     data: Data
 
     meta: APIMeta

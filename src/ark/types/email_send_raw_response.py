@@ -6,9 +6,9 @@ from typing_extensions import Literal
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .api_meta import APIMeta
+from .shared.api_meta import APIMeta
 
-__all__ = ["SendEmail", "Data"]
+__all__ = ["EmailSendRawResponse", "Data"]
 
 
 class Data(BaseModel):
@@ -25,7 +25,7 @@ class Data(BaseModel):
     """SMTP Message-ID header value"""
 
 
-class SendEmail(BaseModel):
+class EmailSendRawResponse(BaseModel):
     data: Data
 
     meta: APIMeta
