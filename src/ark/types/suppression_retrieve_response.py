@@ -2,33 +2,25 @@
 
 from typing import Optional
 from datetime import datetime
-from typing_extensions import Literal
 
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .shared.api_meta import APIMeta
 
 __all__ = ["SuppressionRetrieveResponse", "Data"]
 
 
 class Data(BaseModel):
-    address: str
-    """The email address that was checked"""
-
-    suppressed: bool
-    """Whether the address is currently suppressed"""
+    address: Optional[str] = None
 
     created_at: Optional[datetime] = FieldInfo(alias="createdAt", default=None)
-    """When the suppression was created (if suppressed)"""
 
     reason: Optional[str] = None
-    """Reason for suppression (if suppressed)"""
+
+    suppressed: Optional[bool] = None
 
 
 class SuppressionRetrieveResponse(BaseModel):
-    data: Data
+    data: Optional[Data] = None
 
-    meta: APIMeta
-
-    success: Literal[True]
+    success: Optional[bool] = None

@@ -1,20 +1,17 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing_extensions import Literal
+from typing import Optional
 
 from .._models import BaseModel
-from .shared.api_meta import APIMeta
 
 __all__ = ["EmailRetryResponse", "Data"]
 
 
 class Data(BaseModel):
-    message: str
+    message: Optional[str] = None
 
 
 class EmailRetryResponse(BaseModel):
-    data: Data
+    data: Optional[Data] = None
 
-    meta: APIMeta
-
-    success: Literal[True]
+    success: Optional[bool] = None
