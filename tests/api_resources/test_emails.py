@@ -343,6 +343,16 @@ class TestEmails:
         assert_matches_type(EmailSendRawResponse, email, path=["response"])
 
     @parametrize
+    def test_method_send_raw_with_all_params(self, client: Ark) -> None:
+        email = client.emails.send_raw(
+            data="data",
+            mail_from="dev@stainless.com",
+            rcpt_to=["dev@stainless.com"],
+            bounce=True,
+        )
+        assert_matches_type(EmailSendRawResponse, email, path=["response"])
+
+    @parametrize
     def test_raw_response_send_raw(self, client: Ark) -> None:
         response = client.emails.with_raw_response.send_raw(
             data="data",
@@ -689,6 +699,16 @@ class TestAsyncEmails:
             data="data",
             mail_from="dev@stainless.com",
             rcpt_to=["dev@stainless.com"],
+        )
+        assert_matches_type(EmailSendRawResponse, email, path=["response"])
+
+    @parametrize
+    async def test_method_send_raw_with_all_params(self, async_client: AsyncArk) -> None:
+        email = await async_client.emails.send_raw(
+            data="data",
+            mail_from="dev@stainless.com",
+            rcpt_to=["dev@stainless.com"],
+            bounce=True,
         )
         assert_matches_type(EmailSendRawResponse, email, path=["response"])
 

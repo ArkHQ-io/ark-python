@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 from typing_extensions import Literal
 
 import httpx
@@ -52,22 +52,25 @@ class WebhooksResource(SyncAPIResource):
     def create(
         self,
         *,
-        events: List[
-            Literal[
-                "MessageSent",
-                "MessageDelayed",
-                "MessageDeliveryFailed",
-                "MessageHeld",
-                "MessageBounced",
-                "MessageLinkClicked",
-                "MessageLoaded",
-                "DomainDNSError",
-            ]
-        ],
         name: str,
         url: str,
-        all_events: bool | Omit = omit,
-        enabled: bool | Omit = omit,
+        all_events: Optional[bool] | Omit = omit,
+        enabled: Optional[bool] | Omit = omit,
+        events: Optional[
+            List[
+                Literal[
+                    "MessageSent",
+                    "MessageDelayed",
+                    "MessageDeliveryFailed",
+                    "MessageHeld",
+                    "MessageBounced",
+                    "MessageLinkClicked",
+                    "MessageLoaded",
+                    "DomainDNSError",
+                ]
+            ]
+        ]
+        | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -90,8 +93,16 @@ class WebhooksResource(SyncAPIResource):
         - `DomainDNSError` - Domain DNS issue detected
 
         Args:
+          name: Webhook name for identification
+
+          url: HTTPS endpoint URL
+
+          all_events: Subscribe to all events (ignores events array, accepts null)
+
+          enabled: Whether the webhook is enabled (accepts null)
+
           events:
-              Events to subscribe to:
+              Events to subscribe to (accepts null):
 
               - `MessageSent` - Email successfully delivered to recipient's server
               - `MessageDelayed` - Temporary delivery failure, will retry
@@ -101,12 +112,6 @@ class WebhooksResource(SyncAPIResource):
               - `MessageLinkClicked` - Recipient clicked a tracked link
               - `MessageLoaded` - Recipient opened the email (tracking pixel loaded)
               - `DomainDNSError` - DNS configuration issue detected
-
-          name: Webhook name for identification
-
-          url: HTTPS endpoint URL
-
-          all_events: Subscribe to all events (ignores events array)
 
           extra_headers: Send extra headers
 
@@ -120,11 +125,11 @@ class WebhooksResource(SyncAPIResource):
             "/webhooks",
             body=maybe_transform(
                 {
-                    "events": events,
                     "name": name,
                     "url": url,
                     "all_events": all_events,
                     "enabled": enabled,
+                    "events": events,
                 },
                 webhook_create_params.WebhookCreateParams,
             ),
@@ -171,11 +176,11 @@ class WebhooksResource(SyncAPIResource):
         self,
         webhook_id: str,
         *,
-        all_events: bool | Omit = omit,
-        enabled: bool | Omit = omit,
-        events: SequenceNotStr[str] | Omit = omit,
-        name: str | Omit = omit,
-        url: str | Omit = omit,
+        all_events: Optional[bool] | Omit = omit,
+        enabled: Optional[bool] | Omit = omit,
+        events: Optional[SequenceNotStr[str]] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        url: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -348,22 +353,25 @@ class AsyncWebhooksResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        events: List[
-            Literal[
-                "MessageSent",
-                "MessageDelayed",
-                "MessageDeliveryFailed",
-                "MessageHeld",
-                "MessageBounced",
-                "MessageLinkClicked",
-                "MessageLoaded",
-                "DomainDNSError",
-            ]
-        ],
         name: str,
         url: str,
-        all_events: bool | Omit = omit,
-        enabled: bool | Omit = omit,
+        all_events: Optional[bool] | Omit = omit,
+        enabled: Optional[bool] | Omit = omit,
+        events: Optional[
+            List[
+                Literal[
+                    "MessageSent",
+                    "MessageDelayed",
+                    "MessageDeliveryFailed",
+                    "MessageHeld",
+                    "MessageBounced",
+                    "MessageLinkClicked",
+                    "MessageLoaded",
+                    "DomainDNSError",
+                ]
+            ]
+        ]
+        | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -386,8 +394,16 @@ class AsyncWebhooksResource(AsyncAPIResource):
         - `DomainDNSError` - Domain DNS issue detected
 
         Args:
+          name: Webhook name for identification
+
+          url: HTTPS endpoint URL
+
+          all_events: Subscribe to all events (ignores events array, accepts null)
+
+          enabled: Whether the webhook is enabled (accepts null)
+
           events:
-              Events to subscribe to:
+              Events to subscribe to (accepts null):
 
               - `MessageSent` - Email successfully delivered to recipient's server
               - `MessageDelayed` - Temporary delivery failure, will retry
@@ -397,12 +413,6 @@ class AsyncWebhooksResource(AsyncAPIResource):
               - `MessageLinkClicked` - Recipient clicked a tracked link
               - `MessageLoaded` - Recipient opened the email (tracking pixel loaded)
               - `DomainDNSError` - DNS configuration issue detected
-
-          name: Webhook name for identification
-
-          url: HTTPS endpoint URL
-
-          all_events: Subscribe to all events (ignores events array)
 
           extra_headers: Send extra headers
 
@@ -416,11 +426,11 @@ class AsyncWebhooksResource(AsyncAPIResource):
             "/webhooks",
             body=await async_maybe_transform(
                 {
-                    "events": events,
                     "name": name,
                     "url": url,
                     "all_events": all_events,
                     "enabled": enabled,
+                    "events": events,
                 },
                 webhook_create_params.WebhookCreateParams,
             ),
@@ -467,11 +477,11 @@ class AsyncWebhooksResource(AsyncAPIResource):
         self,
         webhook_id: str,
         *,
-        all_events: bool | Omit = omit,
-        enabled: bool | Omit = omit,
-        events: SequenceNotStr[str] | Omit = omit,
-        name: str | Omit = omit,
-        url: str | Omit = omit,
+        all_events: Optional[bool] | Omit = omit,
+        enabled: Optional[bool] | Omit = omit,
+        events: Optional[SequenceNotStr[str]] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        url: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,

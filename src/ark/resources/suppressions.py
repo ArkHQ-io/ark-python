@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Optional
 
 import httpx
 
@@ -52,7 +52,7 @@ class SuppressionsResource(SyncAPIResource):
         self,
         *,
         address: str,
-        reason: str | Omit = omit,
+        reason: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -68,7 +68,7 @@ class SuppressionsResource(SyncAPIResource):
         Args:
           address: Email address to suppress
 
-          reason: Reason for suppression
+          reason: Reason for suppression (accepts null)
 
           extra_headers: Send extra headers
 
@@ -265,7 +265,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         self,
         *,
         address: str,
-        reason: str | Omit = omit,
+        reason: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -281,7 +281,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         Args:
           address: Email address to suppress
 
-          reason: Reason for suppression
+          reason: Reason for suppression (accepts null)
 
           extra_headers: Send extra headers
 

@@ -27,7 +27,6 @@ class TestWebhooks:
     @parametrize
     def test_method_create(self, client: Ark) -> None:
         webhook = client.webhooks.create(
-            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
             name="My App Webhook",
             url="https://myapp.com/webhooks/email",
         )
@@ -36,18 +35,17 @@ class TestWebhooks:
     @parametrize
     def test_method_create_with_all_params(self, client: Ark) -> None:
         webhook = client.webhooks.create(
-            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
             name="My App Webhook",
             url="https://myapp.com/webhooks/email",
             all_events=True,
             enabled=True,
+            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
         )
         assert_matches_type(WebhookCreateResponse, webhook, path=["response"])
 
     @parametrize
     def test_raw_response_create(self, client: Ark) -> None:
         response = client.webhooks.with_raw_response.create(
-            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
             name="My App Webhook",
             url="https://myapp.com/webhooks/email",
         )
@@ -60,7 +58,6 @@ class TestWebhooks:
     @parametrize
     def test_streaming_response_create(self, client: Ark) -> None:
         with client.webhooks.with_streaming_response.create(
-            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
             name="My App Webhook",
             url="https://myapp.com/webhooks/email",
         ) as response:
@@ -274,7 +271,6 @@ class TestAsyncWebhooks:
     @parametrize
     async def test_method_create(self, async_client: AsyncArk) -> None:
         webhook = await async_client.webhooks.create(
-            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
             name="My App Webhook",
             url="https://myapp.com/webhooks/email",
         )
@@ -283,18 +279,17 @@ class TestAsyncWebhooks:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncArk) -> None:
         webhook = await async_client.webhooks.create(
-            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
             name="My App Webhook",
             url="https://myapp.com/webhooks/email",
             all_events=True,
             enabled=True,
+            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
         )
         assert_matches_type(WebhookCreateResponse, webhook, path=["response"])
 
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncArk) -> None:
         response = await async_client.webhooks.with_raw_response.create(
-            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
             name="My App Webhook",
             url="https://myapp.com/webhooks/email",
         )
@@ -307,7 +302,6 @@ class TestAsyncWebhooks:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncArk) -> None:
         async with async_client.webhooks.with_streaming_response.create(
-            events=["MessageSent", "MessageDeliveryFailed", "MessageBounced"],
             name="My App Webhook",
             url="https://myapp.com/webhooks/email",
         ) as response:

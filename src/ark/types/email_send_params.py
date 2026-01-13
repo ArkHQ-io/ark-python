@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Iterable
+from typing import Dict, Iterable, Optional
 from typing_extensions import Required, Annotated, TypedDict
 
 from .._types import SequenceNotStr
@@ -30,14 +30,14 @@ class EmailSendParams(TypedDict, total=False):
     to: Required[SequenceNotStr[str]]
     """Recipient email addresses (max 50)"""
 
-    attachments: Iterable[Attachment]
-    """File attachments"""
+    attachments: Optional[Iterable[Attachment]]
+    """File attachments (accepts null)"""
 
-    bcc: SequenceNotStr[str]
-    """BCC recipients"""
+    bcc: Optional[SequenceNotStr[str]]
+    """BCC recipients (accepts null)"""
 
-    cc: SequenceNotStr[str]
-    """CC recipients"""
+    cc: Optional[SequenceNotStr[str]]
+    """CC recipients (accepts null)"""
 
     headers: Dict[str, str]
     """Custom email headers"""
@@ -48,8 +48,8 @@ class EmailSendParams(TypedDict, total=False):
     Combined with attachments, the total message must not exceed 14MB.
     """
 
-    reply_to: Annotated[str, PropertyInfo(alias="replyTo")]
-    """Reply-to address"""
+    reply_to: Annotated[Optional[str], PropertyInfo(alias="replyTo")]
+    """Reply-to address (accepts null)"""
 
     tag: str
     """Tag for categorization and filtering"""

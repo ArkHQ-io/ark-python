@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Iterable
+from typing import Dict, Iterable, Optional
 from typing_extensions import Literal
 
 import httpx
@@ -272,12 +272,12 @@ class EmailsResource(SyncAPIResource):
         from_: str,
         subject: str,
         to: SequenceNotStr[str],
-        attachments: Iterable[email_send_params.Attachment] | Omit = omit,
-        bcc: SequenceNotStr[str] | Omit = omit,
-        cc: SequenceNotStr[str] | Omit = omit,
+        attachments: Optional[Iterable[email_send_params.Attachment]] | Omit = omit,
+        bcc: Optional[SequenceNotStr[str]] | Omit = omit,
+        cc: Optional[SequenceNotStr[str]] | Omit = omit,
         headers: Dict[str, str] | Omit = omit,
         html: str | Omit = omit,
-        reply_to: str | Omit = omit,
+        reply_to: Optional[str] | Omit = omit,
         tag: str | Omit = omit,
         text: str | Omit = omit,
         idempotency_key: str | Omit = omit,
@@ -320,18 +320,18 @@ class EmailsResource(SyncAPIResource):
 
           to: Recipient email addresses (max 50)
 
-          attachments: File attachments
+          attachments: File attachments (accepts null)
 
-          bcc: BCC recipients
+          bcc: BCC recipients (accepts null)
 
-          cc: CC recipients
+          cc: CC recipients (accepts null)
 
           headers: Custom email headers
 
           html: HTML body content. Maximum 5MB (5,242,880 characters). Combined with
               attachments, the total message must not exceed 14MB.
 
-          reply_to: Reply-to address
+          reply_to: Reply-to address (accepts null)
 
           tag: Tag for categorization and filtering
 
@@ -427,6 +427,7 @@ class EmailsResource(SyncAPIResource):
         data: str,
         mail_from: str,
         rcpt_to: SequenceNotStr[str],
+        bounce: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -448,6 +449,8 @@ class EmailsResource(SyncAPIResource):
 
           rcpt_to: Envelope recipient addresses
 
+          bounce: Whether this is a bounce message (accepts null)
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -463,6 +466,7 @@ class EmailsResource(SyncAPIResource):
                     "data": data,
                     "mail_from": mail_from,
                     "rcpt_to": rcpt_to,
+                    "bounce": bounce,
                 },
                 email_send_raw_params.EmailSendRawParams,
             ),
@@ -708,12 +712,12 @@ class AsyncEmailsResource(AsyncAPIResource):
         from_: str,
         subject: str,
         to: SequenceNotStr[str],
-        attachments: Iterable[email_send_params.Attachment] | Omit = omit,
-        bcc: SequenceNotStr[str] | Omit = omit,
-        cc: SequenceNotStr[str] | Omit = omit,
+        attachments: Optional[Iterable[email_send_params.Attachment]] | Omit = omit,
+        bcc: Optional[SequenceNotStr[str]] | Omit = omit,
+        cc: Optional[SequenceNotStr[str]] | Omit = omit,
         headers: Dict[str, str] | Omit = omit,
         html: str | Omit = omit,
-        reply_to: str | Omit = omit,
+        reply_to: Optional[str] | Omit = omit,
         tag: str | Omit = omit,
         text: str | Omit = omit,
         idempotency_key: str | Omit = omit,
@@ -756,18 +760,18 @@ class AsyncEmailsResource(AsyncAPIResource):
 
           to: Recipient email addresses (max 50)
 
-          attachments: File attachments
+          attachments: File attachments (accepts null)
 
-          bcc: BCC recipients
+          bcc: BCC recipients (accepts null)
 
-          cc: CC recipients
+          cc: CC recipients (accepts null)
 
           headers: Custom email headers
 
           html: HTML body content. Maximum 5MB (5,242,880 characters). Combined with
               attachments, the total message must not exceed 14MB.
 
-          reply_to: Reply-to address
+          reply_to: Reply-to address (accepts null)
 
           tag: Tag for categorization and filtering
 
@@ -863,6 +867,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         data: str,
         mail_from: str,
         rcpt_to: SequenceNotStr[str],
+        bounce: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -884,6 +889,8 @@ class AsyncEmailsResource(AsyncAPIResource):
 
           rcpt_to: Envelope recipient addresses
 
+          bounce: Whether this is a bounce message (accepts null)
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -899,6 +906,7 @@ class AsyncEmailsResource(AsyncAPIResource):
                     "data": data,
                     "mail_from": mail_from,
                     "rcpt_to": rcpt_to,
+                    "bounce": bounce,
                 },
                 email_send_raw_params.EmailSendRawParams,
             ),

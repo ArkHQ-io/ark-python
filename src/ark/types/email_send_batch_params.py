@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Optional
 from typing_extensions import Required, Annotated, TypedDict
 
 from .._types import SequenceNotStr
@@ -25,8 +25,8 @@ class Email(TypedDict, total=False):
 
     to: Required[SequenceNotStr[str]]
 
-    html: str
+    html: Optional[str]
 
-    tag: str
+    tag: Optional[str]
 
-    text: str
+    text: Optional[str]
