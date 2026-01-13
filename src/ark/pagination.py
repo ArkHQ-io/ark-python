@@ -25,13 +25,13 @@ _T = TypeVar("_T")
 
 
 class EmailsPagePagination(BaseModel):
-    page: Optional[int] = None
+    page: int
 
-    per_page: Optional[int] = FieldInfo(alias="perPage", default=None)
+    per_page: int = FieldInfo(alias="perPage")
 
-    total: Optional[int] = None
+    total: int
 
-    total_pages: Optional[int] = FieldInfo(alias="totalPages", default=None)
+    total_pages: int = FieldInfo(alias="totalPages")
 
 
 class EmailsPageData(GenericModel, Generic[_T]):
@@ -64,7 +64,7 @@ class SyncEmailsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
         current_page = None
         if self.data is not None:
             if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.page is not None:
+                if self.data.pagination.page is not None:  # pyright: ignore[reportUnnecessaryComparison]
                     current_page = self.data.pagination.page
         if current_page is None:
             current_page = 1
@@ -72,7 +72,7 @@ class SyncEmailsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
         total_pages = None
         if self.data is not None:
             if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.total_pages is not None:
+                if self.data.pagination.total_pages is not None:  # pyright: ignore[reportUnnecessaryComparison]
                     total_pages = self.data.pagination.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None
@@ -100,7 +100,7 @@ class AsyncEmailsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
         current_page = None
         if self.data is not None:
             if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.page is not None:
+                if self.data.pagination.page is not None:  # pyright: ignore[reportUnnecessaryComparison]
                     current_page = self.data.pagination.page
         if current_page is None:
             current_page = 1
@@ -108,7 +108,7 @@ class AsyncEmailsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
         total_pages = None
         if self.data is not None:
             if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.total_pages is not None:
+                if self.data.pagination.total_pages is not None:  # pyright: ignore[reportUnnecessaryComparison]
                     total_pages = self.data.pagination.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None
@@ -117,13 +117,13 @@ class AsyncEmailsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
 
 
 class SuppressionsPagePagination(BaseModel):
-    page: Optional[int] = None
+    page: int
 
-    per_page: Optional[int] = FieldInfo(alias="perPage", default=None)
+    per_page: int = FieldInfo(alias="perPage")
 
-    total: Optional[int] = None
+    total: int
 
-    total_pages: Optional[int] = FieldInfo(alias="totalPages", default=None)
+    total_pages: int = FieldInfo(alias="totalPages")
 
 
 class SuppressionsPageData(GenericModel, Generic[_T]):
@@ -156,7 +156,7 @@ class SyncSuppressionsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
         current_page = None
         if self.data is not None:
             if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.page is not None:
+                if self.data.pagination.page is not None:  # pyright: ignore[reportUnnecessaryComparison]
                     current_page = self.data.pagination.page
         if current_page is None:
             current_page = 1
@@ -164,7 +164,7 @@ class SyncSuppressionsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
         total_pages = None
         if self.data is not None:
             if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.total_pages is not None:
+                if self.data.pagination.total_pages is not None:  # pyright: ignore[reportUnnecessaryComparison]
                     total_pages = self.data.pagination.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None
@@ -192,7 +192,7 @@ class AsyncSuppressionsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
         current_page = None
         if self.data is not None:
             if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.page is not None:
+                if self.data.pagination.page is not None:  # pyright: ignore[reportUnnecessaryComparison]
                     current_page = self.data.pagination.page
         if current_page is None:
             current_page = 1
@@ -200,7 +200,7 @@ class AsyncSuppressionsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
         total_pages = None
         if self.data is not None:
             if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.total_pages is not None:
+                if self.data.pagination.total_pages is not None:  # pyright: ignore[reportUnnecessaryComparison]
                     total_pages = self.data.pagination.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None
