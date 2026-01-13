@@ -176,7 +176,7 @@ first_page = await client.emails.list(
 if first_page.has_next_page():
     print(f"will fetch next page using these details: {first_page.next_page_info()}")
     next_page = await first_page.get_next_page()
-    print(f"number of items we just fetched: {len(next_page.data.messages)}")
+    print(f"number of items we just fetched: {len(next_page.data)}")
 
 # Remove `await` for non-async usage.
 ```
@@ -190,8 +190,8 @@ first_page = await client.emails.list(
 )
 
 print(f"page number: {first_page.data.pagination.page}")  # => "page number: 1"
-for email in first_page.data.messages:
-    print(email.id)
+for email in first_page.data:
+    print(email.data)
 
 # Remove `await` for non-async usage.
 ```
