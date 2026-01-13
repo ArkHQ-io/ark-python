@@ -17,6 +17,7 @@ from ark.types import (
     EmailGetDeliveriesResponse,
 )
 from tests.utils import assert_matches_type
+from ark.pagination import SyncEmailsPage, AsyncEmailsPage
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -79,7 +80,7 @@ class TestEmails:
     @parametrize
     def test_method_list(self, client: Ark) -> None:
         email = client.emails.list()
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(SyncEmailsPage[EmailListResponse], email, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -94,7 +95,7 @@ class TestEmails:
             tag="tag",
             to="dev@stainless.com",
         )
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(SyncEmailsPage[EmailListResponse], email, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -104,7 +105,7 @@ class TestEmails:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         email = response.parse()
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(SyncEmailsPage[EmailListResponse], email, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -114,7 +115,7 @@ class TestEmails:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             email = response.parse()
-            assert_matches_type(EmailListResponse, email, path=["response"])
+            assert_matches_type(SyncEmailsPage[EmailListResponse], email, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -457,7 +458,7 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_list(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.list()
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(AsyncEmailsPage[EmailListResponse], email, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -472,7 +473,7 @@ class TestAsyncEmails:
             tag="tag",
             to="dev@stainless.com",
         )
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(AsyncEmailsPage[EmailListResponse], email, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -482,7 +483,7 @@ class TestAsyncEmails:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         email = await response.parse()
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(AsyncEmailsPage[EmailListResponse], email, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -492,7 +493,7 @@ class TestAsyncEmails:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             email = await response.parse()
-            assert_matches_type(EmailListResponse, email, path=["response"])
+            assert_matches_type(AsyncEmailsPage[EmailListResponse], email, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 

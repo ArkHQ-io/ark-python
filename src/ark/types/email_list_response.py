@@ -1,19 +1,17 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import List, Optional
+from typing import Optional
 from datetime import datetime
 from typing_extensions import Literal
 
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .api_meta import APIMeta
-from .pagination import Pagination
 
-__all__ = ["EmailListResponse", "Data", "DataMessage"]
+__all__ = ["EmailListResponse"]
 
 
-class DataMessage(BaseModel):
+class EmailListResponse(BaseModel):
     id: str
     """Internal message ID"""
 
@@ -41,17 +39,3 @@ class DataMessage(BaseModel):
     to: str
 
     tag: Optional[str] = None
-
-
-class Data(BaseModel):
-    messages: List[DataMessage]
-
-    pagination: Pagination
-
-
-class EmailListResponse(BaseModel):
-    data: Data
-
-    meta: APIMeta
-
-    success: Literal[True]
