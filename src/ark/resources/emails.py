@@ -275,11 +275,11 @@ class EmailsResource(SyncAPIResource):
         attachments: Optional[Iterable[email_send_params.Attachment]] | Omit = omit,
         bcc: Optional[SequenceNotStr[str]] | Omit = omit,
         cc: Optional[SequenceNotStr[str]] | Omit = omit,
-        headers: Dict[str, str] | Omit = omit,
-        html: str | Omit = omit,
+        headers: Optional[Dict[str, str]] | Omit = omit,
+        html: Optional[str] | Omit = omit,
         reply_to: Optional[str] | Omit = omit,
-        tag: str | Omit = omit,
-        text: str | Omit = omit,
+        tag: Optional[str] | Omit = omit,
+        text: Optional[str] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -326,17 +326,17 @@ class EmailsResource(SyncAPIResource):
 
           cc: CC recipients (accepts null)
 
-          headers: Custom email headers
+          headers: Custom email headers (accepts null)
 
-          html: HTML body content. Maximum 5MB (5,242,880 characters). Combined with
-              attachments, the total message must not exceed 14MB.
+          html: HTML body content (accepts null). Maximum 5MB (5,242,880 characters). Combined
+              with attachments, the total message must not exceed 14MB.
 
           reply_to: Reply-to address (accepts null)
 
-          tag: Tag for categorization and filtering
+          tag: Tag for categorization and filtering (accepts null)
 
-          text: Plain text body (auto-generated from HTML if not provided). Maximum 5MB
-              (5,242,880 characters).
+          text: Plain text body (accepts null, auto-generated from HTML if not provided).
+              Maximum 5MB (5,242,880 characters).
 
           extra_headers: Send extra headers
 
@@ -715,11 +715,11 @@ class AsyncEmailsResource(AsyncAPIResource):
         attachments: Optional[Iterable[email_send_params.Attachment]] | Omit = omit,
         bcc: Optional[SequenceNotStr[str]] | Omit = omit,
         cc: Optional[SequenceNotStr[str]] | Omit = omit,
-        headers: Dict[str, str] | Omit = omit,
-        html: str | Omit = omit,
+        headers: Optional[Dict[str, str]] | Omit = omit,
+        html: Optional[str] | Omit = omit,
         reply_to: Optional[str] | Omit = omit,
-        tag: str | Omit = omit,
-        text: str | Omit = omit,
+        tag: Optional[str] | Omit = omit,
+        text: Optional[str] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -766,17 +766,17 @@ class AsyncEmailsResource(AsyncAPIResource):
 
           cc: CC recipients (accepts null)
 
-          headers: Custom email headers
+          headers: Custom email headers (accepts null)
 
-          html: HTML body content. Maximum 5MB (5,242,880 characters). Combined with
-              attachments, the total message must not exceed 14MB.
+          html: HTML body content (accepts null). Maximum 5MB (5,242,880 characters). Combined
+              with attachments, the total message must not exceed 14MB.
 
           reply_to: Reply-to address (accepts null)
 
-          tag: Tag for categorization and filtering
+          tag: Tag for categorization and filtering (accepts null)
 
-          text: Plain text body (auto-generated from HTML if not provided). Maximum 5MB
-              (5,242,880 characters).
+          text: Plain text body (accepts null, auto-generated from HTML if not provided).
+              Maximum 5MB (5,242,880 characters).
 
           extra_headers: Send extra headers
 
