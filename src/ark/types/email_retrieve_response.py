@@ -7,10 +7,35 @@ from typing_extensions import Literal
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .api_meta import APIMeta
-from .delivery import Delivery
+from .shared.api_meta import APIMeta
 
-__all__ = ["EmailRetrieveResponse", "Data"]
+__all__ = ["EmailRetrieveResponse", "Data", "DataDelivery"]
+
+
+class DataDelivery(BaseModel):
+    id: str
+    """Delivery attempt ID"""
+
+    status: str
+    """Delivery status (lowercase)"""
+
+    timestamp: float
+    """Unix timestamp"""
+
+    timestamp_iso: datetime = FieldInfo(alias="timestampIso")
+    """ISO 8601 timestamp"""
+
+    code: Optional[int] = None
+    """SMTP response code"""
+
+    details: Optional[str] = None
+    """Status details"""
+
+    output: Optional[str] = None
+    """SMTP server response from the receiving mail server"""
+
+    sent_with_ssl: Optional[bool] = FieldInfo(alias="sentWithSsl", default=None)
+    """Whether TLS was used"""
 
 
 class Data(BaseModel):
@@ -53,7 +78,7 @@ class Data(BaseModel):
     to: str
     """Recipient address"""
 
-    deliveries: Optional[List[Delivery]] = None
+    deliveries: Optional[List[DataDelivery]] = None
     """Delivery attempt history (included if expand=deliveries)"""
 
     headers: Optional[Dict[str, str]] = None

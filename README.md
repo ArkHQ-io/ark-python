@@ -32,13 +32,13 @@ client = Ark(
     api_key=os.environ.get("ARK_API_KEY"),  # This is the default and can be omitted
 )
 
-send_email = client.emails.send(
+response = client.emails.send(
     from_="hello@yourdomain.com",
     subject="Hello World",
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
 )
-print(send_email.data)
+print(response.data)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -61,13 +61,13 @@ client = AsyncArk(
 
 
 async def main() -> None:
-    send_email = await client.emails.send(
+    response = await client.emails.send(
         from_="hello@yourdomain.com",
         subject="Hello World",
         to=["user@example.com"],
         html="<h1>Welcome!</h1>",
     )
-    print(send_email.data)
+    print(response.data)
 
 
 asyncio.run(main())
@@ -100,13 +100,13 @@ async def main() -> None:
         api_key=os.environ.get("ARK_API_KEY"),  # This is the default and can be omitted
         http_client=DefaultAioHttpClient(),
     ) as client:
-        send_email = await client.emails.send(
+        response = await client.emails.send(
             from_="hello@yourdomain.com",
             subject="Hello World",
             to=["user@example.com"],
             html="<h1>Welcome!</h1>",
         )
-        print(send_email.data)
+        print(response.data)
 
 
 asyncio.run(main())

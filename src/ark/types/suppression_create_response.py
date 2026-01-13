@@ -7,7 +7,7 @@ from typing_extensions import Literal
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .api_meta import APIMeta
+from .shared.api_meta import APIMeta
 
 __all__ = ["SuppressionCreateResponse", "Data"]
 

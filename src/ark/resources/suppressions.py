@@ -17,11 +17,11 @@ from .._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ..pagination import SyncEmailsPage, AsyncEmailsPage
+from ..pagination import SyncPageNumberPagination, AsyncPageNumberPagination
 from .._base_client import AsyncPaginator, make_request_options
-from ..types.success_response import SuccessResponse
 from ..types.suppression_list_response import SuppressionListResponse
 from ..types.suppression_create_response import SuppressionCreateResponse
+from ..types.suppression_delete_response import SuppressionDeleteResponse
 from ..types.suppression_retrieve_response import SuppressionRetrieveResponse
 from ..types.suppression_bulk_create_response import SuppressionBulkCreateResponse
 
@@ -137,7 +137,7 @@ class SuppressionsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SyncEmailsPage[SuppressionListResponse]:
+    ) -> SyncPageNumberPagination[SuppressionListResponse]:
         """Get all email addresses on the suppression list.
 
         These addresses will not
@@ -154,7 +154,7 @@ class SuppressionsResource(SyncAPIResource):
         """
         return self._get_api_list(
             "/suppressions",
-            page=SyncEmailsPage[SuppressionListResponse],
+            page=SyncPageNumberPagination[SuppressionListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -181,7 +181,7 @@ class SuppressionsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuccessResponse:
+    ) -> SuppressionDeleteResponse:
         """Remove an email address from the suppression list.
 
         The address will be able to
@@ -203,7 +203,7 @@ class SuppressionsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SuccessResponse,
+            cast_to=SuppressionDeleteResponse,
         )
 
     def bulk_create(
@@ -350,7 +350,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncPaginator[SuppressionListResponse, AsyncEmailsPage[SuppressionListResponse]]:
+    ) -> AsyncPaginator[SuppressionListResponse, AsyncPageNumberPagination[SuppressionListResponse]]:
         """Get all email addresses on the suppression list.
 
         These addresses will not
@@ -367,7 +367,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         """
         return self._get_api_list(
             "/suppressions",
-            page=AsyncEmailsPage[SuppressionListResponse],
+            page=AsyncPageNumberPagination[SuppressionListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -394,7 +394,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuccessResponse:
+    ) -> SuppressionDeleteResponse:
         """Remove an email address from the suppression list.
 
         The address will be able to
@@ -416,7 +416,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SuccessResponse,
+            cast_to=SuppressionDeleteResponse,
         )
 
     async def bulk_create(

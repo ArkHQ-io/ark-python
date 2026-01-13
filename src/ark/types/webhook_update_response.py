@@ -7,9 +7,9 @@ from typing_extensions import Literal
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .api_meta import APIMeta
+from .shared.api_meta import APIMeta
 
-__all__ = ["WebhookResponse", "Data"]
+__all__ = ["WebhookUpdateResponse", "Data"]
 
 
 class Data(BaseModel):
@@ -47,7 +47,7 @@ class Data(BaseModel):
     uuid: str
 
 
-class WebhookResponse(BaseModel):
+class WebhookUpdateResponse(BaseModel):
     data: Data
 
     meta: APIMeta

@@ -7,10 +7,10 @@ from typing_extensions import Literal
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .api_meta import APIMeta
 from .dns_record import DNSRecord
+from .shared.api_meta import APIMeta
 
-__all__ = ["DomainResponse", "Data", "DataDNSRecords"]
+__all__ = ["DomainRetrieveResponse", "Data", "DataDNSRecords"]
 
 
 class DataDNSRecords(BaseModel):
@@ -41,7 +41,7 @@ class Data(BaseModel):
     """When the domain was verified (null if not verified)"""
 
 
-class DomainResponse(BaseModel):
+class DomainRetrieveResponse(BaseModel):
     data: Data
 
     meta: APIMeta

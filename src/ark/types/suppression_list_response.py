@@ -7,10 +7,23 @@ from typing_extensions import Literal
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .api_meta import APIMeta
-from .pagination import Pagination
+from .shared.api_meta import APIMeta
 
-__all__ = ["SuppressionListResponse", "Data", "DataSuppression"]
+__all__ = ["SuppressionListResponse", "Data", "DataPagination", "DataSuppression"]
+
+
+class DataPagination(BaseModel):
+    page: int
+    """Current page number (1-indexed)"""
+
+    per_page: int = FieldInfo(alias="perPage")
+    """Items per page"""
+
+    total: int
+    """Total number of items"""
+
+    total_pages: int = FieldInfo(alias="totalPages")
+    """Total number of pages"""
 
 
 class DataSuppression(BaseModel):
@@ -25,7 +38,7 @@ class DataSuppression(BaseModel):
 
 
 class Data(BaseModel):
-    pagination: Pagination
+    pagination: DataPagination
 
     suppressions: List[DataSuppression]
 

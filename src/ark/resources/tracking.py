@@ -16,10 +16,12 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.success_response import SuccessResponse
-from ..types.track_domain_response import TrackDomainResponse
 from ..types.tracking_list_response import TrackingListResponse
+from ..types.tracking_create_response import TrackingCreateResponse
+from ..types.tracking_delete_response import TrackingDeleteResponse
+from ..types.tracking_update_response import TrackingUpdateResponse
 from ..types.tracking_verify_response import TrackingVerifyResponse
+from ..types.tracking_retrieve_response import TrackingRetrieveResponse
 
 __all__ = ["TrackingResource", "AsyncTrackingResource"]
 
@@ -58,7 +60,7 @@ class TrackingResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TrackDomainResponse:
+    ) -> TrackingCreateResponse:
         """
         Create a new track domain for open/click tracking.
 
@@ -99,7 +101,7 @@ class TrackingResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TrackDomainResponse,
+            cast_to=TrackingCreateResponse,
         )
 
     def retrieve(
@@ -112,7 +114,7 @@ class TrackingResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TrackDomainResponse:
+    ) -> TrackingRetrieveResponse:
         """
         Get details of a specific track domain including DNS configuration
 
@@ -132,7 +134,7 @@ class TrackingResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TrackDomainResponse,
+            cast_to=TrackingRetrieveResponse,
         )
 
     def update(
@@ -149,7 +151,7 @@ class TrackingResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TrackDomainResponse:
+    ) -> TrackingUpdateResponse:
         """
         Update track domain settings.
 
@@ -193,7 +195,7 @@ class TrackingResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TrackDomainResponse,
+            cast_to=TrackingUpdateResponse,
         )
 
     def list(
@@ -229,7 +231,7 @@ class TrackingResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuccessResponse:
+    ) -> TrackingDeleteResponse:
         """Delete a track domain.
 
         This will disable tracking for any emails using this
@@ -251,7 +253,7 @@ class TrackingResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SuccessResponse,
+            cast_to=TrackingDeleteResponse,
         )
 
     def verify(
@@ -325,7 +327,7 @@ class AsyncTrackingResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TrackDomainResponse:
+    ) -> TrackingCreateResponse:
         """
         Create a new track domain for open/click tracking.
 
@@ -366,7 +368,7 @@ class AsyncTrackingResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TrackDomainResponse,
+            cast_to=TrackingCreateResponse,
         )
 
     async def retrieve(
@@ -379,7 +381,7 @@ class AsyncTrackingResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TrackDomainResponse:
+    ) -> TrackingRetrieveResponse:
         """
         Get details of a specific track domain including DNS configuration
 
@@ -399,7 +401,7 @@ class AsyncTrackingResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TrackDomainResponse,
+            cast_to=TrackingRetrieveResponse,
         )
 
     async def update(
@@ -416,7 +418,7 @@ class AsyncTrackingResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TrackDomainResponse:
+    ) -> TrackingUpdateResponse:
         """
         Update track domain settings.
 
@@ -460,7 +462,7 @@ class AsyncTrackingResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TrackDomainResponse,
+            cast_to=TrackingUpdateResponse,
         )
 
     async def list(
@@ -496,7 +498,7 @@ class AsyncTrackingResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuccessResponse:
+    ) -> TrackingDeleteResponse:
         """Delete a track domain.
 
         This will disable tracking for any emails using this
@@ -518,7 +520,7 @@ class AsyncTrackingResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SuccessResponse,
+            cast_to=TrackingDeleteResponse,
         )
 
     async def verify(

@@ -4,7 +4,7 @@ from typing import List
 from typing_extensions import Literal
 
 from .._models import BaseModel
-from .api_meta import APIMeta
+from .shared.api_meta import APIMeta
 
 __all__ = ["WebhookListResponse", "Data", "DataWebhook"]
 

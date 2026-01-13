@@ -3,16 +3,16 @@
 from typing_extensions import Literal
 
 from .._models import BaseModel
-from .api_meta import APIMeta
+from .shared.api_meta import APIMeta
 
-__all__ = ["SuccessResponse", "Data"]
+__all__ = ["SuppressionDeleteResponse", "Data"]
 
 
 class Data(BaseModel):
     message: str
 
 
-class SuccessResponse(BaseModel):
+class SuppressionDeleteResponse(BaseModel):
     data: Data
 
     meta: APIMeta
