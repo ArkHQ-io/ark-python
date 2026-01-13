@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.2 (2026-01-13)
+
+Full Changelog: [v0.4.1...v0.4.2](https://github.com/ArkHQ-io/ark-python/compare/v0.4.1...v0.4.2)
+
+### Chores
+
+* configure new SDK language ([5fb3ec6](https://github.com/ArkHQ-io/ark-python/commit/5fb3ec6ce80d2486e39a89e84b4a16ac486746b7))
+
 ## 0.4.1 (2026-01-13)
 
 Full Changelog: [v0.4.0...v0.4.1](https://github.com/ArkHQ-io/ark-python/compare/v0.4.0...v0.4.1)
