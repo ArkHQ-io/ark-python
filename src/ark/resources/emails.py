@@ -24,8 +24,7 @@ from .._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ..pagination import SyncPageNumberPagination, AsyncPageNumberPagination
-from .._base_client import AsyncPaginator, make_request_options
+from .._base_client import make_request_options
 from ..types.email_list_response import EmailListResponse
 from ..types.email_send_response import EmailSendResponse
 from ..types.email_retry_response import EmailRetryResponse
@@ -124,7 +123,7 @@ class EmailsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SyncPageNumberPagination[EmailListResponse]:
+    ) -> EmailListResponse:
         """Retrieve a paginated list of sent emails.
 
         Results are ordered by send time,
@@ -170,9 +169,8 @@ class EmailsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get_api_list(
+        return self._get(
             "/emails",
-            page=SyncPageNumberPagination[EmailListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -192,7 +190,7 @@ class EmailsResource(SyncAPIResource):
                     email_list_params.EmailListParams,
                 ),
             ),
-            model=EmailListResponse,
+            cast_to=EmailListResponse,
         )
 
     def retrieve_deliveries(
@@ -543,7 +541,7 @@ class AsyncEmailsResource(AsyncAPIResource):
             cast_to=EmailRetrieveResponse,
         )
 
-    def list(
+    async def list(
         self,
         *,
         after: str | Omit = omit,
@@ -560,7 +558,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncPaginator[EmailListResponse, AsyncPageNumberPagination[EmailListResponse]]:
+    ) -> EmailListResponse:
         """Retrieve a paginated list of sent emails.
 
         Results are ordered by send time,
@@ -606,15 +604,14 @@ class AsyncEmailsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get_api_list(
+        return await self._get(
             "/emails",
-            page=AsyncPageNumberPagination[EmailListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform(
+                query=await async_maybe_transform(
                     {
                         "after": after,
                         "before": before,
@@ -628,7 +625,7 @@ class AsyncEmailsResource(AsyncAPIResource):
                     email_list_params.EmailListParams,
                 ),
             ),
-            model=EmailListResponse,
+            cast_to=EmailListResponse,
         )
 
     async def retrieve_deliveries(
