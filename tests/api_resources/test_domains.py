@@ -8,7 +8,13 @@ from typing import Any, cast
 import pytest
 
 from ark import Ark, AsyncArk
-from ark.types import DomainResponse, SuccessResponse, DomainListResponse
+from ark.types import (
+    DomainListResponse,
+    DomainCreateResponse,
+    DomainDeleteResponse,
+    DomainVerifyResponse,
+    DomainRetrieveResponse,
+)
 from tests.utils import assert_matches_type
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -17,15 +23,13 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 class TestDomains:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_create(self, client: Ark) -> None:
         domain = client.domains.create(
             name="notifications.myapp.com",
         )
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainCreateResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_create(self, client: Ark) -> None:
         response = client.domains.with_raw_response.create(
@@ -35,9 +39,8 @@ class TestDomains:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         domain = response.parse()
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainCreateResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_create(self, client: Ark) -> None:
         with client.domains.with_streaming_response.create(
@@ -47,19 +50,17 @@ class TestDomains:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             domain = response.parse()
-            assert_matches_type(DomainResponse, domain, path=["response"])
+            assert_matches_type(DomainCreateResponse, domain, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_retrieve(self, client: Ark) -> None:
         domain = client.domains.retrieve(
             "domainId",
         )
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainRetrieveResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_retrieve(self, client: Ark) -> None:
         response = client.domains.with_raw_response.retrieve(
@@ -69,9 +70,8 @@ class TestDomains:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         domain = response.parse()
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainRetrieveResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_retrieve(self, client: Ark) -> None:
         with client.domains.with_streaming_response.retrieve(
@@ -81,11 +81,10 @@ class TestDomains:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             domain = response.parse()
-            assert_matches_type(DomainResponse, domain, path=["response"])
+            assert_matches_type(DomainRetrieveResponse, domain, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_path_params_retrieve(self, client: Ark) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `domain_id` but received ''"):
@@ -93,13 +92,11 @@ class TestDomains:
                 "",
             )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_list(self, client: Ark) -> None:
         domain = client.domains.list()
         assert_matches_type(DomainListResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_list(self, client: Ark) -> None:
         response = client.domains.with_raw_response.list()
@@ -109,7 +106,6 @@ class TestDomains:
         domain = response.parse()
         assert_matches_type(DomainListResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_list(self, client: Ark) -> None:
         with client.domains.with_streaming_response.list() as response:
@@ -121,15 +117,13 @@ class TestDomains:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_delete(self, client: Ark) -> None:
         domain = client.domains.delete(
             "domainId",
         )
-        assert_matches_type(SuccessResponse, domain, path=["response"])
+        assert_matches_type(DomainDeleteResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_delete(self, client: Ark) -> None:
         response = client.domains.with_raw_response.delete(
@@ -139,9 +133,8 @@ class TestDomains:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         domain = response.parse()
-        assert_matches_type(SuccessResponse, domain, path=["response"])
+        assert_matches_type(DomainDeleteResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_delete(self, client: Ark) -> None:
         with client.domains.with_streaming_response.delete(
@@ -151,11 +144,10 @@ class TestDomains:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             domain = response.parse()
-            assert_matches_type(SuccessResponse, domain, path=["response"])
+            assert_matches_type(DomainDeleteResponse, domain, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_path_params_delete(self, client: Ark) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `domain_id` but received ''"):
@@ -163,15 +155,13 @@ class TestDomains:
                 "",
             )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_verify(self, client: Ark) -> None:
         domain = client.domains.verify(
             "domainId",
         )
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainVerifyResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_verify(self, client: Ark) -> None:
         response = client.domains.with_raw_response.verify(
@@ -181,9 +171,8 @@ class TestDomains:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         domain = response.parse()
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainVerifyResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_verify(self, client: Ark) -> None:
         with client.domains.with_streaming_response.verify(
@@ -193,11 +182,10 @@ class TestDomains:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             domain = response.parse()
-            assert_matches_type(DomainResponse, domain, path=["response"])
+            assert_matches_type(DomainVerifyResponse, domain, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_path_params_verify(self, client: Ark) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `domain_id` but received ''"):
@@ -211,15 +199,13 @@ class TestAsyncDomains:
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_create(self, async_client: AsyncArk) -> None:
         domain = await async_client.domains.create(
             name="notifications.myapp.com",
         )
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainCreateResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncArk) -> None:
         response = await async_client.domains.with_raw_response.create(
@@ -229,9 +215,8 @@ class TestAsyncDomains:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         domain = await response.parse()
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainCreateResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncArk) -> None:
         async with async_client.domains.with_streaming_response.create(
@@ -241,19 +226,17 @@ class TestAsyncDomains:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             domain = await response.parse()
-            assert_matches_type(DomainResponse, domain, path=["response"])
+            assert_matches_type(DomainCreateResponse, domain, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncArk) -> None:
         domain = await async_client.domains.retrieve(
             "domainId",
         )
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainRetrieveResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncArk) -> None:
         response = await async_client.domains.with_raw_response.retrieve(
@@ -263,9 +246,8 @@ class TestAsyncDomains:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         domain = await response.parse()
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainRetrieveResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncArk) -> None:
         async with async_client.domains.with_streaming_response.retrieve(
@@ -275,11 +257,10 @@ class TestAsyncDomains:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             domain = await response.parse()
-            assert_matches_type(DomainResponse, domain, path=["response"])
+            assert_matches_type(DomainRetrieveResponse, domain, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_path_params_retrieve(self, async_client: AsyncArk) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `domain_id` but received ''"):
@@ -287,13 +268,11 @@ class TestAsyncDomains:
                 "",
             )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_list(self, async_client: AsyncArk) -> None:
         domain = await async_client.domains.list()
         assert_matches_type(DomainListResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncArk) -> None:
         response = await async_client.domains.with_raw_response.list()
@@ -303,7 +282,6 @@ class TestAsyncDomains:
         domain = await response.parse()
         assert_matches_type(DomainListResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncArk) -> None:
         async with async_client.domains.with_streaming_response.list() as response:
@@ -315,15 +293,13 @@ class TestAsyncDomains:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_delete(self, async_client: AsyncArk) -> None:
         domain = await async_client.domains.delete(
             "domainId",
         )
-        assert_matches_type(SuccessResponse, domain, path=["response"])
+        assert_matches_type(DomainDeleteResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncArk) -> None:
         response = await async_client.domains.with_raw_response.delete(
@@ -333,9 +309,8 @@ class TestAsyncDomains:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         domain = await response.parse()
-        assert_matches_type(SuccessResponse, domain, path=["response"])
+        assert_matches_type(DomainDeleteResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncArk) -> None:
         async with async_client.domains.with_streaming_response.delete(
@@ -345,11 +320,10 @@ class TestAsyncDomains:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             domain = await response.parse()
-            assert_matches_type(SuccessResponse, domain, path=["response"])
+            assert_matches_type(DomainDeleteResponse, domain, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_path_params_delete(self, async_client: AsyncArk) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `domain_id` but received ''"):
@@ -357,15 +331,13 @@ class TestAsyncDomains:
                 "",
             )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_verify(self, async_client: AsyncArk) -> None:
         domain = await async_client.domains.verify(
             "domainId",
         )
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainVerifyResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_verify(self, async_client: AsyncArk) -> None:
         response = await async_client.domains.with_raw_response.verify(
@@ -375,9 +347,8 @@ class TestAsyncDomains:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         domain = await response.parse()
-        assert_matches_type(DomainResponse, domain, path=["response"])
+        assert_matches_type(DomainVerifyResponse, domain, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_verify(self, async_client: AsyncArk) -> None:
         async with async_client.domains.with_streaming_response.verify(
@@ -387,11 +358,10 @@ class TestAsyncDomains:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             domain = await response.parse()
-            assert_matches_type(DomainResponse, domain, path=["response"])
+            assert_matches_type(DomainVerifyResponse, domain, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_path_params_verify(self, async_client: AsyncArk) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `domain_id` but received ''"):

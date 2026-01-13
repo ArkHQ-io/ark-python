@@ -24,14 +24,15 @@ from .._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ..pagination import SyncEmailsPage, AsyncEmailsPage
+from ..pagination import SyncPageNumberPagination, AsyncPageNumberPagination
 from .._base_client import AsyncPaginator, make_request_options
-from ..types.send_email import SendEmail
 from ..types.email_list_response import EmailListResponse
+from ..types.email_send_response import EmailSendResponse
 from ..types.email_retry_response import EmailRetryResponse
 from ..types.email_retrieve_response import EmailRetrieveResponse
+from ..types.email_send_raw_response import EmailSendRawResponse
 from ..types.email_send_batch_response import EmailSendBatchResponse
-from ..types.email_get_deliveries_response import EmailGetDeliveriesResponse
+from ..types.email_retrieve_deliveries_response import EmailRetrieveDeliveriesResponse
 
 __all__ = ["EmailsResource", "AsyncEmailsResource"]
 
@@ -123,7 +124,7 @@ class EmailsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SyncEmailsPage[EmailListResponse]:
+    ) -> SyncPageNumberPagination[EmailListResponse]:
         """Retrieve a paginated list of sent emails.
 
         Results are ordered by send time,
@@ -171,7 +172,7 @@ class EmailsResource(SyncAPIResource):
         """
         return self._get_api_list(
             "/emails",
-            page=SyncEmailsPage[EmailListResponse],
+            page=SyncPageNumberPagination[EmailListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -194,7 +195,7 @@ class EmailsResource(SyncAPIResource):
             model=EmailListResponse,
         )
 
-    def get_deliveries(
+    def retrieve_deliveries(
         self,
         email_id: str,
         *,
@@ -204,7 +205,7 @@ class EmailsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> EmailGetDeliveriesResponse:
+    ) -> EmailRetrieveDeliveriesResponse:
         """
         Get the history of delivery attempts for an email, including SMTP response codes
         and timestamps.
@@ -225,7 +226,7 @@ class EmailsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=EmailGetDeliveriesResponse,
+            cast_to=EmailRetrieveDeliveriesResponse,
         )
 
     def retry(
@@ -286,7 +287,7 @@ class EmailsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SendEmail:
+    ) -> EmailSendResponse:
         """Send a single email message.
 
         The email is accepted for immediate delivery and
@@ -367,7 +368,7 @@ class EmailsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SendEmail,
+            cast_to=EmailSendResponse,
         )
 
     def send_batch(
@@ -432,7 +433,7 @@ class EmailsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SendEmail:
+    ) -> EmailSendRawResponse:
         """Send a pre-formatted RFC 2822 MIME message.
 
         Use this for advanced use cases or
@@ -468,7 +469,7 @@ class EmailsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SendEmail,
+            cast_to=EmailSendRawResponse,
         )
 
 
@@ -559,7 +560,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncPaginator[EmailListResponse, AsyncEmailsPage[EmailListResponse]]:
+    ) -> AsyncPaginator[EmailListResponse, AsyncPageNumberPagination[EmailListResponse]]:
         """Retrieve a paginated list of sent emails.
 
         Results are ordered by send time,
@@ -607,7 +608,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         """
         return self._get_api_list(
             "/emails",
-            page=AsyncEmailsPage[EmailListResponse],
+            page=AsyncPageNumberPagination[EmailListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -630,7 +631,7 @@ class AsyncEmailsResource(AsyncAPIResource):
             model=EmailListResponse,
         )
 
-    async def get_deliveries(
+    async def retrieve_deliveries(
         self,
         email_id: str,
         *,
@@ -640,7 +641,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> EmailGetDeliveriesResponse:
+    ) -> EmailRetrieveDeliveriesResponse:
         """
         Get the history of delivery attempts for an email, including SMTP response codes
         and timestamps.
@@ -661,7 +662,7 @@ class AsyncEmailsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=EmailGetDeliveriesResponse,
+            cast_to=EmailRetrieveDeliveriesResponse,
         )
 
     async def retry(
@@ -722,7 +723,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SendEmail:
+    ) -> EmailSendResponse:
         """Send a single email message.
 
         The email is accepted for immediate delivery and
@@ -803,7 +804,7 @@ class AsyncEmailsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SendEmail,
+            cast_to=EmailSendResponse,
         )
 
     async def send_batch(
@@ -868,7 +869,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SendEmail:
+    ) -> EmailSendRawResponse:
         """Send a pre-formatted RFC 2822 MIME message.
 
         Use this for advanced use cases or
@@ -904,7 +905,7 @@ class AsyncEmailsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=SendEmail,
+            cast_to=EmailSendRawResponse,
         )
 
 
@@ -918,8 +919,8 @@ class EmailsResourceWithRawResponse:
         self.list = to_raw_response_wrapper(
             emails.list,
         )
-        self.get_deliveries = to_raw_response_wrapper(
-            emails.get_deliveries,
+        self.retrieve_deliveries = to_raw_response_wrapper(
+            emails.retrieve_deliveries,
         )
         self.retry = to_raw_response_wrapper(
             emails.retry,
@@ -945,8 +946,8 @@ class AsyncEmailsResourceWithRawResponse:
         self.list = async_to_raw_response_wrapper(
             emails.list,
         )
-        self.get_deliveries = async_to_raw_response_wrapper(
-            emails.get_deliveries,
+        self.retrieve_deliveries = async_to_raw_response_wrapper(
+            emails.retrieve_deliveries,
         )
         self.retry = async_to_raw_response_wrapper(
             emails.retry,
@@ -972,8 +973,8 @@ class EmailsResourceWithStreamingResponse:
         self.list = to_streamed_response_wrapper(
             emails.list,
         )
-        self.get_deliveries = to_streamed_response_wrapper(
-            emails.get_deliveries,
+        self.retrieve_deliveries = to_streamed_response_wrapper(
+            emails.retrieve_deliveries,
         )
         self.retry = to_streamed_response_wrapper(
             emails.retry,
@@ -999,8 +1000,8 @@ class AsyncEmailsResourceWithStreamingResponse:
         self.list = async_to_streamed_response_wrapper(
             emails.list,
         )
-        self.get_deliveries = async_to_streamed_response_wrapper(
-            emails.get_deliveries,
+        self.retrieve_deliveries = async_to_streamed_response_wrapper(
+            emails.retrieve_deliveries,
         )
         self.retry = async_to_streamed_response_wrapper(
             emails.retry,

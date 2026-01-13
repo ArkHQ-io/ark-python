@@ -9,51 +9,39 @@ from ._models import BaseModel, GenericModel
 from ._base_client import BasePage, PageInfo, BaseSyncPage, BaseAsyncPage
 
 __all__ = [
-    "EmailsPageData",
-    "EmailsPagePagination",
-    "EmailsPageMeta",
-    "SyncEmailsPage",
-    "AsyncEmailsPage",
-    "SuppressionsPageData",
-    "SuppressionsPagePagination",
-    "SuppressionsPageMeta",
-    "SyncSuppressionsPage",
-    "AsyncSuppressionsPage",
+    "PageNumberPaginationData",
+    "PageNumberPaginationPagination",
+    "SyncPageNumberPagination",
+    "AsyncPageNumberPagination",
+    "SuppressionsPaginationData",
+    "SuppressionsPaginationPagination",
+    "SyncSuppressionsPagination",
+    "AsyncSuppressionsPagination",
 ]
 
 _T = TypeVar("_T")
 
 
-class EmailsPagePagination(BaseModel):
-    page: int
+class PageNumberPaginationPagination(BaseModel):
+    page: Optional[int] = None
 
-    per_page: int = FieldInfo(alias="perPage")
-
-    total: int
-
-    total_pages: int = FieldInfo(alias="totalPages")
+    total_pages: Optional[int] = FieldInfo(alias="totalPages", default=None)
 
 
-class EmailsPageData(GenericModel, Generic[_T]):
-    messages: List[_T]
+class PageNumberPaginationData(GenericModel, Generic[_T]):
+    messages: Optional[List[_T]] = None
 
-    pagination: EmailsPagePagination
-
-
-class EmailsPageMeta(BaseModel):
-    request_id: Optional[str] = FieldInfo(alias="requestId", default=None)
+    pagination: Optional[PageNumberPaginationPagination] = None
 
 
-class SyncEmailsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
-    success: Optional[bool] = None
-    data: Optional[EmailsPageData[_T]] = None
-    meta: Optional[EmailsPageMeta] = None
+class SyncPageNumberPagination(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
+    data: Optional[PageNumberPaginationData[_T]] = None
 
     @override
     def _get_page_items(self) -> List[_T]:
         messages = None
         if self.data is not None:
-            if self.data.messages is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.messages is not None:
                 messages = self.data.messages
         if not messages:
             return []
@@ -63,16 +51,16 @@ class SyncEmailsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
     def next_page_info(self) -> Optional[PageInfo]:
         current_page = None
         if self.data is not None:
-            if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.page is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.pagination is not None:
+                if self.data.pagination.page is not None:
                     current_page = self.data.pagination.page
         if current_page is None:
             current_page = 1
 
         total_pages = None
         if self.data is not None:
-            if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.total_pages is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.pagination is not None:
+                if self.data.pagination.total_pages is not None:
                     total_pages = self.data.pagination.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None
@@ -80,16 +68,14 @@ class SyncEmailsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
         return PageInfo(params={"page": current_page + 1})
 
 
-class AsyncEmailsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
-    success: Optional[bool] = None
-    data: Optional[EmailsPageData[_T]] = None
-    meta: Optional[EmailsPageMeta] = None
+class AsyncPageNumberPagination(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
+    data: Optional[PageNumberPaginationData[_T]] = None
 
     @override
     def _get_page_items(self) -> List[_T]:
         messages = None
         if self.data is not None:
-            if self.data.messages is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.messages is not None:
                 messages = self.data.messages
         if not messages:
             return []
@@ -99,16 +85,16 @@ class AsyncEmailsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
     def next_page_info(self) -> Optional[PageInfo]:
         current_page = None
         if self.data is not None:
-            if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.page is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.pagination is not None:
+                if self.data.pagination.page is not None:
                     current_page = self.data.pagination.page
         if current_page is None:
             current_page = 1
 
         total_pages = None
         if self.data is not None:
-            if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.total_pages is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.pagination is not None:
+                if self.data.pagination.total_pages is not None:
                     total_pages = self.data.pagination.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None
@@ -116,36 +102,26 @@ class AsyncEmailsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
         return PageInfo(params={"page": current_page + 1})
 
 
-class SuppressionsPagePagination(BaseModel):
-    page: int
+class SuppressionsPaginationPagination(BaseModel):
+    page: Optional[int] = None
 
-    per_page: int = FieldInfo(alias="perPage")
-
-    total: int
-
-    total_pages: int = FieldInfo(alias="totalPages")
+    total_pages: Optional[int] = FieldInfo(alias="totalPages", default=None)
 
 
-class SuppressionsPageData(GenericModel, Generic[_T]):
-    pagination: SuppressionsPagePagination
+class SuppressionsPaginationData(GenericModel, Generic[_T]):
+    pagination: Optional[SuppressionsPaginationPagination] = None
 
-    suppressions: List[_T]
-
-
-class SuppressionsPageMeta(BaseModel):
-    request_id: Optional[str] = FieldInfo(alias="requestId", default=None)
+    suppressions: Optional[List[_T]] = None
 
 
-class SyncSuppressionsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
-    success: Optional[bool] = None
-    data: Optional[SuppressionsPageData[_T]] = None
-    meta: Optional[SuppressionsPageMeta] = None
+class SyncSuppressionsPagination(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
+    data: Optional[SuppressionsPaginationData[_T]] = None
 
     @override
     def _get_page_items(self) -> List[_T]:
         suppressions = None
         if self.data is not None:
-            if self.data.suppressions is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.suppressions is not None:
                 suppressions = self.data.suppressions
         if not suppressions:
             return []
@@ -155,16 +131,16 @@ class SyncSuppressionsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
     def next_page_info(self) -> Optional[PageInfo]:
         current_page = None
         if self.data is not None:
-            if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.page is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.pagination is not None:
+                if self.data.pagination.page is not None:
                     current_page = self.data.pagination.page
         if current_page is None:
             current_page = 1
 
         total_pages = None
         if self.data is not None:
-            if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.total_pages is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.pagination is not None:
+                if self.data.pagination.total_pages is not None:
                     total_pages = self.data.pagination.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None
@@ -172,16 +148,14 @@ class SyncSuppressionsPage(BaseSyncPage[_T], BasePage[_T], Generic[_T]):
         return PageInfo(params={"page": current_page + 1})
 
 
-class AsyncSuppressionsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
-    success: Optional[bool] = None
-    data: Optional[SuppressionsPageData[_T]] = None
-    meta: Optional[SuppressionsPageMeta] = None
+class AsyncSuppressionsPagination(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
+    data: Optional[SuppressionsPaginationData[_T]] = None
 
     @override
     def _get_page_items(self) -> List[_T]:
         suppressions = None
         if self.data is not None:
-            if self.data.suppressions is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.suppressions is not None:
                 suppressions = self.data.suppressions
         if not suppressions:
             return []
@@ -191,16 +165,16 @@ class AsyncSuppressionsPage(BaseAsyncPage[_T], BasePage[_T], Generic[_T]):
     def next_page_info(self) -> Optional[PageInfo]:
         current_page = None
         if self.data is not None:
-            if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.page is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.pagination is not None:
+                if self.data.pagination.page is not None:
                     current_page = self.data.pagination.page
         if current_page is None:
             current_page = 1
 
         total_pages = None
         if self.data is not None:
-            if self.data.pagination is not None:  # pyright: ignore[reportUnnecessaryComparison]
-                if self.data.pagination.total_pages is not None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.data.pagination is not None:
+                if self.data.pagination.total_pages is not None:
                     total_pages = self.data.pagination.total_pages
         if total_pages is not None and current_page >= total_pages:
             return None

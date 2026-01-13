@@ -1,16 +1,18 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Optional
+from typing import List, Optional
 from datetime import datetime
+from typing_extensions import Literal
 
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
+from .shared.api_meta import APIMeta
 
-__all__ = ["Delivery"]
+__all__ = ["EmailRetrieveDeliveriesResponse", "Data", "DataDelivery"]
 
 
-class Delivery(BaseModel):
+class DataDelivery(BaseModel):
     id: str
     """Delivery attempt ID"""
 
@@ -34,3 +36,21 @@ class Delivery(BaseModel):
 
     sent_with_ssl: Optional[bool] = FieldInfo(alias="sentWithSsl", default=None)
     """Whether TLS was used"""
+
+
+class Data(BaseModel):
+    deliveries: List[DataDelivery]
+
+    message_id: str = FieldInfo(alias="messageId")
+    """Internal message ID"""
+
+    message_token: str = FieldInfo(alias="messageToken")
+    """Message token"""
+
+
+class EmailRetrieveDeliveriesResponse(BaseModel):
+    data: Data
+
+    meta: APIMeta
+
+    success: Literal[True]
