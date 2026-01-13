@@ -39,11 +39,11 @@ class EmailSendParams(TypedDict, total=False):
     cc: Optional[SequenceNotStr[str]]
     """CC recipients (accepts null)"""
 
-    headers: Dict[str, str]
-    """Custom email headers"""
+    headers: Optional[Dict[str, str]]
+    """Custom email headers (accepts null)"""
 
-    html: str
-    """HTML body content. Maximum 5MB (5,242,880 characters).
+    html: Optional[str]
+    """HTML body content (accepts null). Maximum 5MB (5,242,880 characters).
 
     Combined with attachments, the total message must not exceed 14MB.
     """
@@ -51,13 +51,13 @@ class EmailSendParams(TypedDict, total=False):
     reply_to: Annotated[Optional[str], PropertyInfo(alias="replyTo")]
     """Reply-to address (accepts null)"""
 
-    tag: str
-    """Tag for categorization and filtering"""
+    tag: Optional[str]
+    """Tag for categorization and filtering (accepts null)"""
 
-    text: str
+    text: Optional[str]
     """
-    Plain text body (auto-generated from HTML if not provided). Maximum 5MB
-    (5,242,880 characters).
+    Plain text body (accepts null, auto-generated from HTML if not provided).
+    Maximum 5MB (5,242,880 characters).
     """
 
     idempotency_key: Annotated[str, PropertyInfo(alias="Idempotency-Key")]
