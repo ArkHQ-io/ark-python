@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from typing import Optional
 from typing_extensions import Annotated, TypedDict
 
 from .._types import SequenceNotStr
@@ -11,12 +12,12 @@ __all__ = ["WebhookUpdateParams"]
 
 
 class WebhookUpdateParams(TypedDict, total=False):
-    all_events: Annotated[bool, PropertyInfo(alias="allEvents")]
+    all_events: Annotated[Optional[bool], PropertyInfo(alias="allEvents")]
 
-    enabled: bool
+    enabled: Optional[bool]
 
-    events: SequenceNotStr[str]
+    events: Optional[SequenceNotStr[str]]
 
-    name: str
+    name: Optional[str]
 
-    url: str
+    url: Optional[str]

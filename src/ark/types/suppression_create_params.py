@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from typing import Optional
 from typing_extensions import Required, TypedDict
 
 __all__ = ["SuppressionCreateParams"]
@@ -11,5 +12,5 @@ class SuppressionCreateParams(TypedDict, total=False):
     address: Required[str]
     """Email address to suppress"""
 
-    reason: str
-    """Reason for suppression"""
+    reason: Optional[str]
+    """Reason for suppression (accepts null)"""
