@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Optional
+
 import httpx
 
 from ..types import tracking_create_params, tracking_update_params
@@ -49,11 +51,11 @@ class TrackingResource(SyncAPIResource):
     def create(
         self,
         *,
-        domain_id: str,
+        domain_id: int,
         name: str,
-        ssl_enabled: bool | Omit = omit,
-        track_clicks: bool | Omit = omit,
-        track_opens: bool | Omit = omit,
+        ssl_enabled: Optional[bool] | Omit = omit,
+        track_clicks: Optional[bool] | Omit = omit,
+        track_opens: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -72,11 +74,11 @@ class TrackingResource(SyncAPIResource):
 
           name: Subdomain name (e.g., 'track' for track.yourdomain.com)
 
-          ssl_enabled: Enable SSL for tracking URLs (recommended)
+          ssl_enabled: Enable SSL for tracking URLs (accepts null, defaults to true)
 
-          track_clicks: Enable click tracking
+          track_clicks: Enable click tracking (accepts null, defaults to true)
 
-          track_opens: Enable open tracking (tracking pixel)
+          track_opens: Enable open tracking (tracking pixel, accepts null, defaults to true)
 
           extra_headers: Send extra headers
 
@@ -141,10 +143,10 @@ class TrackingResource(SyncAPIResource):
         self,
         tracking_id: str,
         *,
-        excluded_click_domains: str | Omit = omit,
-        ssl_enabled: bool | Omit = omit,
-        track_clicks: bool | Omit = omit,
-        track_opens: bool | Omit = omit,
+        excluded_click_domains: Optional[str] | Omit = omit,
+        ssl_enabled: Optional[bool] | Omit = omit,
+        track_clicks: Optional[bool] | Omit = omit,
+        track_opens: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -163,13 +165,13 @@ class TrackingResource(SyncAPIResource):
         - Set excluded click domains
 
         Args:
-          excluded_click_domains: Comma-separated list of domains to exclude from click tracking
+          excluded_click_domains: Comma-separated list of domains to exclude from click tracking (accepts null)
 
-          ssl_enabled: Enable or disable SSL for tracking URLs
+          ssl_enabled: Enable or disable SSL for tracking URLs (accepts null)
 
-          track_clicks: Enable or disable click tracking
+          track_clicks: Enable or disable click tracking (accepts null)
 
-          track_opens: Enable or disable open tracking
+          track_opens: Enable or disable open tracking (accepts null)
 
           extra_headers: Send extra headers
 
@@ -316,11 +318,11 @@ class AsyncTrackingResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        domain_id: str,
+        domain_id: int,
         name: str,
-        ssl_enabled: bool | Omit = omit,
-        track_clicks: bool | Omit = omit,
-        track_opens: bool | Omit = omit,
+        ssl_enabled: Optional[bool] | Omit = omit,
+        track_clicks: Optional[bool] | Omit = omit,
+        track_opens: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -339,11 +341,11 @@ class AsyncTrackingResource(AsyncAPIResource):
 
           name: Subdomain name (e.g., 'track' for track.yourdomain.com)
 
-          ssl_enabled: Enable SSL for tracking URLs (recommended)
+          ssl_enabled: Enable SSL for tracking URLs (accepts null, defaults to true)
 
-          track_clicks: Enable click tracking
+          track_clicks: Enable click tracking (accepts null, defaults to true)
 
-          track_opens: Enable open tracking (tracking pixel)
+          track_opens: Enable open tracking (tracking pixel, accepts null, defaults to true)
 
           extra_headers: Send extra headers
 
@@ -408,10 +410,10 @@ class AsyncTrackingResource(AsyncAPIResource):
         self,
         tracking_id: str,
         *,
-        excluded_click_domains: str | Omit = omit,
-        ssl_enabled: bool | Omit = omit,
-        track_clicks: bool | Omit = omit,
-        track_opens: bool | Omit = omit,
+        excluded_click_domains: Optional[str] | Omit = omit,
+        ssl_enabled: Optional[bool] | Omit = omit,
+        track_clicks: Optional[bool] | Omit = omit,
+        track_opens: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -430,13 +432,13 @@ class AsyncTrackingResource(AsyncAPIResource):
         - Set excluded click domains
 
         Args:
-          excluded_click_domains: Comma-separated list of domains to exclude from click tracking
+          excluded_click_domains: Comma-separated list of domains to exclude from click tracking (accepts null)
 
-          ssl_enabled: Enable or disable SSL for tracking URLs
+          ssl_enabled: Enable or disable SSL for tracking URLs (accepts null)
 
-          track_clicks: Enable or disable click tracking
+          track_clicks: Enable or disable click tracking (accepts null)
 
-          track_opens: Enable or disable open tracking
+          track_opens: Enable or disable open tracking (accepts null)
 
           extra_headers: Send extra headers
 

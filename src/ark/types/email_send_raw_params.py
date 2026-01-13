@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from typing import Optional
 from typing_extensions import Required, Annotated, TypedDict
 
 from .._types import SequenceNotStr
@@ -19,3 +20,6 @@ class EmailSendRawParams(TypedDict, total=False):
 
     rcpt_to: Required[Annotated[SequenceNotStr[str], PropertyInfo(alias="rcptTo")]]
     """Envelope recipient addresses"""
+
+    bounce: Optional[bool]
+    """Whether this is a bounce message (accepts null)"""

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 from typing_extensions import Literal, Required, Annotated, TypedDict
 
 from .._utils import PropertyInfo
@@ -11,7 +11,19 @@ __all__ = ["WebhookCreateParams"]
 
 
 class WebhookCreateParams(TypedDict, total=False):
-    events: Required[
+    name: Required[str]
+    """Webhook name for identification"""
+
+    url: Required[str]
+    """HTTPS endpoint URL"""
+
+    all_events: Annotated[Optional[bool], PropertyInfo(alias="allEvents")]
+    """Subscribe to all events (ignores events array, accepts null)"""
+
+    enabled: Optional[bool]
+    """Whether the webhook is enabled (accepts null)"""
+
+    events: Optional[
         List[
             Literal[
                 "MessageSent",
@@ -25,7 +37,7 @@ class WebhookCreateParams(TypedDict, total=False):
             ]
         ]
     ]
-    """Events to subscribe to:
+    """Events to subscribe to (accepts null):
 
     - `MessageSent` - Email successfully delivered to recipient's server
     - `MessageDelayed` - Temporary delivery failure, will retry
@@ -36,14 +48,3 @@ class WebhookCreateParams(TypedDict, total=False):
     - `MessageLoaded` - Recipient opened the email (tracking pixel loaded)
     - `DomainDNSError` - DNS configuration issue detected
     """
-
-    name: Required[str]
-    """Webhook name for identification"""
-
-    url: Required[str]
-    """HTTPS endpoint URL"""
-
-    all_events: Annotated[bool, PropertyInfo(alias="allEvents")]
-    """Subscribe to all events (ignores events array)"""
-
-    enabled: bool

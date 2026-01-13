@@ -27,7 +27,7 @@ class TestTracking:
     @parametrize
     def test_method_create(self, client: Ark) -> None:
         tracking = client.tracking.create(
-            domain_id="123",
+            domain_id=123,
             name="track",
         )
         assert_matches_type(TrackingCreateResponse, tracking, path=["response"])
@@ -35,7 +35,7 @@ class TestTracking:
     @parametrize
     def test_method_create_with_all_params(self, client: Ark) -> None:
         tracking = client.tracking.create(
-            domain_id="123",
+            domain_id=123,
             name="track",
             ssl_enabled=True,
             track_clicks=True,
@@ -46,7 +46,7 @@ class TestTracking:
     @parametrize
     def test_raw_response_create(self, client: Ark) -> None:
         response = client.tracking.with_raw_response.create(
-            domain_id="123",
+            domain_id=123,
             name="track",
         )
 
@@ -58,7 +58,7 @@ class TestTracking:
     @parametrize
     def test_streaming_response_create(self, client: Ark) -> None:
         with client.tracking.with_streaming_response.create(
-            domain_id="123",
+            domain_id=123,
             name="track",
         ) as response:
             assert not response.is_closed
@@ -266,7 +266,7 @@ class TestAsyncTracking:
     @parametrize
     async def test_method_create(self, async_client: AsyncArk) -> None:
         tracking = await async_client.tracking.create(
-            domain_id="123",
+            domain_id=123,
             name="track",
         )
         assert_matches_type(TrackingCreateResponse, tracking, path=["response"])
@@ -274,7 +274,7 @@ class TestAsyncTracking:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncArk) -> None:
         tracking = await async_client.tracking.create(
-            domain_id="123",
+            domain_id=123,
             name="track",
             ssl_enabled=True,
             track_clicks=True,
@@ -285,7 +285,7 @@ class TestAsyncTracking:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncArk) -> None:
         response = await async_client.tracking.with_raw_response.create(
-            domain_id="123",
+            domain_id=123,
             name="track",
         )
 
@@ -297,7 +297,7 @@ class TestAsyncTracking:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncArk) -> None:
         async with async_client.tracking.with_streaming_response.create(
-            domain_id="123",
+            domain_id=123,
             name="track",
         ) as response:
             assert not response.is_closed
