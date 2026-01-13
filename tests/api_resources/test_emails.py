@@ -18,6 +18,7 @@ from ark.types import (
     EmailRetrieveDeliveriesResponse,
 )
 from tests.utils import assert_matches_type
+from ark.pagination import SyncPageNumberPagination, AsyncPageNumberPagination
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -74,7 +75,7 @@ class TestEmails:
     @parametrize
     def test_method_list(self, client: Ark) -> None:
         email = client.emails.list()
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(SyncPageNumberPagination[EmailListResponse], email, path=["response"])
 
     @parametrize
     def test_method_list_with_all_params(self, client: Ark) -> None:
@@ -88,7 +89,7 @@ class TestEmails:
             tag="tag",
             to="dev@stainless.com",
         )
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(SyncPageNumberPagination[EmailListResponse], email, path=["response"])
 
     @parametrize
     def test_raw_response_list(self, client: Ark) -> None:
@@ -97,7 +98,7 @@ class TestEmails:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         email = response.parse()
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(SyncPageNumberPagination[EmailListResponse], email, path=["response"])
 
     @parametrize
     def test_streaming_response_list(self, client: Ark) -> None:
@@ -106,7 +107,7 @@ class TestEmails:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             email = response.parse()
-            assert_matches_type(EmailListResponse, email, path=["response"])
+            assert_matches_type(SyncPageNumberPagination[EmailListResponse], email, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -424,7 +425,7 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_list(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.list()
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(AsyncPageNumberPagination[EmailListResponse], email, path=["response"])
 
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncArk) -> None:
@@ -438,7 +439,7 @@ class TestAsyncEmails:
             tag="tag",
             to="dev@stainless.com",
         )
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(AsyncPageNumberPagination[EmailListResponse], email, path=["response"])
 
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncArk) -> None:
@@ -447,7 +448,7 @@ class TestAsyncEmails:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         email = await response.parse()
-        assert_matches_type(EmailListResponse, email, path=["response"])
+        assert_matches_type(AsyncPageNumberPagination[EmailListResponse], email, path=["response"])
 
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncArk) -> None:
@@ -456,7 +457,7 @@ class TestAsyncEmails:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             email = await response.parse()
-            assert_matches_type(EmailListResponse, email, path=["response"])
+            assert_matches_type(AsyncPageNumberPagination[EmailListResponse], email, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 

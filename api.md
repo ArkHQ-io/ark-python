@@ -23,7 +23,7 @@ from ark.types import (
 Methods:
 
 - <code title="get /emails/{emailId}">client.emails.<a href="./src/ark/resources/emails.py">retrieve</a>(email_id, \*\*<a href="src/ark/types/email_retrieve_params.py">params</a>) -> <a href="./src/ark/types/email_retrieve_response.py">EmailRetrieveResponse</a></code>
-- <code title="get /emails">client.emails.<a href="./src/ark/resources/emails.py">list</a>(\*\*<a href="src/ark/types/email_list_params.py">params</a>) -> <a href="./src/ark/types/email_list_response.py">EmailListResponse</a></code>
+- <code title="get /emails">client.emails.<a href="./src/ark/resources/emails.py">list</a>(\*\*<a href="src/ark/types/email_list_params.py">params</a>) -> <a href="./src/ark/types/email_list_response.py">SyncPageNumberPagination[EmailListResponse]</a></code>
 - <code title="get /emails/{emailId}/deliveries">client.emails.<a href="./src/ark/resources/emails.py">retrieve_deliveries</a>(email_id) -> <a href="./src/ark/types/email_retrieve_deliveries_response.py">EmailRetrieveDeliveriesResponse</a></code>
 - <code title="post /emails/{emailId}/retry">client.emails.<a href="./src/ark/resources/emails.py">retry</a>(email_id) -> <a href="./src/ark/types/email_retry_response.py">EmailRetryResponse</a></code>
 - <code title="post /emails">client.emails.<a href="./src/ark/resources/emails.py">send</a>(\*\*<a href="src/ark/types/email_send_params.py">params</a>) -> <a href="./src/ark/types/email_send_response.py">EmailSendResponse</a></code>
@@ -71,7 +71,7 @@ Methods:
 
 - <code title="post /suppressions">client.suppressions.<a href="./src/ark/resources/suppressions.py">create</a>(\*\*<a href="src/ark/types/suppression_create_params.py">params</a>) -> <a href="./src/ark/types/suppression_create_response.py">SuppressionCreateResponse</a></code>
 - <code title="get /suppressions/{email}">client.suppressions.<a href="./src/ark/resources/suppressions.py">retrieve</a>(email) -> <a href="./src/ark/types/suppression_retrieve_response.py">SuppressionRetrieveResponse</a></code>
-- <code title="get /suppressions">client.suppressions.<a href="./src/ark/resources/suppressions.py">list</a>(\*\*<a href="src/ark/types/suppression_list_params.py">params</a>) -> <a href="./src/ark/types/suppression_list_response.py">SuppressionListResponse</a></code>
+- <code title="get /suppressions">client.suppressions.<a href="./src/ark/resources/suppressions.py">list</a>(\*\*<a href="src/ark/types/suppression_list_params.py">params</a>) -> <a href="./src/ark/types/suppression_list_response.py">SyncPageNumberPagination[SuppressionListResponse]</a></code>
 - <code title="delete /suppressions/{email}">client.suppressions.<a href="./src/ark/resources/suppressions.py">delete</a>(email) -> <a href="./src/ark/types/suppression_delete_response.py">SuppressionDeleteResponse</a></code>
 - <code title="post /suppressions/bulk">client.suppressions.<a href="./src/ark/resources/suppressions.py">bulk_create</a>(\*\*<a href="src/ark/types/suppression_bulk_create_params.py">params</a>) -> <a href="./src/ark/types/suppression_bulk_create_response.py">SuppressionBulkCreateResponse</a></code>
 
