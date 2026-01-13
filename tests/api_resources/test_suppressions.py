@@ -16,6 +16,7 @@ from ark.types import (
     SuppressionBulkCreateResponse,
 )
 from tests.utils import assert_matches_type
+from ark.pagination import SyncEmailsPage, AsyncEmailsPage
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -112,7 +113,7 @@ class TestSuppressions:
     @parametrize
     def test_method_list(self, client: Ark) -> None:
         suppression = client.suppressions.list()
-        assert_matches_type(SuppressionListResponse, suppression, path=["response"])
+        assert_matches_type(SyncEmailsPage[SuppressionListResponse], suppression, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -121,7 +122,7 @@ class TestSuppressions:
             page=0,
             per_page=100,
         )
-        assert_matches_type(SuppressionListResponse, suppression, path=["response"])
+        assert_matches_type(SyncEmailsPage[SuppressionListResponse], suppression, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -131,7 +132,7 @@ class TestSuppressions:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         suppression = response.parse()
-        assert_matches_type(SuppressionListResponse, suppression, path=["response"])
+        assert_matches_type(SyncEmailsPage[SuppressionListResponse], suppression, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -141,7 +142,7 @@ class TestSuppressions:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             suppression = response.parse()
-            assert_matches_type(SuppressionListResponse, suppression, path=["response"])
+            assert_matches_type(SyncEmailsPage[SuppressionListResponse], suppression, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -316,7 +317,7 @@ class TestAsyncSuppressions:
     @parametrize
     async def test_method_list(self, async_client: AsyncArk) -> None:
         suppression = await async_client.suppressions.list()
-        assert_matches_type(SuppressionListResponse, suppression, path=["response"])
+        assert_matches_type(AsyncEmailsPage[SuppressionListResponse], suppression, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -325,7 +326,7 @@ class TestAsyncSuppressions:
             page=0,
             per_page=100,
         )
-        assert_matches_type(SuppressionListResponse, suppression, path=["response"])
+        assert_matches_type(AsyncEmailsPage[SuppressionListResponse], suppression, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -335,7 +336,7 @@ class TestAsyncSuppressions:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         suppression = await response.parse()
-        assert_matches_type(SuppressionListResponse, suppression, path=["response"])
+        assert_matches_type(AsyncEmailsPage[SuppressionListResponse], suppression, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -345,7 +346,7 @@ class TestAsyncSuppressions:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             suppression = await response.parse()
-            assert_matches_type(SuppressionListResponse, suppression, path=["response"])
+            assert_matches_type(AsyncEmailsPage[SuppressionListResponse], suppression, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 

@@ -17,7 +17,8 @@ from .._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from .._base_client import make_request_options
+from ..pagination import SyncEmailsPage, AsyncEmailsPage
+from .._base_client import AsyncPaginator, make_request_options
 from ..types.success_response import SuccessResponse
 from ..types.suppression_list_response import SuppressionListResponse
 from ..types.suppression_create_response import SuppressionCreateResponse
@@ -136,7 +137,7 @@ class SuppressionsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuppressionListResponse:
+    ) -> SyncEmailsPage[SuppressionListResponse]:
         """Get all email addresses on the suppression list.
 
         These addresses will not
@@ -151,8 +152,9 @@ class SuppressionsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        return self._get_api_list(
             "/suppressions",
+            page=SyncEmailsPage[SuppressionListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -166,7 +168,7 @@ class SuppressionsResource(SyncAPIResource):
                     suppression_list_params.SuppressionListParams,
                 ),
             ),
-            cast_to=SuppressionListResponse,
+            model=SuppressionListResponse,
         )
 
     def delete(
@@ -337,7 +339,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
             cast_to=SuppressionRetrieveResponse,
         )
 
-    async def list(
+    def list(
         self,
         *,
         page: int | Omit = omit,
@@ -348,7 +350,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SuppressionListResponse:
+    ) -> AsyncPaginator[SuppressionListResponse, AsyncEmailsPage[SuppressionListResponse]]:
         """Get all email addresses on the suppression list.
 
         These addresses will not
@@ -363,14 +365,15 @@ class AsyncSuppressionsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        return self._get_api_list(
             "/suppressions",
+            page=AsyncEmailsPage[SuppressionListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
+                query=maybe_transform(
                     {
                         "page": page,
                         "per_page": per_page,
@@ -378,7 +381,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
                     suppression_list_params.SuppressionListParams,
                 ),
             ),
-            cast_to=SuppressionListResponse,
+            model=SuppressionListResponse,
         )
 
     async def delete(
