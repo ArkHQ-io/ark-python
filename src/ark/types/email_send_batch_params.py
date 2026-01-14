@@ -41,5 +41,6 @@ class Email(TypedDict, total=False):
     """
 
     tag: Optional[str]
+    """Tag for categorization and filtering"""
 
     text: Optional[str]
