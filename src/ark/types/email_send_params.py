@@ -48,6 +48,19 @@ class EmailSendParams(TypedDict, total=False):
     Combined with attachments, the total message must not exceed 14MB.
     """
 
+    metadata: Optional[Dict[str, str]]
+    """Custom key-value pairs attached to an email for webhook correlation.
+
+    When you send an email with metadata, these key-value pairs are:
+
+    - **Stored** with the message
+    - **Returned** in all webhook event payloads (MessageSent, MessageBounced, etc.)
+    - **Never visible** to email recipients
+
+    This is useful for correlating webhook events with your internal systems (e.g.,
+    user IDs, order IDs, campaign identifiers).
+    """
+
     reply_to: Annotated[Optional[str], PropertyInfo(alias="replyTo")]
     """Reply-to address (accepts null)"""
 

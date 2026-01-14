@@ -277,6 +277,7 @@ class EmailsResource(SyncAPIResource):
         cc: Optional[SequenceNotStr[str]] | Omit = omit,
         headers: Optional[Dict[str, str]] | Omit = omit,
         html: Optional[str] | Omit = omit,
+        metadata: Optional[Dict[str, str]] | Omit = omit,
         reply_to: Optional[str] | Omit = omit,
         tag: Optional[str] | Omit = omit,
         text: Optional[str] | Omit = omit,
@@ -331,6 +332,17 @@ class EmailsResource(SyncAPIResource):
           html: HTML body content (accepts null). Maximum 5MB (5,242,880 characters). Combined
               with attachments, the total message must not exceed 14MB.
 
+          metadata: Custom key-value pairs attached to an email for webhook correlation.
+
+              When you send an email with metadata, these key-value pairs are:
+
+              - **Stored** with the message
+              - **Returned** in all webhook event payloads (MessageSent, MessageBounced, etc.)
+              - **Never visible** to email recipients
+
+              This is useful for correlating webhook events with your internal systems (e.g.,
+              user IDs, order IDs, campaign identifiers).
+
           reply_to: Reply-to address (accepts null)
 
           tag: Tag for categorization and filtering (accepts null)
@@ -359,6 +371,7 @@ class EmailsResource(SyncAPIResource):
                     "cc": cc,
                     "headers": headers,
                     "html": html,
+                    "metadata": metadata,
                     "reply_to": reply_to,
                     "tag": tag,
                     "text": text,
@@ -717,6 +730,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         cc: Optional[SequenceNotStr[str]] | Omit = omit,
         headers: Optional[Dict[str, str]] | Omit = omit,
         html: Optional[str] | Omit = omit,
+        metadata: Optional[Dict[str, str]] | Omit = omit,
         reply_to: Optional[str] | Omit = omit,
         tag: Optional[str] | Omit = omit,
         text: Optional[str] | Omit = omit,
@@ -771,6 +785,17 @@ class AsyncEmailsResource(AsyncAPIResource):
           html: HTML body content (accepts null). Maximum 5MB (5,242,880 characters). Combined
               with attachments, the total message must not exceed 14MB.
 
+          metadata: Custom key-value pairs attached to an email for webhook correlation.
+
+              When you send an email with metadata, these key-value pairs are:
+
+              - **Stored** with the message
+              - **Returned** in all webhook event payloads (MessageSent, MessageBounced, etc.)
+              - **Never visible** to email recipients
+
+              This is useful for correlating webhook events with your internal systems (e.g.,
+              user IDs, order IDs, campaign identifiers).
+
           reply_to: Reply-to address (accepts null)
 
           tag: Tag for categorization and filtering (accepts null)
@@ -799,6 +824,7 @@ class AsyncEmailsResource(AsyncAPIResource):
                     "cc": cc,
                     "headers": headers,
                     "html": html,
+                    "metadata": metadata,
                     "reply_to": reply_to,
                     "tag": tag,
                     "text": text,
