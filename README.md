@@ -46,6 +46,11 @@ response = client.emails.send(
     subject="Hello World",
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
+    metadata={
+        "user_id": "usr_123",
+        "campaign": "onboarding",
+    },
+    tag="welcome",
 )
 print(response.data)
 ```
@@ -75,6 +80,11 @@ async def main() -> None:
         subject="Hello World",
         to=["user@example.com"],
         html="<h1>Welcome!</h1>",
+        metadata={
+            "user_id": "usr_123",
+            "campaign": "onboarding",
+        },
+        tag="welcome",
     )
     print(response.data)
 
@@ -114,6 +124,11 @@ async def main() -> None:
             subject="Hello World",
             to=["user@example.com"],
             html="<h1>Welcome!</h1>",
+            metadata={
+                "user_id": "usr_123",
+                "campaign": "onboarding",
+            },
+            tag="welcome",
         )
         print(response.data)
 
@@ -226,6 +241,11 @@ try:
         subject="Hello World",
         to=["user@example.com"],
         html="<h1>Welcome!</h1>",
+        metadata={
+            "user_id": "usr_123",
+            "campaign": "onboarding",
+        },
+        tag="welcome",
     )
 except ark.APIConnectionError as e:
     print("The server could not be reached")
@@ -274,6 +294,11 @@ client.with_options(max_retries=5).emails.send(
     subject="Hello World",
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
+    metadata={
+        "user_id": "usr_123",
+        "campaign": "onboarding",
+    },
+    tag="welcome",
 )
 ```
 
@@ -302,6 +327,11 @@ client.with_options(timeout=5.0).emails.send(
     subject="Hello World",
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
+    metadata={
+        "user_id": "usr_123",
+        "campaign": "onboarding",
+    },
+    tag="welcome",
 )
 ```
 
@@ -348,6 +378,11 @@ response = client.emails.with_raw_response.send(
     subject="Hello World",
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
+    metadata={
+        "user_id": "usr_123",
+        "campaign": "onboarding",
+    },
+    tag="welcome",
 )
 print(response.headers.get('X-My-Header'))
 
@@ -371,6 +406,11 @@ with client.emails.with_streaming_response.send(
     subject="Hello World",
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
+    metadata={
+        "user_id": "usr_123",
+        "campaign": "onboarding",
+    },
+    tag="welcome",
 ) as response:
     print(response.headers.get("X-My-Header"))
 
