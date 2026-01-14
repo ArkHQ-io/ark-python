@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.0 (2026-01-14)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/ArkHQ-io/ark-python/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* **api:** add metadata ([81dfc11](https://github.com/ArkHQ-io/ark-python/commit/81dfc11bc8a029f7150e4b72919e084963a7bf0a))
+* **client:** add support for binary request streaming ([8f5934e](https://github.com/ArkHQ-io/ark-python/commit/8f5934eb54724933c0558002113d8036e02cf39a))
+
 ## 0.5.0 (2026-01-13)
 
 Full Changelog: [v0.4.2...v0.5.0](https://github.com/ArkHQ-io/ark-python/compare/v0.4.2...v0.5.0)
