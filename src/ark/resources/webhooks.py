@@ -7,7 +7,7 @@ from typing_extensions import Literal
 
 import httpx
 
-from ..types import webhook_test_params, webhook_create_params, webhook_update_params
+from ..types import webhook_test_params, webhook_create_params, webhook_update_params, webhook_list_deliveries_params
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -25,6 +25,9 @@ from ..types.webhook_create_response import WebhookCreateResponse
 from ..types.webhook_delete_response import WebhookDeleteResponse
 from ..types.webhook_update_response import WebhookUpdateResponse
 from ..types.webhook_retrieve_response import WebhookRetrieveResponse
+from ..types.webhook_list_deliveries_response import WebhookListDeliveriesResponse
+from ..types.webhook_replay_delivery_response import WebhookReplayDeliveryResponse
+from ..types.webhook_retrieve_delivery_response import WebhookRetrieveDeliveryResponse
 
 __all__ = ["WebhooksResource", "AsyncWebhooksResource"]
 
@@ -270,6 +273,192 @@ class WebhooksResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=WebhookDeleteResponse,
+        )
+
+    def list_deliveries(
+        self,
+        webhook_id: str,
+        *,
+        after: int | Omit = omit,
+        before: int | Omit = omit,
+        event: Literal[
+            "MessageSent",
+            "MessageDelayed",
+            "MessageDeliveryFailed",
+            "MessageHeld",
+            "MessageBounced",
+            "MessageLinkClicked",
+            "MessageLoaded",
+            "DomainDNSError",
+        ]
+        | Omit = omit,
+        page: int | Omit = omit,
+        per_page: int | Omit = omit,
+        success: bool | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> WebhookListDeliveriesResponse:
+        """
+        Get a paginated list of delivery attempts for a specific webhook.
+
+        Use this to:
+
+        - Monitor webhook health and delivery success rate
+        - Debug failed deliveries
+        - Find specific events to replay
+
+        **Filtering:**
+
+        - Filter by success/failure to find problematic deliveries
+        - Filter by event type to find specific events
+        - Filter by time range for debugging recent issues
+
+        **Retry behavior:** Failed deliveries are automatically retried with exponential
+        backoff over ~3 days. Check `willRetry` to see if more attempts are scheduled.
+
+        Args:
+          after: Only deliveries after this Unix timestamp
+
+          before: Only deliveries before this Unix timestamp
+
+          event: Filter by event type
+
+          page: Page number (default 1)
+
+          per_page: Items per page (default 30, max 100)
+
+          success: Filter by delivery success (true = 2xx response, false = non-2xx or error)
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not webhook_id:
+            raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
+        return self._get(
+            f"/webhooks/{webhook_id}/deliveries",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {
+                        "after": after,
+                        "before": before,
+                        "event": event,
+                        "page": page,
+                        "per_page": per_page,
+                        "success": success,
+                    },
+                    webhook_list_deliveries_params.WebhookListDeliveriesParams,
+                ),
+            ),
+            cast_to=WebhookListDeliveriesResponse,
+        )
+
+    def replay_delivery(
+        self,
+        delivery_id: str,
+        *,
+        webhook_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> WebhookReplayDeliveryResponse:
+        """
+        Re-send a webhook delivery to your endpoint.
+
+        **Use cases:**
+
+        - Recover from transient failures after fixing your endpoint
+        - Test endpoint changes with real historical data
+        - Retry deliveries that failed due to downtime
+
+        **How it works:**
+
+        1. Fetches the original payload from the delivery
+        2. Generates a new timestamp and signature
+        3. Sends to your webhook URL immediately
+        4. Returns the result (does not queue for retry if it fails)
+
+        **Note:** The webhook must be enabled to replay deliveries.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not webhook_id:
+            raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
+        if not delivery_id:
+            raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
+        return self._post(
+            f"/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=WebhookReplayDeliveryResponse,
+        )
+
+    def retrieve_delivery(
+        self,
+        delivery_id: str,
+        *,
+        webhook_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> WebhookRetrieveDeliveryResponse:
+        """
+        Get detailed information about a specific webhook delivery attempt.
+
+        Returns:
+
+        - The complete request payload that was sent
+        - Request headers including the signature
+        - Response status code and body from your endpoint
+        - Timing information
+
+        Use this to debug why a delivery failed or verify what data was sent.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not webhook_id:
+            raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
+        if not delivery_id:
+            raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
+        return self._get(
+            f"/webhooks/{webhook_id}/deliveries/{delivery_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=WebhookRetrieveDeliveryResponse,
         )
 
     def test(
@@ -573,6 +762,192 @@ class AsyncWebhooksResource(AsyncAPIResource):
             cast_to=WebhookDeleteResponse,
         )
 
+    async def list_deliveries(
+        self,
+        webhook_id: str,
+        *,
+        after: int | Omit = omit,
+        before: int | Omit = omit,
+        event: Literal[
+            "MessageSent",
+            "MessageDelayed",
+            "MessageDeliveryFailed",
+            "MessageHeld",
+            "MessageBounced",
+            "MessageLinkClicked",
+            "MessageLoaded",
+            "DomainDNSError",
+        ]
+        | Omit = omit,
+        page: int | Omit = omit,
+        per_page: int | Omit = omit,
+        success: bool | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> WebhookListDeliveriesResponse:
+        """
+        Get a paginated list of delivery attempts for a specific webhook.
+
+        Use this to:
+
+        - Monitor webhook health and delivery success rate
+        - Debug failed deliveries
+        - Find specific events to replay
+
+        **Filtering:**
+
+        - Filter by success/failure to find problematic deliveries
+        - Filter by event type to find specific events
+        - Filter by time range for debugging recent issues
+
+        **Retry behavior:** Failed deliveries are automatically retried with exponential
+        backoff over ~3 days. Check `willRetry` to see if more attempts are scheduled.
+
+        Args:
+          after: Only deliveries after this Unix timestamp
+
+          before: Only deliveries before this Unix timestamp
+
+          event: Filter by event type
+
+          page: Page number (default 1)
+
+          per_page: Items per page (default 30, max 100)
+
+          success: Filter by delivery success (true = 2xx response, false = non-2xx or error)
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not webhook_id:
+            raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
+        return await self._get(
+            f"/webhooks/{webhook_id}/deliveries",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {
+                        "after": after,
+                        "before": before,
+                        "event": event,
+                        "page": page,
+                        "per_page": per_page,
+                        "success": success,
+                    },
+                    webhook_list_deliveries_params.WebhookListDeliveriesParams,
+                ),
+            ),
+            cast_to=WebhookListDeliveriesResponse,
+        )
+
+    async def replay_delivery(
+        self,
+        delivery_id: str,
+        *,
+        webhook_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> WebhookReplayDeliveryResponse:
+        """
+        Re-send a webhook delivery to your endpoint.
+
+        **Use cases:**
+
+        - Recover from transient failures after fixing your endpoint
+        - Test endpoint changes with real historical data
+        - Retry deliveries that failed due to downtime
+
+        **How it works:**
+
+        1. Fetches the original payload from the delivery
+        2. Generates a new timestamp and signature
+        3. Sends to your webhook URL immediately
+        4. Returns the result (does not queue for retry if it fails)
+
+        **Note:** The webhook must be enabled to replay deliveries.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not webhook_id:
+            raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
+        if not delivery_id:
+            raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
+        return await self._post(
+            f"/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=WebhookReplayDeliveryResponse,
+        )
+
+    async def retrieve_delivery(
+        self,
+        delivery_id: str,
+        *,
+        webhook_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> WebhookRetrieveDeliveryResponse:
+        """
+        Get detailed information about a specific webhook delivery attempt.
+
+        Returns:
+
+        - The complete request payload that was sent
+        - Request headers including the signature
+        - Response status code and body from your endpoint
+        - Timing information
+
+        Use this to debug why a delivery failed or verify what data was sent.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not webhook_id:
+            raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
+        if not delivery_id:
+            raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
+        return await self._get(
+            f"/webhooks/{webhook_id}/deliveries/{delivery_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=WebhookRetrieveDeliveryResponse,
+        )
+
     async def test(
         self,
         webhook_id: str,
@@ -650,6 +1025,15 @@ class WebhooksResourceWithRawResponse:
         self.delete = to_raw_response_wrapper(
             webhooks.delete,
         )
+        self.list_deliveries = to_raw_response_wrapper(
+            webhooks.list_deliveries,
+        )
+        self.replay_delivery = to_raw_response_wrapper(
+            webhooks.replay_delivery,
+        )
+        self.retrieve_delivery = to_raw_response_wrapper(
+            webhooks.retrieve_delivery,
+        )
         self.test = to_raw_response_wrapper(
             webhooks.test,
         )
@@ -673,6 +1057,15 @@ class AsyncWebhooksResourceWithRawResponse:
         )
         self.delete = async_to_raw_response_wrapper(
             webhooks.delete,
+        )
+        self.list_deliveries = async_to_raw_response_wrapper(
+            webhooks.list_deliveries,
+        )
+        self.replay_delivery = async_to_raw_response_wrapper(
+            webhooks.replay_delivery,
+        )
+        self.retrieve_delivery = async_to_raw_response_wrapper(
+            webhooks.retrieve_delivery,
         )
         self.test = async_to_raw_response_wrapper(
             webhooks.test,
@@ -698,6 +1091,15 @@ class WebhooksResourceWithStreamingResponse:
         self.delete = to_streamed_response_wrapper(
             webhooks.delete,
         )
+        self.list_deliveries = to_streamed_response_wrapper(
+            webhooks.list_deliveries,
+        )
+        self.replay_delivery = to_streamed_response_wrapper(
+            webhooks.replay_delivery,
+        )
+        self.retrieve_delivery = to_streamed_response_wrapper(
+            webhooks.retrieve_delivery,
+        )
         self.test = to_streamed_response_wrapper(
             webhooks.test,
         )
@@ -721,6 +1123,15 @@ class AsyncWebhooksResourceWithStreamingResponse:
         )
         self.delete = async_to_streamed_response_wrapper(
             webhooks.delete,
+        )
+        self.list_deliveries = async_to_streamed_response_wrapper(
+            webhooks.list_deliveries,
+        )
+        self.replay_delivery = async_to_streamed_response_wrapper(
+            webhooks.replay_delivery,
+        )
+        self.retrieve_delivery = async_to_streamed_response_wrapper(
+            webhooks.retrieve_delivery,
         )
         self.test = async_to_streamed_response_wrapper(
             webhooks.test,
