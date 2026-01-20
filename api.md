@@ -86,6 +86,9 @@ from ark.types import (
     WebhookUpdateResponse,
     WebhookListResponse,
     WebhookDeleteResponse,
+    WebhookListDeliveriesResponse,
+    WebhookReplayDeliveryResponse,
+    WebhookRetrieveDeliveryResponse,
     WebhookTestResponse,
 )
 ```
@@ -97,6 +100,9 @@ Methods:
 - <code title="patch /webhooks/{webhookId}">client.webhooks.<a href="./src/ark/resources/webhooks.py">update</a>(webhook_id, \*\*<a href="src/ark/types/webhook_update_params.py">params</a>) -> <a href="./src/ark/types/webhook_update_response.py">WebhookUpdateResponse</a></code>
 - <code title="get /webhooks">client.webhooks.<a href="./src/ark/resources/webhooks.py">list</a>() -> <a href="./src/ark/types/webhook_list_response.py">WebhookListResponse</a></code>
 - <code title="delete /webhooks/{webhookId}">client.webhooks.<a href="./src/ark/resources/webhooks.py">delete</a>(webhook_id) -> <a href="./src/ark/types/webhook_delete_response.py">WebhookDeleteResponse</a></code>
+- <code title="get /webhooks/{webhookId}/deliveries">client.webhooks.<a href="./src/ark/resources/webhooks.py">list_deliveries</a>(webhook_id, \*\*<a href="src/ark/types/webhook_list_deliveries_params.py">params</a>) -> <a href="./src/ark/types/webhook_list_deliveries_response.py">WebhookListDeliveriesResponse</a></code>
+- <code title="post /webhooks/{webhookId}/deliveries/{deliveryId}/replay">client.webhooks.<a href="./src/ark/resources/webhooks.py">replay_delivery</a>(delivery_id, \*, webhook_id) -> <a href="./src/ark/types/webhook_replay_delivery_response.py">WebhookReplayDeliveryResponse</a></code>
+- <code title="get /webhooks/{webhookId}/deliveries/{deliveryId}">client.webhooks.<a href="./src/ark/resources/webhooks.py">retrieve_delivery</a>(delivery_id, \*, webhook_id) -> <a href="./src/ark/types/webhook_retrieve_delivery_response.py">WebhookRetrieveDeliveryResponse</a></code>
 - <code title="post /webhooks/{webhookId}/test">client.webhooks.<a href="./src/ark/resources/webhooks.py">test</a>(webhook_id, \*\*<a href="src/ark/types/webhook_test_params.py">params</a>) -> <a href="./src/ark/types/webhook_test_response.py">WebhookTestResponse</a></code>
 
 # Tracking
