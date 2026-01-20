@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.7.0 (2026-01-20)
+
+Full Changelog: [v0.6.0...v0.7.0](https://github.com/ArkHQ-io/ark-python/compare/v0.6.0...v0.7.0)
+
+### Features
+
+* **api:** add webhook deliveries ([04005c1](https://github.com/ArkHQ-io/ark-python/commit/04005c15bfdb59f935c056beb9ca1b890a7ba887))
+* **api:** api update ([b41a63b](https://github.com/ArkHQ-io/ark-python/commit/b41a63b0f283b8a22479d52d768479d4186181a4))
+* **api:** api update ([ce1e30e](https://github.com/ArkHQ-io/ark-python/commit/ce1e30eabcd7011b7baed2fe1d16152373b76371))
+* **api:** manual updates ([95d0017](https://github.com/ArkHQ-io/ark-python/commit/95d001788faffe7e232c34ec8732b2dd0e68967a))
+
+
+### Chores
+
+* **internal:** update `actions/checkout` version ([d91b7db](https://github.com/ArkHQ-io/ark-python/commit/d91b7dbbf43b012cfc86cc7e90730fbf066d9480))
+
 ## 0.6.0 (2026-01-14)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/ArkHQ-io/ark-python/compare/v0.5.0...v0.6.0)
