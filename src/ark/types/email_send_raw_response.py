@@ -24,6 +24,12 @@ class Data(BaseModel):
     message_id: Optional[str] = FieldInfo(alias="messageId", default=None)
     """SMTP Message-ID header value"""
 
+    sandbox: Optional[bool] = None
+    """
+    Whether this email was sent in sandbox mode. Only present (and true) for sandbox
+    emails sent from @arkhq.io addresses.
+    """
+
 
 class EmailSendRawResponse(BaseModel):
     data: Data

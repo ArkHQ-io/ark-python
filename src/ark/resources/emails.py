@@ -307,7 +307,7 @@ class EmailsResource(SyncAPIResource):
         - `POST /emails/{id}/retry` - Retry failed delivery
 
         Args:
-          from_: Sender email address. Must be from a verified domain.
+          from_: Sender email address. Must be from a verified domain OR use sandbox mode.
 
               **Supported formats:**
 
@@ -316,6 +316,10 @@ class EmailsResource(SyncAPIResource):
               - With quoted name: `"Acme Support" <support@yourdomain.com>`
 
               The domain portion must match a verified sending domain in your account.
+
+              **Sandbox mode:** Use `sandbox@arkhq.io` to send test emails without domain
+              verification. Sandbox emails can only be sent to organization members and are
+              limited to 10 per day.
 
           subject: Email subject line
 
@@ -768,7 +772,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         - `POST /emails/{id}/retry` - Retry failed delivery
 
         Args:
-          from_: Sender email address. Must be from a verified domain.
+          from_: Sender email address. Must be from a verified domain OR use sandbox mode.
 
               **Supported formats:**
 
@@ -777,6 +781,10 @@ class AsyncEmailsResource(AsyncAPIResource):
               - With quoted name: `"Acme Support" <support@yourdomain.com>`
 
               The domain portion must match a verified sending domain in your account.
+
+              **Sandbox mode:** Use `sandbox@arkhq.io` to send test emails without domain
+              verification. Sandbox emails can only be sent to organization members and are
+              limited to 10 per day.
 
           subject: Email subject line
 
