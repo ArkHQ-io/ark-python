@@ -1,6 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Dict
+from typing import Dict, Optional
 from typing_extensions import Literal
 
 from .._models import BaseModel
@@ -28,6 +28,12 @@ class Data(BaseModel):
 
     total: int
     """Total emails in the batch"""
+
+    sandbox: Optional[bool] = None
+    """
+    Whether this batch was sent in sandbox mode. Only present (and true) for sandbox
+    emails sent from @arkhq.io addresses.
+    """
 
 
 class EmailSendBatchResponse(BaseModel):
