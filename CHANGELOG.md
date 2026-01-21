@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 (2026-01-21)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/ArkHQ-io/ark-python/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **api:** add sandbox domain ([cb771bb](https://github.com/ArkHQ-io/ark-python/commit/cb771bbc1d85d8cae0c449a716457c46c32ee269))
+
 ## 0.7.0 (2026-01-20)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/ArkHQ-io/ark-python/compare/v0.6.0...v0.7.0)
