@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.10.0 (2026-01-22)
+
+Full Changelog: [v0.9.0...v0.10.0](https://github.com/ArkHQ-io/ark-python/compare/v0.9.0...v0.10.0)
+
+### Features
+
+* **api:** api update ([53f3037](https://github.com/ArkHQ-io/ark-python/commit/53f30375a1b5dc65cee68df327e9274c4d2757df))
+* **api:** api update ([6a8086f](https://github.com/ArkHQ-io/ark-python/commit/6a8086f22354550011274956066a5d022c34b4fa))
+* **api:** fix incorrect webhook payload examples ([e78fd9d](https://github.com/ArkHQ-io/ark-python/commit/e78fd9d83b18f6f887faa36eaefa19140283b780))
+* **api:** manual updates ([7570f6e](https://github.com/ArkHQ-io/ark-python/commit/7570f6e225f2eca4a9b6398de0fbddb49483a850))
+
 ## 0.9.0 (2026-01-22)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/ArkHQ-io/ark-python/compare/v0.8.0...v0.9.0)
