@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0 (2026-01-22)
+
+Full Changelog: [v0.8.0...v0.9.0](https://github.com/ArkHQ-io/ark-python/compare/v0.8.0...v0.9.0)
+
+### Features
+
+* **api:** improve GET delivery attempts ([104c580](https://github.com/ArkHQ-io/ark-python/commit/104c5800c67096189bffc9d0db6424ec76d9565b))
+
 ## 0.8.0 (2026-01-21)
 
 Full Changelog: [v0.7.0...v0.8.0](https://github.com/ArkHQ-io/ark-python/compare/v0.7.0...v0.8.0)
