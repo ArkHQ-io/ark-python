@@ -114,14 +114,14 @@ class TestEmails:
     @parametrize
     def test_method_retrieve_deliveries(self, client: Ark) -> None:
         email = client.emails.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "emailId",
         )
         assert_matches_type(EmailRetrieveDeliveriesResponse, email, path=["response"])
 
     @parametrize
     def test_raw_response_retrieve_deliveries(self, client: Ark) -> None:
         response = client.emails.with_raw_response.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "emailId",
         )
 
         assert response.is_closed is True
@@ -132,7 +132,7 @@ class TestEmails:
     @parametrize
     def test_streaming_response_retrieve_deliveries(self, client: Ark) -> None:
         with client.emails.with_streaming_response.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "emailId",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -488,14 +488,14 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_retrieve_deliveries(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "emailId",
         )
         assert_matches_type(EmailRetrieveDeliveriesResponse, email, path=["response"])
 
     @parametrize
     async def test_raw_response_retrieve_deliveries(self, async_client: AsyncArk) -> None:
         response = await async_client.emails.with_raw_response.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "emailId",
         )
 
         assert response.is_closed is True
@@ -506,7 +506,7 @@ class TestAsyncEmails:
     @parametrize
     async def test_streaming_response_retrieve_deliveries(self, async_client: AsyncArk) -> None:
         async with async_client.emails.with_streaming_response.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "emailId",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
