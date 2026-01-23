@@ -13,7 +13,16 @@ __all__ = ["EmailSendRawParams"]
 
 class EmailSendRawParams(TypedDict, total=False):
     from_: Required[Annotated[str, PropertyInfo(alias="from")]]
-    """Sender email address"""
+    """Sender email address. Must be from a verified domain.
+
+    **Supported formats:**
+
+    - Email only: `hello@yourdomain.com`
+    - With display name: `Acme <hello@yourdomain.com>`
+    - With quoted name: `"Acme Support" <support@yourdomain.com>`
+
+    The domain portion must match a verified sending domain in your account.
+    """
 
     raw_message: Required[Annotated[str, PropertyInfo(alias="rawMessage")]]
     """Base64-encoded RFC 2822 MIME message"""
