@@ -502,7 +502,15 @@ class EmailsResource(SyncAPIResource):
         The `rawMessage` field should contain the base64-encoded raw email.
 
         Args:
-          from_: Sender email address
+          from_: Sender email address. Must be from a verified domain.
+
+              **Supported formats:**
+
+              - Email only: `hello@yourdomain.com`
+              - With display name: `Acme <hello@yourdomain.com>`
+              - With quoted name: `"Acme Support" <support@yourdomain.com>`
+
+              The domain portion must match a verified sending domain in your account.
 
           raw_message: Base64-encoded RFC 2822 MIME message
 
@@ -1001,7 +1009,15 @@ class AsyncEmailsResource(AsyncAPIResource):
         The `rawMessage` field should contain the base64-encoded raw email.
 
         Args:
-          from_: Sender email address
+          from_: Sender email address. Must be from a verified domain.
+
+              **Supported formats:**
+
+              - Email only: `hello@yourdomain.com`
+              - With display name: `Acme <hello@yourdomain.com>`
+              - With quoted name: `"Acme Support" <support@yourdomain.com>`
+
+              The domain portion must match a verified sending domain in your account.
 
           raw_message: Base64-encoded RFC 2822 MIME message
 
