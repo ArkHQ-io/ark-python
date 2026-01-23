@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.0 (2026-01-23)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/ArkHQ-io/ark-python/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* **api:** improve raw endpoint ([3ab12b8](https://github.com/ArkHQ-io/ark-python/commit/3ab12b8c773e65632dbc7253e5e37d32883f888a))
+
 ## 0.10.0 (2026-01-22)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/ArkHQ-io/ark-python/compare/v0.9.0...v0.10.0)
