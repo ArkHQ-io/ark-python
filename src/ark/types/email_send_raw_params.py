@@ -25,7 +25,12 @@ class EmailSendRawParams(TypedDict, total=False):
     """
 
     raw_message: Required[Annotated[str, PropertyInfo(alias="rawMessage")]]
-    """Base64-encoded RFC 2822 MIME message"""
+    """Base64-encoded RFC 2822 MIME message.
+
+    **You must base64-encode your raw email before sending.** The raw email should
+    include headers (From, To, Subject, Content-Type, etc.) followed by a blank line
+    and the message body.
+    """
 
     to: Required[SequenceNotStr[str]]
     """Recipient email addresses"""
