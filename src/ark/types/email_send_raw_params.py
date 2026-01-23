@@ -12,14 +12,14 @@ __all__ = ["EmailSendRawParams"]
 
 
 class EmailSendRawParams(TypedDict, total=False):
-    data: Required[str]
-    """Base64-encoded RFC 2822 message"""
+    from_: Required[Annotated[str, PropertyInfo(alias="from")]]
+    """Sender email address"""
 
-    mail_from: Required[Annotated[str, PropertyInfo(alias="mailFrom")]]
-    """Envelope sender address"""
+    raw_message: Required[Annotated[str, PropertyInfo(alias="rawMessage")]]
+    """Base64-encoded RFC 2822 MIME message"""
 
-    rcpt_to: Required[Annotated[SequenceNotStr[str], PropertyInfo(alias="rcptTo")]]
-    """Envelope recipient addresses"""
+    to: Required[SequenceNotStr[str]]
+    """Recipient email addresses"""
 
     bounce: Optional[bool]
     """Whether this is a bounce message (accepts null)"""

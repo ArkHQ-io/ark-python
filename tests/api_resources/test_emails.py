@@ -350,18 +350,18 @@ class TestEmails:
     @parametrize
     def test_method_send_raw(self, client: Ark) -> None:
         email = client.emails.send_raw(
-            data="data",
-            mail_from="dev@stainless.com",
-            rcpt_to=["dev@stainless.com"],
+            from_="dev@stainless.com",
+            raw_message="rawMessage",
+            to=["dev@stainless.com"],
         )
         assert_matches_type(EmailSendRawResponse, email, path=["response"])
 
     @parametrize
     def test_method_send_raw_with_all_params(self, client: Ark) -> None:
         email = client.emails.send_raw(
-            data="data",
-            mail_from="dev@stainless.com",
-            rcpt_to=["dev@stainless.com"],
+            from_="dev@stainless.com",
+            raw_message="rawMessage",
+            to=["dev@stainless.com"],
             bounce=True,
         )
         assert_matches_type(EmailSendRawResponse, email, path=["response"])
@@ -369,9 +369,9 @@ class TestEmails:
     @parametrize
     def test_raw_response_send_raw(self, client: Ark) -> None:
         response = client.emails.with_raw_response.send_raw(
-            data="data",
-            mail_from="dev@stainless.com",
-            rcpt_to=["dev@stainless.com"],
+            from_="dev@stainless.com",
+            raw_message="rawMessage",
+            to=["dev@stainless.com"],
         )
 
         assert response.is_closed is True
@@ -382,9 +382,9 @@ class TestEmails:
     @parametrize
     def test_streaming_response_send_raw(self, client: Ark) -> None:
         with client.emails.with_streaming_response.send_raw(
-            data="data",
-            mail_from="dev@stainless.com",
-            rcpt_to=["dev@stainless.com"],
+            from_="dev@stainless.com",
+            raw_message="rawMessage",
+            to=["dev@stainless.com"],
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -724,18 +724,18 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_send_raw(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.send_raw(
-            data="data",
-            mail_from="dev@stainless.com",
-            rcpt_to=["dev@stainless.com"],
+            from_="dev@stainless.com",
+            raw_message="rawMessage",
+            to=["dev@stainless.com"],
         )
         assert_matches_type(EmailSendRawResponse, email, path=["response"])
 
     @parametrize
     async def test_method_send_raw_with_all_params(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.send_raw(
-            data="data",
-            mail_from="dev@stainless.com",
-            rcpt_to=["dev@stainless.com"],
+            from_="dev@stainless.com",
+            raw_message="rawMessage",
+            to=["dev@stainless.com"],
             bounce=True,
         )
         assert_matches_type(EmailSendRawResponse, email, path=["response"])
@@ -743,9 +743,9 @@ class TestAsyncEmails:
     @parametrize
     async def test_raw_response_send_raw(self, async_client: AsyncArk) -> None:
         response = await async_client.emails.with_raw_response.send_raw(
-            data="data",
-            mail_from="dev@stainless.com",
-            rcpt_to=["dev@stainless.com"],
+            from_="dev@stainless.com",
+            raw_message="rawMessage",
+            to=["dev@stainless.com"],
         )
 
         assert response.is_closed is True
@@ -756,9 +756,9 @@ class TestAsyncEmails:
     @parametrize
     async def test_streaming_response_send_raw(self, async_client: AsyncArk) -> None:
         async with async_client.emails.with_streaming_response.send_raw(
-            data="data",
-            mail_from="dev@stainless.com",
-            rcpt_to=["dev@stainless.com"],
+            from_="dev@stainless.com",
+            raw_message="rawMessage",
+            to=["dev@stainless.com"],
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
