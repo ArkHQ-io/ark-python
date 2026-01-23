@@ -483,9 +483,9 @@ class EmailsResource(SyncAPIResource):
     def send_raw(
         self,
         *,
-        data: str,
-        mail_from: str,
-        rcpt_to: SequenceNotStr[str],
+        from_: str,
+        raw_message: str,
+        to: SequenceNotStr[str],
         bounce: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -499,14 +499,14 @@ class EmailsResource(SyncAPIResource):
         Use this for advanced use cases or
         when migrating from systems that generate raw email content.
 
-        The `data` field should contain the base64-encoded raw email.
+        The `rawMessage` field should contain the base64-encoded raw email.
 
         Args:
-          data: Base64-encoded RFC 2822 message
+          from_: Sender email address
 
-          mail_from: Envelope sender address
+          raw_message: Base64-encoded RFC 2822 MIME message
 
-          rcpt_to: Envelope recipient addresses
+          to: Recipient email addresses
 
           bounce: Whether this is a bounce message (accepts null)
 
@@ -522,9 +522,9 @@ class EmailsResource(SyncAPIResource):
             "/emails/raw",
             body=maybe_transform(
                 {
-                    "data": data,
-                    "mail_from": mail_from,
-                    "rcpt_to": rcpt_to,
+                    "from_": from_,
+                    "raw_message": raw_message,
+                    "to": to,
                     "bounce": bounce,
                 },
                 email_send_raw_params.EmailSendRawParams,
@@ -982,9 +982,9 @@ class AsyncEmailsResource(AsyncAPIResource):
     async def send_raw(
         self,
         *,
-        data: str,
-        mail_from: str,
-        rcpt_to: SequenceNotStr[str],
+        from_: str,
+        raw_message: str,
+        to: SequenceNotStr[str],
         bounce: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -998,14 +998,14 @@ class AsyncEmailsResource(AsyncAPIResource):
         Use this for advanced use cases or
         when migrating from systems that generate raw email content.
 
-        The `data` field should contain the base64-encoded raw email.
+        The `rawMessage` field should contain the base64-encoded raw email.
 
         Args:
-          data: Base64-encoded RFC 2822 message
+          from_: Sender email address
 
-          mail_from: Envelope sender address
+          raw_message: Base64-encoded RFC 2822 MIME message
 
-          rcpt_to: Envelope recipient addresses
+          to: Recipient email addresses
 
           bounce: Whether this is a bounce message (accepts null)
 
@@ -1021,9 +1021,9 @@ class AsyncEmailsResource(AsyncAPIResource):
             "/emails/raw",
             body=await async_maybe_transform(
                 {
-                    "data": data,
-                    "mail_from": mail_from,
-                    "rcpt_to": rcpt_to,
+                    "from_": from_,
+                    "raw_message": raw_message,
+                    "to": to,
                     "bounce": bounce,
                 },
                 email_send_raw_params.EmailSendRawParams,
