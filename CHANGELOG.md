@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.0 (2026-01-23)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/ArkHQ-io/ark-python/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **api:** fix from in Send raw MIME email ([59d29a6](https://github.com/ArkHQ-io/ark-python/commit/59d29a64079d6e9273f7cde8936b8f2fda4ca48d))
+* **api:** improve raw MIME error handling ([0f9682d](https://github.com/ArkHQ-io/ark-python/commit/0f9682db45a4d6014f39df875bc0c56db9420b63))
+
 ## 0.11.0 (2026-01-23)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/ArkHQ-io/ark-python/compare/v0.10.0...v0.11.0)
