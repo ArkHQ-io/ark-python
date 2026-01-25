@@ -31,7 +31,8 @@ from ._base_client import (
 )
 
 if TYPE_CHECKING:
-    from .resources import emails, domains, tracking, webhooks, suppressions
+    from .resources import logs, emails, domains, tracking, webhooks, suppressions
+    from .resources.logs import LogsResource, AsyncLogsResource
     from .resources.emails import EmailsResource, AsyncEmailsResource
     from .resources.domains import DomainsResource, AsyncDomainsResource
     from .resources.tracking import TrackingResource, AsyncTrackingResource
@@ -125,6 +126,12 @@ class Ark(SyncAPIClient):
         from .resources.tracking import TrackingResource
 
         return TrackingResource(self)
+
+    @cached_property
+    def logs(self) -> LogsResource:
+        from .resources.logs import LogsResource
+
+        return LogsResource(self)
 
     @cached_property
     def with_raw_response(self) -> ArkWithRawResponse:
@@ -325,6 +332,12 @@ class AsyncArk(AsyncAPIClient):
         return AsyncTrackingResource(self)
 
     @cached_property
+    def logs(self) -> AsyncLogsResource:
+        from .resources.logs import AsyncLogsResource
+
+        return AsyncLogsResource(self)
+
+    @cached_property
     def with_raw_response(self) -> AsyncArkWithRawResponse:
         return AsyncArkWithRawResponse(self)
 
@@ -473,6 +486,12 @@ class ArkWithRawResponse:
 
         return TrackingResourceWithRawResponse(self._client.tracking)
 
+    @cached_property
+    def logs(self) -> logs.LogsResourceWithRawResponse:
+        from .resources.logs import LogsResourceWithRawResponse
+
+        return LogsResourceWithRawResponse(self._client.logs)
+
 
 class AsyncArkWithRawResponse:
     _client: AsyncArk
@@ -509,6 +528,12 @@ class AsyncArkWithRawResponse:
         from .resources.tracking import AsyncTrackingResourceWithRawResponse
 
         return AsyncTrackingResourceWithRawResponse(self._client.tracking)
+
+    @cached_property
+    def logs(self) -> logs.AsyncLogsResourceWithRawResponse:
+        from .resources.logs import AsyncLogsResourceWithRawResponse
+
+        return AsyncLogsResourceWithRawResponse(self._client.logs)
 
 
 class ArkWithStreamedResponse:
@@ -547,6 +572,12 @@ class ArkWithStreamedResponse:
 
         return TrackingResourceWithStreamingResponse(self._client.tracking)
 
+    @cached_property
+    def logs(self) -> logs.LogsResourceWithStreamingResponse:
+        from .resources.logs import LogsResourceWithStreamingResponse
+
+        return LogsResourceWithStreamingResponse(self._client.logs)
+
 
 class AsyncArkWithStreamedResponse:
     _client: AsyncArk
@@ -583,6 +614,12 @@ class AsyncArkWithStreamedResponse:
         from .resources.tracking import AsyncTrackingResourceWithStreamingResponse
 
         return AsyncTrackingResourceWithStreamingResponse(self._client.tracking)
+
+    @cached_property
+    def logs(self) -> logs.AsyncLogsResourceWithStreamingResponse:
+        from .resources.logs import AsyncLogsResourceWithStreamingResponse
+
+        return AsyncLogsResourceWithStreamingResponse(self._client.logs)
 
 
 Client = Ark
