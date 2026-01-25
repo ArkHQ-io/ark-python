@@ -129,3 +129,16 @@ Methods:
 - <code title="get /tracking">client.tracking.<a href="./src/ark/resources/tracking.py">list</a>() -> <a href="./src/ark/types/tracking_list_response.py">TrackingListResponse</a></code>
 - <code title="delete /tracking/{trackingId}">client.tracking.<a href="./src/ark/resources/tracking.py">delete</a>(tracking_id) -> <a href="./src/ark/types/tracking_delete_response.py">TrackingDeleteResponse</a></code>
 - <code title="post /tracking/{trackingId}/verify">client.tracking.<a href="./src/ark/resources/tracking.py">verify</a>(tracking_id) -> <a href="./src/ark/types/tracking_verify_response.py">TrackingVerifyResponse</a></code>
+
+# Logs
+
+Types:
+
+```python
+from ark.types import LogEntry, LogEntryDetail, LogRetrieveResponse
+```
+
+Methods:
+
+- <code title="get /logs/{requestId}">client.logs.<a href="./src/ark/resources/logs.py">retrieve</a>(request_id) -> <a href="./src/ark/types/log_retrieve_response.py">LogRetrieveResponse</a></code>
+- <code title="get /logs">client.logs.<a href="./src/ark/resources/logs.py">list</a>(\*\*<a href="src/ark/types/log_list_params.py">params</a>) -> <a href="./src/ark/types/log_entry.py">SyncPageNumberPagination[LogEntry]</a></code>
