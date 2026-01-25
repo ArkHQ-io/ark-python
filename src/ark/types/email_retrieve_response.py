@@ -9,7 +9,75 @@ from pydantic import Field as FieldInfo
 from .._models import BaseModel
 from .shared.api_meta import APIMeta
 
-__all__ = ["EmailRetrieveResponse", "Data", "DataDelivery"]
+__all__ = [
+    "EmailRetrieveResponse",
+    "Data",
+    "DataActivity",
+    "DataActivityClick",
+    "DataActivityOpen",
+    "DataAttachment",
+    "DataDelivery",
+]
+
+
+class DataActivityClick(BaseModel):
+    ip_address: Optional[str] = FieldInfo(alias="ipAddress", default=None)
+    """IP address of the clicker"""
+
+    timestamp: Optional[float] = None
+    """Unix timestamp of the click event"""
+
+    timestamp_iso: Optional[datetime] = FieldInfo(alias="timestampIso", default=None)
+    """ISO 8601 timestamp of the click event"""
+
+    url: Optional[str] = None
+    """URL that was clicked"""
+
+    user_agent: Optional[str] = FieldInfo(alias="userAgent", default=None)
+    """User agent of the email client"""
+
+
+class DataActivityOpen(BaseModel):
+    ip_address: Optional[str] = FieldInfo(alias="ipAddress", default=None)
+    """IP address of the opener"""
+
+    timestamp: Optional[float] = None
+    """Unix timestamp of the open event"""
+
+    timestamp_iso: Optional[datetime] = FieldInfo(alias="timestampIso", default=None)
+    """ISO 8601 timestamp of the open event"""
+
+    user_agent: Optional[str] = FieldInfo(alias="userAgent", default=None)
+    """User agent of the email client"""
+
+
+class DataActivity(BaseModel):
+    """Opens and clicks tracking data (included if expand=activity)"""
+
+    clicks: Optional[List[DataActivityClick]] = None
+    """List of link click events"""
+
+    opens: Optional[List[DataActivityOpen]] = None
+    """List of email open events"""
+
+
+class DataAttachment(BaseModel):
+    """An email attachment retrieved from a sent message"""
+
+    content_type: str = FieldInfo(alias="contentType")
+    """MIME type of the attachment"""
+
+    data: str
+    """Base64 encoded attachment content. Decode this to get the raw file bytes."""
+
+    filename: str
+    """Original filename of the attachment"""
+
+    hash: str
+    """SHA256 hash of the attachment content for verification"""
+
+    size: int
+    """Size of the attachment in bytes"""
 
 
 class DataDelivery(BaseModel):
@@ -78,6 +146,12 @@ class Data(BaseModel):
     to: str
     """Recipient address"""
 
+    activity: Optional[DataActivity] = None
+    """Opens and clicks tracking data (included if expand=activity)"""
+
+    attachments: Optional[List[DataAttachment]] = None
+    """File attachments (included if expand=attachments)"""
+
     deliveries: Optional[List[DataDelivery]] = None
     """Delivery attempt history (included if expand=deliveries)"""
 
@@ -92,6 +166,12 @@ class Data(BaseModel):
 
     plain_body: Optional[str] = FieldInfo(alias="plainBody", default=None)
     """Plain text body (included if expand=content)"""
+
+    raw_message: Optional[str] = FieldInfo(alias="rawMessage", default=None)
+    """
+    Complete raw MIME message, base64 encoded (included if expand=raw). Decode this
+    to get the original RFC 2822 formatted email.
+    """
 
     spam: Optional[bool] = None
     """Whether the message was flagged as spam"""

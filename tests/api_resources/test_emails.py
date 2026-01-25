@@ -37,7 +37,7 @@ class TestEmails:
     def test_method_retrieve_with_all_params(self, client: Ark) -> None:
         email = client.emails.retrieve(
             email_id="emailId",
-            expand="content,deliveries",
+            expand="full",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
 
@@ -411,7 +411,7 @@ class TestAsyncEmails:
     async def test_method_retrieve_with_all_params(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.retrieve(
             email_id="emailId",
-            expand="content,deliveries",
+            expand="full",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
 
