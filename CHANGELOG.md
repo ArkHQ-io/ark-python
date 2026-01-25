@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.13.0 (2026-01-25)
+
+Full Changelog: [v0.12.0...v0.13.0](https://github.com/ArkHQ-io/ark-python/compare/v0.12.0...v0.13.0)
+
+### Features
+
+* **api:** manual updates ([a479b34](https://github.com/ArkHQ-io/ark-python/commit/a479b34c96a0395472f3f5cd0be267de45216762))
+* **api:** update email details to include attachments ([041f91e](https://github.com/ArkHQ-io/ark-python/commit/041f91ef9e96ccd47dda255d5a0380ddfece23b0))
+
+
+### Chores
+
+* **ci:** upgrade `actions/github-script` ([066a689](https://github.com/ArkHQ-io/ark-python/commit/066a6895bd50bea4327966982fca2ea2f94eff8a))
+
 ## 0.12.0 (2026-01-23)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/ArkHQ-io/ark-python/compare/v0.11.0...v0.12.0)
