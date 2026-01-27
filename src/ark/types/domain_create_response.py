@@ -14,31 +14,48 @@ __all__ = ["DomainCreateResponse", "Data", "DataDNSRecords"]
 
 
 class DataDNSRecords(BaseModel):
-    dkim: DNSRecord
+    """DNS records that must be added to your domain's DNS settings.
 
-    return_path: DNSRecord = FieldInfo(alias="returnPath")
+    Null if records are not yet generated.
+    """
 
-    spf: DNSRecord
+    dkim: Optional[DNSRecord] = None
+    """A DNS record that needs to be configured in your domain's DNS settings"""
+
+    return_path: Optional[DNSRecord] = FieldInfo(alias="returnPath", default=None)
+    """A DNS record that needs to be configured in your domain's DNS settings"""
+
+    spf: Optional[DNSRecord] = None
+    """A DNS record that needs to be configured in your domain's DNS settings"""
 
 
 class Data(BaseModel):
-    id: str
-    """Domain ID"""
+    id: int
+    """Unique domain identifier"""
 
     created_at: datetime = FieldInfo(alias="createdAt")
+    """Timestamp when the domain was added"""
 
-    dns_records: DataDNSRecords = FieldInfo(alias="dnsRecords")
+    dns_records: Optional[DataDNSRecords] = FieldInfo(alias="dnsRecords", default=None)
+    """DNS records that must be added to your domain's DNS settings.
+
+    Null if records are not yet generated.
+    """
 
     name: str
-    """Domain name"""
+    """The domain name used for sending emails"""
 
     uuid: str
+    """UUID of the domain"""
 
     verified: bool
-    """Whether DNS is verified"""
+    """Whether all DNS records (SPF, DKIM, Return Path) are correctly configured.
+
+    Domain must be verified before sending emails.
+    """
 
     verified_at: Optional[datetime] = FieldInfo(alias="verifiedAt", default=None)
-    """When the domain was verified (null if not verified)"""
+    """Timestamp when the domain ownership was verified, or null if not yet verified"""
 
 
 class DomainCreateResponse(BaseModel):
