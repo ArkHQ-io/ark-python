@@ -32,7 +32,10 @@ class TrackDomain(BaseModel):
     """When the track domain was created"""
 
     dns_ok: bool = FieldInfo(alias="dnsOk")
-    """Whether DNS is correctly configured"""
+    """Whether the tracking CNAME record is correctly configured.
+
+    Must be true to use tracking features.
+    """
 
     domain_id: str = FieldInfo(alias="domainId")
     """ID of the parent sending domain"""
