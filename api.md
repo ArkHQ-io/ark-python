@@ -142,3 +142,15 @@ Methods:
 
 - <code title="get /logs/{requestId}">client.logs.<a href="./src/ark/resources/logs.py">retrieve</a>(request_id) -> <a href="./src/ark/types/log_retrieve_response.py">LogRetrieveResponse</a></code>
 - <code title="get /logs">client.logs.<a href="./src/ark/resources/logs.py">list</a>(\*\*<a href="src/ark/types/log_list_params.py">params</a>) -> <a href="./src/ark/types/log_entry.py">SyncPageNumberPagination[LogEntry]</a></code>
+
+# Usage
+
+Types:
+
+```python
+from ark.types import UsageRetrieveResponse
+```
+
+Methods:
+
+- <code title="get /usage">client.usage.<a href="./src/ark/resources/usage.py">retrieve</a>() -> <a href="./src/ark/types/usage_retrieve_response.py">UsageRetrieveResponse</a></code>
