@@ -33,6 +33,7 @@ from .email_retrieve_response import EmailRetrieveResponse as EmailRetrieveRespo
 from .email_send_batch_params import EmailSendBatchParams as EmailSendBatchParams
 from .email_send_raw_response import EmailSendRawResponse as EmailSendRawResponse
 from .suppression_list_params import SuppressionListParams as SuppressionListParams
+from .usage_retrieve_response import UsageRetrieveResponse as UsageRetrieveResponse
 from .webhook_create_response import WebhookCreateResponse as WebhookCreateResponse
 from .webhook_delete_response import WebhookDeleteResponse as WebhookDeleteResponse
 from .webhook_update_response import WebhookUpdateResponse as WebhookUpdateResponse
