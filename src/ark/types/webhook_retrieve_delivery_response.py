@@ -50,6 +50,8 @@ class Data(BaseModel):
         "MessageLinkClicked",
         "MessageLoaded",
         "DomainDNSError",
+        "SendLimitApproaching",
+        "SendLimitExceeded",
     ]
     """Event type that triggered this delivery"""
 
