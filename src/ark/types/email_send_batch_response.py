@@ -11,7 +11,9 @@ __all__ = ["EmailSendBatchResponse", "Data", "DataMessages"]
 
 class DataMessages(BaseModel):
     id: str
-    """Message identifier (token)"""
+    """Message ID"""
+
+    token: str
 
 
 class Data(BaseModel):
