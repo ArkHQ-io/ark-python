@@ -70,6 +70,8 @@ class WebhooksResource(SyncAPIResource):
                     "MessageLinkClicked",
                     "MessageLoaded",
                     "DomainDNSError",
+                    "SendLimitApproaching",
+                    "SendLimitExceeded",
                 ]
             ]
         ]
@@ -290,6 +292,8 @@ class WebhooksResource(SyncAPIResource):
             "MessageLinkClicked",
             "MessageLoaded",
             "DomainDNSError",
+            "SendLimitApproaching",
+            "SendLimitExceeded",
         ]
         | Omit = omit,
         page: int | Omit = omit,
@@ -474,6 +478,8 @@ class WebhooksResource(SyncAPIResource):
             "MessageLinkClicked",
             "MessageLoaded",
             "DomainDNSError",
+            "SendLimitApproaching",
+            "SendLimitExceeded",
         ],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -557,6 +563,8 @@ class AsyncWebhooksResource(AsyncAPIResource):
                     "MessageLinkClicked",
                     "MessageLoaded",
                     "DomainDNSError",
+                    "SendLimitApproaching",
+                    "SendLimitExceeded",
                 ]
             ]
         ]
@@ -777,6 +785,8 @@ class AsyncWebhooksResource(AsyncAPIResource):
             "MessageLinkClicked",
             "MessageLoaded",
             "DomainDNSError",
+            "SendLimitApproaching",
+            "SendLimitExceeded",
         ]
         | Omit = omit,
         page: int | Omit = omit,
@@ -961,6 +971,8 @@ class AsyncWebhooksResource(AsyncAPIResource):
             "MessageLinkClicked",
             "MessageLoaded",
             "DomainDNSError",
+            "SendLimitApproaching",
+            "SendLimitExceeded",
         ],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
