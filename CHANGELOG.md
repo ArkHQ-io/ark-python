@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.15.0 (2026-01-30)
+
+Full Changelog: [v0.14.0...v0.15.0](https://github.com/ArkHQ-io/ark-python/compare/v0.14.0...v0.15.0)
+
+### Features
+
+* **api:** api update ([0f5c166](https://github.com/ArkHQ-io/ark-python/commit/0f5c1666d7c02d1f18096610716be6cb2c39a281))
+* **api:** api update ([f128894](https://github.com/ArkHQ-io/ark-python/commit/f128894ef84fffa757424b4b1684f7e4eebf4629))
+* **api:** manual updates ([bcc7230](https://github.com/ArkHQ-io/ark-python/commit/bcc72308bfbfd6bfd6cefc6df9e1019637ce1b02))
+* **api:** manual updates ([378cd65](https://github.com/ArkHQ-io/ark-python/commit/378cd65aadfd41edd36f4d82ad3ea12d95ec8f0c))
+* **api:** manual updates ([edb503c](https://github.com/ArkHQ-io/ark-python/commit/edb503c58439ac4face4260cf1e6794cab79f8bb))
+* **client:** add custom JSON encoder for extended type support ([ff51eb2](https://github.com/ArkHQ-io/ark-python/commit/ff51eb229a2eda74e3bc8c16d5f7f43758dc5c31))
+
 ## 0.14.0 (2026-01-29)
 
 Full Changelog: [v0.13.0...v0.14.0](https://github.com/ArkHQ-io/ark-python/compare/v0.13.0...v0.14.0)
