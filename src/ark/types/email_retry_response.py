@@ -9,6 +9,9 @@ __all__ = ["EmailRetryResponse", "Data"]
 
 
 class Data(BaseModel):
+    id: str
+    """Email identifier (token)"""
+
     message: str
 
 
