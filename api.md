@@ -10,10 +10,7 @@ Types:
 
 ```python
 from ark.types import (
-    EmailRetrieveResponse,
     EmailListResponse,
-    EmailRetrieveDeliveriesResponse,
-    EmailRetryResponse,
     EmailSendResponse,
     EmailSendBatchResponse,
     EmailSendRawResponse,
@@ -22,10 +19,7 @@ from ark.types import (
 
 Methods:
 
-- <code title="get /emails/{id}">client.emails.<a href="./src/ark/resources/emails.py">retrieve</a>(id, \*\*<a href="src/ark/types/email_retrieve_params.py">params</a>) -> <a href="./src/ark/types/email_retrieve_response.py">EmailRetrieveResponse</a></code>
 - <code title="get /emails">client.emails.<a href="./src/ark/resources/emails.py">list</a>(\*\*<a href="src/ark/types/email_list_params.py">params</a>) -> <a href="./src/ark/types/email_list_response.py">SyncPageNumberPagination[EmailListResponse]</a></code>
-- <code title="get /emails/{id}/deliveries">client.emails.<a href="./src/ark/resources/emails.py">retrieve_deliveries</a>(id) -> <a href="./src/ark/types/email_retrieve_deliveries_response.py">EmailRetrieveDeliveriesResponse</a></code>
-- <code title="post /emails/{id}/retry">client.emails.<a href="./src/ark/resources/emails.py">retry</a>(id) -> <a href="./src/ark/types/email_retry_response.py">EmailRetryResponse</a></code>
 - <code title="post /emails">client.emails.<a href="./src/ark/resources/emails.py">send</a>(\*\*<a href="src/ark/types/email_send_params.py">params</a>) -> <a href="./src/ark/types/email_send_response.py">EmailSendResponse</a></code>
 - <code title="post /emails/batch">client.emails.<a href="./src/ark/resources/emails.py">send_batch</a>(\*\*<a href="src/ark/types/email_send_batch_params.py">params</a>) -> <a href="./src/ark/types/email_send_batch_response.py">EmailSendBatchResponse</a></code>
 - <code title="post /emails/raw">client.emails.<a href="./src/ark/resources/emails.py">send_raw</a>(\*\*<a href="src/ark/types/email_send_raw_params.py">params</a>) -> <a href="./src/ark/types/email_send_raw_response.py">EmailSendRawResponse</a></code>
