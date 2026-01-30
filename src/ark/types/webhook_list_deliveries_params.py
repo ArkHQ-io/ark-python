@@ -25,6 +25,8 @@ class WebhookListDeliveriesParams(TypedDict, total=False):
         "MessageLinkClicked",
         "MessageLoaded",
         "DomainDNSError",
+        "SendLimitApproaching",
+        "SendLimitExceeded",
     ]
     """Filter by event type"""
 

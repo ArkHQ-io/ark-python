@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.0 (2026-01-30)
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/ArkHQ-io/ark-python/compare/v0.16.0...v0.17.0)
+
+### Features
+
+* **api:** api update ([eed2900](https://github.com/ArkHQ-io/ark-python/commit/eed2900c69e717e346fe6d5d10d95be29771e233))
+
 ## 0.16.0 (2026-01-30)
 
 Full Changelog: [v0.15.0...v0.16.0](https://github.com/ArkHQ-io/ark-python/compare/v0.15.0...v0.16.0)

@@ -13,7 +13,9 @@ __all__ = ["EmailListResponse"]
 
 class EmailListResponse(BaseModel):
     id: str
-    """Unique message identifier (token)"""
+    """Internal message ID"""
+
+    token: str
 
     from_: str = FieldInfo(alias="from")
 
