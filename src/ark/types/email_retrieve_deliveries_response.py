@@ -93,7 +93,7 @@ class Data(BaseModel):
 
     can_retry_manually: bool = FieldInfo(alias="canRetryManually")
     """
-    Whether the message can be manually retried via `POST /emails/{emailId}/retry`.
+    Whether the message can be manually retried via `POST /emails/{id}/retry`.
     `true` when the raw message content is still available (not expired). Messages
     older than the retention period cannot be retried.
     """
