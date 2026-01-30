@@ -29,14 +29,14 @@ class TestEmails:
     @parametrize
     def test_method_retrieve(self, client: Ark) -> None:
         email = client.emails.retrieve(
-            email_id="emailId",
+            email_id="aBc123XyZ",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
 
     @parametrize
     def test_method_retrieve_with_all_params(self, client: Ark) -> None:
         email = client.emails.retrieve(
-            email_id="emailId",
+            email_id="aBc123XyZ",
             expand="full",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
@@ -44,7 +44,7 @@ class TestEmails:
     @parametrize
     def test_raw_response_retrieve(self, client: Ark) -> None:
         response = client.emails.with_raw_response.retrieve(
-            email_id="emailId",
+            email_id="aBc123XyZ",
         )
 
         assert response.is_closed is True
@@ -55,7 +55,7 @@ class TestEmails:
     @parametrize
     def test_streaming_response_retrieve(self, client: Ark) -> None:
         with client.emails.with_streaming_response.retrieve(
-            email_id="emailId",
+            email_id="aBc123XyZ",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -114,14 +114,14 @@ class TestEmails:
     @parametrize
     def test_method_retrieve_deliveries(self, client: Ark) -> None:
         email = client.emails.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "aBc123XyZ",
         )
         assert_matches_type(EmailRetrieveDeliveriesResponse, email, path=["response"])
 
     @parametrize
     def test_raw_response_retrieve_deliveries(self, client: Ark) -> None:
         response = client.emails.with_raw_response.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "aBc123XyZ",
         )
 
         assert response.is_closed is True
@@ -132,7 +132,7 @@ class TestEmails:
     @parametrize
     def test_streaming_response_retrieve_deliveries(self, client: Ark) -> None:
         with client.emails.with_streaming_response.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "aBc123XyZ",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -152,14 +152,14 @@ class TestEmails:
     @parametrize
     def test_method_retry(self, client: Ark) -> None:
         email = client.emails.retry(
-            "emailId",
+            "aBc123XyZ",
         )
         assert_matches_type(EmailRetryResponse, email, path=["response"])
 
     @parametrize
     def test_raw_response_retry(self, client: Ark) -> None:
         response = client.emails.with_raw_response.retry(
-            "emailId",
+            "aBc123XyZ",
         )
 
         assert response.is_closed is True
@@ -170,7 +170,7 @@ class TestEmails:
     @parametrize
     def test_streaming_response_retry(self, client: Ark) -> None:
         with client.emails.with_streaming_response.retry(
-            "emailId",
+            "aBc123XyZ",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -403,14 +403,14 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.retrieve(
-            email_id="emailId",
+            email_id="aBc123XyZ",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
 
     @parametrize
     async def test_method_retrieve_with_all_params(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.retrieve(
-            email_id="emailId",
+            email_id="aBc123XyZ",
             expand="full",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
@@ -418,7 +418,7 @@ class TestAsyncEmails:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncArk) -> None:
         response = await async_client.emails.with_raw_response.retrieve(
-            email_id="emailId",
+            email_id="aBc123XyZ",
         )
 
         assert response.is_closed is True
@@ -429,7 +429,7 @@ class TestAsyncEmails:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncArk) -> None:
         async with async_client.emails.with_streaming_response.retrieve(
-            email_id="emailId",
+            email_id="aBc123XyZ",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -488,14 +488,14 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_retrieve_deliveries(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "aBc123XyZ",
         )
         assert_matches_type(EmailRetrieveDeliveriesResponse, email, path=["response"])
 
     @parametrize
     async def test_raw_response_retrieve_deliveries(self, async_client: AsyncArk) -> None:
         response = await async_client.emails.with_raw_response.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "aBc123XyZ",
         )
 
         assert response.is_closed is True
@@ -506,7 +506,7 @@ class TestAsyncEmails:
     @parametrize
     async def test_streaming_response_retrieve_deliveries(self, async_client: AsyncArk) -> None:
         async with async_client.emails.with_streaming_response.retrieve_deliveries(
-            "msg_12345_aBc123XyZ",
+            "aBc123XyZ",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -526,14 +526,14 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_retry(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.retry(
-            "emailId",
+            "aBc123XyZ",
         )
         assert_matches_type(EmailRetryResponse, email, path=["response"])
 
     @parametrize
     async def test_raw_response_retry(self, async_client: AsyncArk) -> None:
         response = await async_client.emails.with_raw_response.retry(
-            "emailId",
+            "aBc123XyZ",
         )
 
         assert response.is_closed is True
@@ -544,7 +544,7 @@ class TestAsyncEmails:
     @parametrize
     async def test_streaming_response_retry(self, async_client: AsyncArk) -> None:
         async with async_client.emails.with_streaming_response.retry(
-            "emailId",
+            "aBc123XyZ",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"

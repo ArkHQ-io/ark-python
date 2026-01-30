@@ -88,6 +88,9 @@ class DataRetryState(BaseModel):
 
 
 class Data(BaseModel):
+    id: str
+    """Message identifier (token)"""
+
     can_retry_manually: bool = FieldInfo(alias="canRetryManually")
     """
     Whether the message can be manually retried via `POST /emails/{emailId}/retry`.
@@ -100,12 +103,6 @@ class Data(BaseModel):
     Chronological list of delivery attempts for this message. Each attempt includes
     SMTP response codes and timestamps.
     """
-
-    message_id: int = FieldInfo(alias="messageId")
-    """Internal numeric message ID"""
-
-    message_token: str = FieldInfo(alias="messageToken")
-    """Unique message token for API references"""
 
     retry_state: Optional[DataRetryState] = FieldInfo(alias="retryState", default=None)
     """
