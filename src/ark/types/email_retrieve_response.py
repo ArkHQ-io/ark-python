@@ -108,14 +108,7 @@ class DataDelivery(BaseModel):
 
 class Data(BaseModel):
     id: str
-    """Internal message ID"""
-
-    token: str
-    """
-    Unique message token used to retrieve this email via API. Combined with id to
-    form the full message identifier: msg*{id}*{token} Use this token with GET
-    /emails/{emailId} where emailId = "msg*{id}*{token}"
-    """
+    """Unique message identifier (token)"""
 
     from_: str = FieldInfo(alias="from")
     """Sender address"""

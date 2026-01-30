@@ -13,7 +13,7 @@ __all__ = ["EmailSendResponse", "Data"]
 
 class Data(BaseModel):
     id: str
-    """Unique message ID (format: msg*{id}*{token})"""
+    """Unique message identifier (token)"""
 
     status: Literal["pending", "sent"]
     """Current delivery status"""
