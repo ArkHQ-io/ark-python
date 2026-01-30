@@ -59,7 +59,7 @@ class EmailsResource(SyncAPIResource):
 
     def retrieve(
         self,
-        email_id: str,
+        id: str,
         *,
         expand: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -96,10 +96,10 @@ class EmailsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not email_id:
-            raise ValueError(f"Expected a non-empty value for `email_id` but received {email_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return self._get(
-            f"/emails/{email_id}",
+            f"/emails/{id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -200,7 +200,7 @@ class EmailsResource(SyncAPIResource):
 
     def retrieve_deliveries(
         self,
-        email_id: str,
+        id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -243,8 +243,8 @@ class EmailsResource(SyncAPIResource):
 
         ### Can Retry Manually
 
-        Indicates whether you can call `POST /emails/{emailId}/retry` to manually retry
-        the email. This is `true` when the raw message content is still available (not
+        Indicates whether you can call `POST /emails/{id}/retry` to manually retry the
+        email. This is `true` when the raw message content is still available (not
         expired due to retention policy).
 
         Args:
@@ -256,10 +256,10 @@ class EmailsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not email_id:
-            raise ValueError(f"Expected a non-empty value for `email_id` but received {email_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return self._get(
-            f"/emails/{email_id}/deliveries",
+            f"/emails/{id}/deliveries",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -268,7 +268,7 @@ class EmailsResource(SyncAPIResource):
 
     def retry(
         self,
-        email_id: str,
+        id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -293,10 +293,10 @@ class EmailsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not email_id:
-            raise ValueError(f"Expected a non-empty value for `email_id` but received {email_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return self._post(
-            f"/emails/{email_id}/retry",
+            f"/emails/{id}/retry",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -575,7 +575,7 @@ class AsyncEmailsResource(AsyncAPIResource):
 
     async def retrieve(
         self,
-        email_id: str,
+        id: str,
         *,
         expand: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -612,10 +612,10 @@ class AsyncEmailsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not email_id:
-            raise ValueError(f"Expected a non-empty value for `email_id` but received {email_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return await self._get(
-            f"/emails/{email_id}",
+            f"/emails/{id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -716,7 +716,7 @@ class AsyncEmailsResource(AsyncAPIResource):
 
     async def retrieve_deliveries(
         self,
-        email_id: str,
+        id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -759,8 +759,8 @@ class AsyncEmailsResource(AsyncAPIResource):
 
         ### Can Retry Manually
 
-        Indicates whether you can call `POST /emails/{emailId}/retry` to manually retry
-        the email. This is `true` when the raw message content is still available (not
+        Indicates whether you can call `POST /emails/{id}/retry` to manually retry the
+        email. This is `true` when the raw message content is still available (not
         expired due to retention policy).
 
         Args:
@@ -772,10 +772,10 @@ class AsyncEmailsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not email_id:
-            raise ValueError(f"Expected a non-empty value for `email_id` but received {email_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return await self._get(
-            f"/emails/{email_id}/deliveries",
+            f"/emails/{id}/deliveries",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -784,7 +784,7 @@ class AsyncEmailsResource(AsyncAPIResource):
 
     async def retry(
         self,
-        email_id: str,
+        id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -809,10 +809,10 @@ class AsyncEmailsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not email_id:
-            raise ValueError(f"Expected a non-empty value for `email_id` but received {email_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return await self._post(
-            f"/emails/{email_id}/retry",
+            f"/emails/{id}/retry",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

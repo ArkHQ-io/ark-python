@@ -29,14 +29,14 @@ class TestEmails:
     @parametrize
     def test_method_retrieve(self, client: Ark) -> None:
         email = client.emails.retrieve(
-            email_id="aBc123XyZ",
+            id="aBc123XyZ",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
 
     @parametrize
     def test_method_retrieve_with_all_params(self, client: Ark) -> None:
         email = client.emails.retrieve(
-            email_id="aBc123XyZ",
+            id="aBc123XyZ",
             expand="full",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
@@ -44,7 +44,7 @@ class TestEmails:
     @parametrize
     def test_raw_response_retrieve(self, client: Ark) -> None:
         response = client.emails.with_raw_response.retrieve(
-            email_id="aBc123XyZ",
+            id="aBc123XyZ",
         )
 
         assert response.is_closed is True
@@ -55,7 +55,7 @@ class TestEmails:
     @parametrize
     def test_streaming_response_retrieve(self, client: Ark) -> None:
         with client.emails.with_streaming_response.retrieve(
-            email_id="aBc123XyZ",
+            id="aBc123XyZ",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -67,9 +67,9 @@ class TestEmails:
 
     @parametrize
     def test_path_params_retrieve(self, client: Ark) -> None:
-        with pytest.raises(ValueError, match=r"Expected a non-empty value for `email_id` but received ''"):
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.emails.with_raw_response.retrieve(
-                email_id="",
+                id="",
             )
 
     @parametrize
@@ -144,7 +144,7 @@ class TestEmails:
 
     @parametrize
     def test_path_params_retrieve_deliveries(self, client: Ark) -> None:
-        with pytest.raises(ValueError, match=r"Expected a non-empty value for `email_id` but received ''"):
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.emails.with_raw_response.retrieve_deliveries(
                 "",
             )
@@ -182,7 +182,7 @@ class TestEmails:
 
     @parametrize
     def test_path_params_retry(self, client: Ark) -> None:
-        with pytest.raises(ValueError, match=r"Expected a non-empty value for `email_id` but received ''"):
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.emails.with_raw_response.retry(
                 "",
             )
@@ -403,14 +403,14 @@ class TestAsyncEmails:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.retrieve(
-            email_id="aBc123XyZ",
+            id="aBc123XyZ",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
 
     @parametrize
     async def test_method_retrieve_with_all_params(self, async_client: AsyncArk) -> None:
         email = await async_client.emails.retrieve(
-            email_id="aBc123XyZ",
+            id="aBc123XyZ",
             expand="full",
         )
         assert_matches_type(EmailRetrieveResponse, email, path=["response"])
@@ -418,7 +418,7 @@ class TestAsyncEmails:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncArk) -> None:
         response = await async_client.emails.with_raw_response.retrieve(
-            email_id="aBc123XyZ",
+            id="aBc123XyZ",
         )
 
         assert response.is_closed is True
@@ -429,7 +429,7 @@ class TestAsyncEmails:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncArk) -> None:
         async with async_client.emails.with_streaming_response.retrieve(
-            email_id="aBc123XyZ",
+            id="aBc123XyZ",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -441,9 +441,9 @@ class TestAsyncEmails:
 
     @parametrize
     async def test_path_params_retrieve(self, async_client: AsyncArk) -> None:
-        with pytest.raises(ValueError, match=r"Expected a non-empty value for `email_id` but received ''"):
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.emails.with_raw_response.retrieve(
-                email_id="",
+                id="",
             )
 
     @parametrize
@@ -518,7 +518,7 @@ class TestAsyncEmails:
 
     @parametrize
     async def test_path_params_retrieve_deliveries(self, async_client: AsyncArk) -> None:
-        with pytest.raises(ValueError, match=r"Expected a non-empty value for `email_id` but received ''"):
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.emails.with_raw_response.retrieve_deliveries(
                 "",
             )
@@ -556,7 +556,7 @@ class TestAsyncEmails:
 
     @parametrize
     async def test_path_params_retry(self, async_client: AsyncArk) -> None:
-        with pytest.raises(ValueError, match=r"Expected a non-empty value for `email_id` but received ''"):
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.emails.with_raw_response.retry(
                 "",
             )
