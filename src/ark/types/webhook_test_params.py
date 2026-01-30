@@ -18,8 +18,6 @@ class WebhookTestParams(TypedDict, total=False):
             "MessageLinkClicked",
             "MessageLoaded",
             "DomainDNSError",
-            "SendLimitApproaching",
-            "SendLimitExceeded",
         ]
     ]
     """Event type to simulate"""
