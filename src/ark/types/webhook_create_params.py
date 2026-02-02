@@ -34,8 +34,6 @@ class WebhookCreateParams(TypedDict, total=False):
                 "MessageLinkClicked",
                 "MessageLoaded",
                 "DomainDNSError",
-                "SendLimitApproaching",
-                "SendLimitExceeded",
             ]
         ]
     ]

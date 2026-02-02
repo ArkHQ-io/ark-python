@@ -57,7 +57,7 @@ class Email(BaseModel):
     """Email-specific data (for email endpoints)"""
 
     id: Optional[str] = None
-    """Email message ID"""
+    """Email message identifier (token)"""
 
     recipient_count: Optional[int] = FieldInfo(alias="recipientCount", default=None)
     """Number of recipients"""
