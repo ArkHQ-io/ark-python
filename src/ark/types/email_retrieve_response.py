@@ -97,10 +97,15 @@ class DataDelivery(BaseModel):
     """SMTP response code"""
 
     details: Optional[str] = None
-    """Status details"""
+    """Human-readable delivery summary. Format varies by status:
+
+    - **sent**: `Message for {recipient} accepted by {ip}:{port} ({hostname})`
+    - **softfail/hardfail**:
+      `{code} {classification}: Delivery to {recipient} failed at {ip}:{port} ({hostname})`
+    """
 
     output: Optional[str] = None
-    """SMTP server response from the receiving mail server"""
+    """Raw SMTP response from the receiving mail server"""
 
     sent_with_ssl: Optional[bool] = FieldInfo(alias="sentWithSsl", default=None)
     """Whether TLS was used"""
