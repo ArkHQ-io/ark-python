@@ -34,8 +34,6 @@ class Data(BaseModel):
             "MessageLinkClicked",
             "MessageLoaded",
             "DomainDNSError",
-            "SendLimitApproaching",
-            "SendLimitExceeded",
         ]
     ]
     """Subscribed events"""

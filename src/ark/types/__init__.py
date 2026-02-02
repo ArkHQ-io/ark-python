@@ -15,6 +15,8 @@ from .email_send_response import EmailSendResponse as EmailSendResponse
 from .webhook_test_params import WebhookTestParams as WebhookTestParams
 from .domain_create_params import DomainCreateParams as DomainCreateParams
 from .domain_list_response import DomainListResponse as DomainListResponse
+from .email_retry_response import EmailRetryResponse as EmailRetryResponse
+from .email_retrieve_params import EmailRetrieveParams as EmailRetrieveParams
 from .email_send_raw_params import EmailSendRawParams as EmailSendRawParams
 from .log_retrieve_response import LogRetrieveResponse as LogRetrieveResponse
 from .webhook_create_params import WebhookCreateParams as WebhookCreateParams
@@ -27,6 +29,7 @@ from .domain_verify_response import DomainVerifyResponse as DomainVerifyResponse
 from .tracking_create_params import TrackingCreateParams as TrackingCreateParams
 from .tracking_list_response import TrackingListResponse as TrackingListResponse
 from .tracking_update_params import TrackingUpdateParams as TrackingUpdateParams
+from .email_retrieve_response import EmailRetrieveResponse as EmailRetrieveResponse
 from .email_send_batch_params import EmailSendBatchParams as EmailSendBatchParams
 from .email_send_raw_response import EmailSendRawResponse as EmailSendRawResponse
 from .suppression_list_params import SuppressionListParams as SuppressionListParams
@@ -52,4 +55,5 @@ from .webhook_list_deliveries_params import WebhookListDeliveriesParams as Webho
 from .suppression_bulk_create_response import SuppressionBulkCreateResponse as SuppressionBulkCreateResponse
 from .webhook_list_deliveries_response import WebhookListDeliveriesResponse as WebhookListDeliveriesResponse
 from .webhook_replay_delivery_response import WebhookReplayDeliveryResponse as WebhookReplayDeliveryResponse
+from .email_retrieve_deliveries_response import EmailRetrieveDeliveriesResponse as EmailRetrieveDeliveriesResponse
 from .webhook_retrieve_delivery_response import WebhookRetrieveDeliveryResponse as WebhookRetrieveDeliveryResponse
