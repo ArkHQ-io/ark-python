@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.17.0 (2026-02-03)
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/ArkHQ-io/ark-python/compare/v0.16.0...v0.17.0)
+
+### Features
+
+* **api:** Add Tenants ([8ba85ac](https://github.com/ArkHQ-io/ark-python/commit/8ba85ac06c8e1d803f2cf5077a1ff99d4655e178))
+* **api:** api update ([eed2900](https://github.com/ArkHQ-io/ark-python/commit/eed2900c69e717e346fe6d5d10d95be29771e233))
+* **api:** manual updates ([f355920](https://github.com/ArkHQ-io/ark-python/commit/f355920e2008cf0d5990b15c7292483279ee671c))
+* **api:** manual updates ([0e5c6fe](https://github.com/ArkHQ-io/ark-python/commit/0e5c6fe1479ca123629e23c842fc3cdf231876e5))
+* **api:** manual updates ([e310cbd](https://github.com/ArkHQ-io/ark-python/commit/e310cbdd0ce739190f1094b6ea1c5dd539eb91c4))
+
 ## 0.16.0 (2026-01-30)
 
 Full Changelog: [v0.15.0...v0.16.0](https://github.com/ArkHQ-io/ark-python/compare/v0.15.0...v0.16.0)

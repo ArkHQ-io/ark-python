@@ -31,11 +31,12 @@ from ._base_client import (
 )
 
 if TYPE_CHECKING:
-    from .resources import logs, usage, emails, domains, tracking, webhooks, suppressions
+    from .resources import logs, usage, emails, domains, tenants, tracking, webhooks, suppressions
     from .resources.logs import LogsResource, AsyncLogsResource
     from .resources.usage import UsageResource, AsyncUsageResource
     from .resources.emails import EmailsResource, AsyncEmailsResource
     from .resources.domains import DomainsResource, AsyncDomainsResource
+    from .resources.tenants import TenantsResource, AsyncTenantsResource
     from .resources.tracking import TrackingResource, AsyncTrackingResource
     from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
     from .resources.suppressions import SuppressionsResource, AsyncSuppressionsResource
@@ -139,6 +140,12 @@ class Ark(SyncAPIClient):
         from .resources.usage import UsageResource
 
         return UsageResource(self)
+
+    @cached_property
+    def tenants(self) -> TenantsResource:
+        from .resources.tenants import TenantsResource
+
+        return TenantsResource(self)
 
     @cached_property
     def with_raw_response(self) -> ArkWithRawResponse:
@@ -351,6 +358,12 @@ class AsyncArk(AsyncAPIClient):
         return AsyncUsageResource(self)
 
     @cached_property
+    def tenants(self) -> AsyncTenantsResource:
+        from .resources.tenants import AsyncTenantsResource
+
+        return AsyncTenantsResource(self)
+
+    @cached_property
     def with_raw_response(self) -> AsyncArkWithRawResponse:
         return AsyncArkWithRawResponse(self)
 
@@ -511,6 +524,12 @@ class ArkWithRawResponse:
 
         return UsageResourceWithRawResponse(self._client.usage)
 
+    @cached_property
+    def tenants(self) -> tenants.TenantsResourceWithRawResponse:
+        from .resources.tenants import TenantsResourceWithRawResponse
+
+        return TenantsResourceWithRawResponse(self._client.tenants)
+
 
 class AsyncArkWithRawResponse:
     _client: AsyncArk
@@ -559,6 +578,12 @@ class AsyncArkWithRawResponse:
         from .resources.usage import AsyncUsageResourceWithRawResponse
 
         return AsyncUsageResourceWithRawResponse(self._client.usage)
+
+    @cached_property
+    def tenants(self) -> tenants.AsyncTenantsResourceWithRawResponse:
+        from .resources.tenants import AsyncTenantsResourceWithRawResponse
+
+        return AsyncTenantsResourceWithRawResponse(self._client.tenants)
 
 
 class ArkWithStreamedResponse:
@@ -609,6 +634,12 @@ class ArkWithStreamedResponse:
 
         return UsageResourceWithStreamingResponse(self._client.usage)
 
+    @cached_property
+    def tenants(self) -> tenants.TenantsResourceWithStreamingResponse:
+        from .resources.tenants import TenantsResourceWithStreamingResponse
+
+        return TenantsResourceWithStreamingResponse(self._client.tenants)
+
 
 class AsyncArkWithStreamedResponse:
     _client: AsyncArk
@@ -657,6 +688,12 @@ class AsyncArkWithStreamedResponse:
         from .resources.usage import AsyncUsageResourceWithStreamingResponse
 
         return AsyncUsageResourceWithStreamingResponse(self._client.usage)
+
+    @cached_property
+    def tenants(self) -> tenants.AsyncTenantsResourceWithStreamingResponse:
+        from .resources.tenants import AsyncTenantsResourceWithStreamingResponse
+
+        return AsyncTenantsResourceWithStreamingResponse(self._client.tenants)
 
 
 Client = Ark

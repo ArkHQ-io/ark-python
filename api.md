@@ -154,3 +154,25 @@ from ark.types import UsageRetrieveResponse
 Methods:
 
 - <code title="get /usage">client.usage.<a href="./src/ark/resources/usage.py">retrieve</a>() -> <a href="./src/ark/types/usage_retrieve_response.py">UsageRetrieveResponse</a></code>
+
+# Tenants
+
+Types:
+
+```python
+from ark.types import (
+    Tenant,
+    TenantCreateResponse,
+    TenantRetrieveResponse,
+    TenantUpdateResponse,
+    TenantDeleteResponse,
+)
+```
+
+Methods:
+
+- <code title="post /tenants">client.tenants.<a href="./src/ark/resources/tenants.py">create</a>(\*\*<a href="src/ark/types/tenant_create_params.py">params</a>) -> <a href="./src/ark/types/tenant_create_response.py">TenantCreateResponse</a></code>
+- <code title="get /tenants/{tenantId}">client.tenants.<a href="./src/ark/resources/tenants.py">retrieve</a>(tenant_id) -> <a href="./src/ark/types/tenant_retrieve_response.py">TenantRetrieveResponse</a></code>
+- <code title="patch /tenants/{tenantId}">client.tenants.<a href="./src/ark/resources/tenants.py">update</a>(tenant_id, \*\*<a href="src/ark/types/tenant_update_params.py">params</a>) -> <a href="./src/ark/types/tenant_update_response.py">TenantUpdateResponse</a></code>
+- <code title="get /tenants">client.tenants.<a href="./src/ark/resources/tenants.py">list</a>(\*\*<a href="src/ark/types/tenant_list_params.py">params</a>) -> <a href="./src/ark/types/tenant.py">SyncPageNumberPagination[Tenant]</a></code>
+- <code title="delete /tenants/{tenantId}">client.tenants.<a href="./src/ark/resources/tenants.py">delete</a>(tenant_id) -> <a href="./src/ark/types/tenant_delete_response.py">TenantDeleteResponse</a></code>

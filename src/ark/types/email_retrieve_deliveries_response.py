@@ -25,17 +25,66 @@ class DataDelivery(BaseModel):
     timestamp_iso: datetime = FieldInfo(alias="timestampIso")
     """ISO 8601 timestamp"""
 
+    classification: Optional[
+        Literal[
+            "invalid_recipient",
+            "mailbox_full",
+            "message_too_large",
+            "spam_block",
+            "policy_violation",
+            "no_mailbox",
+            "not_accepting_mail",
+            "temporarily_unavailable",
+            "protocol_error",
+            "tls_required",
+            "connection_error",
+            "dns_error",
+            "unclassified",
+        ]
+    ] = None
+    """
+    Bounce classification category (present for failed deliveries). Helps understand
+    why delivery failed for analytics and automated handling.
+    """
+
+    classification_code: Optional[int] = FieldInfo(alias="classificationCode", default=None)
+    """
+    Numeric bounce classification code for programmatic handling. Codes:
+    10=invalid_recipient, 11=no_mailbox, 12=not_accepting_mail, 20=mailbox_full,
+    21=message_too_large, 30=spam_block, 31=policy_violation, 32=tls_required,
+    40=connection_error, 41=dns_error, 42=temporarily_unavailable,
+    50=protocol_error, 99=unclassified
+    """
+
     code: Optional[int] = None
     """SMTP response code"""
 
     details: Optional[str] = None
-    """Status details"""
+    """Human-readable delivery summary. Format varies by status:
+
+    - **sent**: `Message for {recipient} accepted by {ip}:{port} ({hostname})`
+    - **softfail/hardfail**:
+      `{code} {classification}: Delivery to {recipient} failed at {ip}:{port} ({hostname})`
+    """
 
     output: Optional[str] = None
-    """SMTP server response from the receiving mail server"""
+    """Raw SMTP response from the receiving mail server"""
+
+    remote_host: Optional[str] = FieldInfo(alias="remoteHost", default=None)
+    """
+    Hostname of the remote mail server that processed the delivery. Present for all
+    delivery attempts (successful and failed).
+    """
 
     sent_with_ssl: Optional[bool] = FieldInfo(alias="sentWithSsl", default=None)
     """Whether TLS was used"""
+
+    smtp_enhanced_code: Optional[str] = FieldInfo(alias="smtpEnhancedCode", default=None)
+    """
+    RFC 3463 enhanced status code from SMTP response (e.g., "5.1.1", "4.2.2"). First
+    digit: 2=success, 4=temporary, 5=permanent. Second digit: category (1=address,
+    2=mailbox, 7=security, etc.).
+    """
 
 
 class DataRetryState(BaseModel):
