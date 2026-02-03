@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import httpx
 
-from ..types import domain_create_params
-from .._types import Body, Query, Headers, NotGiven, not_given
+from ..types import domain_list_params, domain_create_params
+from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
@@ -49,6 +49,7 @@ class DomainsResource(SyncAPIResource):
         self,
         *,
         name: str,
+        tenant_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -61,6 +62,9 @@ class DomainsResource(SyncAPIResource):
         Returns DNS records that must be configured
         before the domain can be verified.
 
+        **Required:** `tenant_id` to specify which tenant the domain belongs to. Each
+        tenant gets their own isolated mail server for domain isolation.
+
         **Required DNS records:**
 
         - **SPF** - TXT record for sender authentication
@@ -72,6 +76,8 @@ class DomainsResource(SyncAPIResource):
         Args:
           name: Domain name (e.g., "mail.example.com")
 
+          tenant_id: ID of the tenant this domain belongs to
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -82,7 +88,13 @@ class DomainsResource(SyncAPIResource):
         """
         return self._post(
             "/domains",
-            body=maybe_transform({"name": name}, domain_create_params.DomainCreateParams),
+            body=maybe_transform(
+                {
+                    "name": name,
+                    "tenant_id": tenant_id,
+                },
+                domain_create_params.DomainCreateParams,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -125,6 +137,7 @@ class DomainsResource(SyncAPIResource):
     def list(
         self,
         *,
+        tenant_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -132,11 +145,31 @@ class DomainsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DomainListResponse:
-        """Get all sending domains with their verification status"""
+        """
+        Get all sending domains with their verification status.
+
+        Optionally filter by `tenant_id` to list domains for a specific tenant. When
+        filtered, response includes `tenant_id` and `tenant_name` for each domain.
+
+        Args:
+          tenant_id: Filter domains by tenant ID
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return self._get(
             "/domains",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"tenant_id": tenant_id}, domain_list_params.DomainListParams),
             ),
             cast_to=DomainListResponse,
         )
@@ -240,6 +273,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         self,
         *,
         name: str,
+        tenant_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -252,6 +286,9 @@ class AsyncDomainsResource(AsyncAPIResource):
         Returns DNS records that must be configured
         before the domain can be verified.
 
+        **Required:** `tenant_id` to specify which tenant the domain belongs to. Each
+        tenant gets their own isolated mail server for domain isolation.
+
         **Required DNS records:**
 
         - **SPF** - TXT record for sender authentication
@@ -263,6 +300,8 @@ class AsyncDomainsResource(AsyncAPIResource):
         Args:
           name: Domain name (e.g., "mail.example.com")
 
+          tenant_id: ID of the tenant this domain belongs to
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -273,7 +312,13 @@ class AsyncDomainsResource(AsyncAPIResource):
         """
         return await self._post(
             "/domains",
-            body=await async_maybe_transform({"name": name}, domain_create_params.DomainCreateParams),
+            body=await async_maybe_transform(
+                {
+                    "name": name,
+                    "tenant_id": tenant_id,
+                },
+                domain_create_params.DomainCreateParams,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -316,6 +361,7 @@ class AsyncDomainsResource(AsyncAPIResource):
     async def list(
         self,
         *,
+        tenant_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -323,11 +369,31 @@ class AsyncDomainsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DomainListResponse:
-        """Get all sending domains with their verification status"""
+        """
+        Get all sending domains with their verification status.
+
+        Optionally filter by `tenant_id` to list domains for a specific tenant. When
+        filtered, response includes `tenant_id` and `tenant_name` for each domain.
+
+        Args:
+          tenant_id: Filter domains by tenant ID
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return await self._get(
             "/domains",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform({"tenant_id": tenant_id}, domain_list_params.DomainListParams),
             ),
             cast_to=DomainListResponse,
         )

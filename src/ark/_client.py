@@ -36,10 +36,10 @@ if TYPE_CHECKING:
     from .resources.usage import UsageResource, AsyncUsageResource
     from .resources.emails import EmailsResource, AsyncEmailsResource
     from .resources.domains import DomainsResource, AsyncDomainsResource
-    from .resources.tenants import TenantsResource, AsyncTenantsResource
     from .resources.tracking import TrackingResource, AsyncTrackingResource
     from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
     from .resources.suppressions import SuppressionsResource, AsyncSuppressionsResource
+    from .resources.tenants.tenants import TenantsResource, AsyncTenantsResource
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Ark", "AsyncArk", "Client", "AsyncClient"]
 

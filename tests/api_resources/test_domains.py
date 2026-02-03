@@ -27,6 +27,7 @@ class TestDomains:
     def test_method_create(self, client: Ark) -> None:
         domain = client.domains.create(
             name="notifications.myapp.com",
+            tenant_id="cm6abc123def456",
         )
         assert_matches_type(DomainCreateResponse, domain, path=["response"])
 
@@ -34,6 +35,7 @@ class TestDomains:
     def test_raw_response_create(self, client: Ark) -> None:
         response = client.domains.with_raw_response.create(
             name="notifications.myapp.com",
+            tenant_id="cm6abc123def456",
         )
 
         assert response.is_closed is True
@@ -45,6 +47,7 @@ class TestDomains:
     def test_streaming_response_create(self, client: Ark) -> None:
         with client.domains.with_streaming_response.create(
             name="notifications.myapp.com",
+            tenant_id="cm6abc123def456",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -95,6 +98,13 @@ class TestDomains:
     @parametrize
     def test_method_list(self, client: Ark) -> None:
         domain = client.domains.list()
+        assert_matches_type(DomainListResponse, domain, path=["response"])
+
+    @parametrize
+    def test_method_list_with_all_params(self, client: Ark) -> None:
+        domain = client.domains.list(
+            tenant_id="tenant_id",
+        )
         assert_matches_type(DomainListResponse, domain, path=["response"])
 
     @parametrize
@@ -203,6 +213,7 @@ class TestAsyncDomains:
     async def test_method_create(self, async_client: AsyncArk) -> None:
         domain = await async_client.domains.create(
             name="notifications.myapp.com",
+            tenant_id="cm6abc123def456",
         )
         assert_matches_type(DomainCreateResponse, domain, path=["response"])
 
@@ -210,6 +221,7 @@ class TestAsyncDomains:
     async def test_raw_response_create(self, async_client: AsyncArk) -> None:
         response = await async_client.domains.with_raw_response.create(
             name="notifications.myapp.com",
+            tenant_id="cm6abc123def456",
         )
 
         assert response.is_closed is True
@@ -221,6 +233,7 @@ class TestAsyncDomains:
     async def test_streaming_response_create(self, async_client: AsyncArk) -> None:
         async with async_client.domains.with_streaming_response.create(
             name="notifications.myapp.com",
+            tenant_id="cm6abc123def456",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -271,6 +284,13 @@ class TestAsyncDomains:
     @parametrize
     async def test_method_list(self, async_client: AsyncArk) -> None:
         domain = await async_client.domains.list()
+        assert_matches_type(DomainListResponse, domain, path=["response"])
+
+    @parametrize
+    async def test_method_list_with_all_params(self, async_client: AsyncArk) -> None:
+        domain = await async_client.domains.list(
+            tenant_id="tenant_id",
+        )
         assert_matches_type(DomainListResponse, domain, path=["response"])
 
     @parametrize

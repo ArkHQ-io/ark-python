@@ -49,7 +49,7 @@ Methods:
 
 - <code title="post /domains">client.domains.<a href="./src/ark/resources/domains.py">create</a>(\*\*<a href="src/ark/types/domain_create_params.py">params</a>) -> <a href="./src/ark/types/domain_create_response.py">DomainCreateResponse</a></code>
 - <code title="get /domains/{domainId}">client.domains.<a href="./src/ark/resources/domains.py">retrieve</a>(domain_id) -> <a href="./src/ark/types/domain_retrieve_response.py">DomainRetrieveResponse</a></code>
-- <code title="get /domains">client.domains.<a href="./src/ark/resources/domains.py">list</a>() -> <a href="./src/ark/types/domain_list_response.py">DomainListResponse</a></code>
+- <code title="get /domains">client.domains.<a href="./src/ark/resources/domains.py">list</a>(\*\*<a href="src/ark/types/domain_list_params.py">params</a>) -> <a href="./src/ark/types/domain_list_response.py">DomainListResponse</a></code>
 - <code title="delete /domains/{domainId}">client.domains.<a href="./src/ark/resources/domains.py">delete</a>(domain_id) -> <a href="./src/ark/types/domain_delete_response.py">DomainDeleteResponse</a></code>
 - <code title="post /domains/{domainId}/verify">client.domains.<a href="./src/ark/resources/domains.py">verify</a>(domain_id) -> <a href="./src/ark/types/domain_verify_response.py">DomainVerifyResponse</a></code>
 
@@ -171,8 +171,30 @@ from ark.types import (
 
 Methods:
 
-- <code title="post /tenants">client.tenants.<a href="./src/ark/resources/tenants.py">create</a>(\*\*<a href="src/ark/types/tenant_create_params.py">params</a>) -> <a href="./src/ark/types/tenant_create_response.py">TenantCreateResponse</a></code>
-- <code title="get /tenants/{tenantId}">client.tenants.<a href="./src/ark/resources/tenants.py">retrieve</a>(tenant_id) -> <a href="./src/ark/types/tenant_retrieve_response.py">TenantRetrieveResponse</a></code>
-- <code title="patch /tenants/{tenantId}">client.tenants.<a href="./src/ark/resources/tenants.py">update</a>(tenant_id, \*\*<a href="src/ark/types/tenant_update_params.py">params</a>) -> <a href="./src/ark/types/tenant_update_response.py">TenantUpdateResponse</a></code>
-- <code title="get /tenants">client.tenants.<a href="./src/ark/resources/tenants.py">list</a>(\*\*<a href="src/ark/types/tenant_list_params.py">params</a>) -> <a href="./src/ark/types/tenant.py">SyncPageNumberPagination[Tenant]</a></code>
-- <code title="delete /tenants/{tenantId}">client.tenants.<a href="./src/ark/resources/tenants.py">delete</a>(tenant_id) -> <a href="./src/ark/types/tenant_delete_response.py">TenantDeleteResponse</a></code>
+- <code title="post /tenants">client.tenants.<a href="./src/ark/resources/tenants/tenants.py">create</a>(\*\*<a href="src/ark/types/tenant_create_params.py">params</a>) -> <a href="./src/ark/types/tenant_create_response.py">TenantCreateResponse</a></code>
+- <code title="get /tenants/{tenantId}">client.tenants.<a href="./src/ark/resources/tenants/tenants.py">retrieve</a>(tenant_id) -> <a href="./src/ark/types/tenant_retrieve_response.py">TenantRetrieveResponse</a></code>
+- <code title="patch /tenants/{tenantId}">client.tenants.<a href="./src/ark/resources/tenants/tenants.py">update</a>(tenant_id, \*\*<a href="src/ark/types/tenant_update_params.py">params</a>) -> <a href="./src/ark/types/tenant_update_response.py">TenantUpdateResponse</a></code>
+- <code title="get /tenants">client.tenants.<a href="./src/ark/resources/tenants/tenants.py">list</a>(\*\*<a href="src/ark/types/tenant_list_params.py">params</a>) -> <a href="./src/ark/types/tenant.py">SyncPageNumberPagination[Tenant]</a></code>
+- <code title="delete /tenants/{tenantId}">client.tenants.<a href="./src/ark/resources/tenants/tenants.py">delete</a>(tenant_id) -> <a href="./src/ark/types/tenant_delete_response.py">TenantDeleteResponse</a></code>
+
+## Credentials
+
+Types:
+
+```python
+from ark.types.tenants import (
+    CredentialCreateResponse,
+    CredentialRetrieveResponse,
+    CredentialUpdateResponse,
+    CredentialListResponse,
+    CredentialDeleteResponse,
+)
+```
+
+Methods:
+
+- <code title="post /tenants/{tenantId}/credentials">client.tenants.credentials.<a href="./src/ark/resources/tenants/credentials.py">create</a>(tenant_id, \*\*<a href="src/ark/types/tenants/credential_create_params.py">params</a>) -> <a href="./src/ark/types/tenants/credential_create_response.py">CredentialCreateResponse</a></code>
+- <code title="get /tenants/{tenantId}/credentials/{credentialId}">client.tenants.credentials.<a href="./src/ark/resources/tenants/credentials.py">retrieve</a>(credential_id, \*, tenant_id, \*\*<a href="src/ark/types/tenants/credential_retrieve_params.py">params</a>) -> <a href="./src/ark/types/tenants/credential_retrieve_response.py">CredentialRetrieveResponse</a></code>
+- <code title="patch /tenants/{tenantId}/credentials/{credentialId}">client.tenants.credentials.<a href="./src/ark/resources/tenants/credentials.py">update</a>(credential_id, \*, tenant_id, \*\*<a href="src/ark/types/tenants/credential_update_params.py">params</a>) -> <a href="./src/ark/types/tenants/credential_update_response.py">CredentialUpdateResponse</a></code>
+- <code title="get /tenants/{tenantId}/credentials">client.tenants.credentials.<a href="./src/ark/resources/tenants/credentials.py">list</a>(tenant_id, \*\*<a href="src/ark/types/tenants/credential_list_params.py">params</a>) -> <a href="./src/ark/types/tenants/credential_list_response.py">SyncPageNumberPagination[CredentialListResponse]</a></code>
+- <code title="delete /tenants/{tenantId}/credentials/{credentialId}">client.tenants.credentials.<a href="./src/ark/resources/tenants/credentials.py">delete</a>(credential_id, \*, tenant_id) -> <a href="./src/ark/types/tenants/credential_delete_response.py">CredentialDeleteResponse</a></code>

@@ -11,6 +11,7 @@ from .log_list_params import LogListParams as LogListParams
 from .log_entry_detail import LogEntryDetail as LogEntryDetail
 from .email_list_params import EmailListParams as EmailListParams
 from .email_send_params import EmailSendParams as EmailSendParams
+from .domain_list_params import DomainListParams as DomainListParams
 from .tenant_list_params import TenantListParams as TenantListParams
 from .email_list_response import EmailListResponse as EmailListResponse
 from .email_send_response import EmailSendResponse as EmailSendResponse
