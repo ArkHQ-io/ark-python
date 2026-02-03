@@ -22,10 +22,10 @@ from ark.types import (
 
 Methods:
 
-- <code title="get /emails/{id}">client.emails.<a href="./src/ark/resources/emails.py">retrieve</a>(id, \*\*<a href="src/ark/types/email_retrieve_params.py">params</a>) -> <a href="./src/ark/types/email_retrieve_response.py">EmailRetrieveResponse</a></code>
+- <code title="get /emails/{emailId}">client.emails.<a href="./src/ark/resources/emails.py">retrieve</a>(email_id, \*\*<a href="src/ark/types/email_retrieve_params.py">params</a>) -> <a href="./src/ark/types/email_retrieve_response.py">EmailRetrieveResponse</a></code>
 - <code title="get /emails">client.emails.<a href="./src/ark/resources/emails.py">list</a>(\*\*<a href="src/ark/types/email_list_params.py">params</a>) -> <a href="./src/ark/types/email_list_response.py">SyncPageNumberPagination[EmailListResponse]</a></code>
-- <code title="get /emails/{id}/deliveries">client.emails.<a href="./src/ark/resources/emails.py">retrieve_deliveries</a>(id) -> <a href="./src/ark/types/email_retrieve_deliveries_response.py">EmailRetrieveDeliveriesResponse</a></code>
-- <code title="post /emails/{id}/retry">client.emails.<a href="./src/ark/resources/emails.py">retry</a>(id) -> <a href="./src/ark/types/email_retry_response.py">EmailRetryResponse</a></code>
+- <code title="get /emails/{emailId}/deliveries">client.emails.<a href="./src/ark/resources/emails.py">retrieve_deliveries</a>(email_id) -> <a href="./src/ark/types/email_retrieve_deliveries_response.py">EmailRetrieveDeliveriesResponse</a></code>
+- <code title="post /emails/{emailId}/retry">client.emails.<a href="./src/ark/resources/emails.py">retry</a>(email_id) -> <a href="./src/ark/types/email_retry_response.py">EmailRetryResponse</a></code>
 - <code title="post /emails">client.emails.<a href="./src/ark/resources/emails.py">send</a>(\*\*<a href="src/ark/types/email_send_params.py">params</a>) -> <a href="./src/ark/types/email_send_response.py">EmailSendResponse</a></code>
 - <code title="post /emails/batch">client.emails.<a href="./src/ark/resources/emails.py">send_batch</a>(\*\*<a href="src/ark/types/email_send_batch_params.py">params</a>) -> <a href="./src/ark/types/email_send_batch_response.py">EmailSendBatchResponse</a></code>
 - <code title="post /emails/raw">client.emails.<a href="./src/ark/resources/emails.py">send_raw</a>(\*\*<a href="src/ark/types/email_send_raw_params.py">params</a>) -> <a href="./src/ark/types/email_send_raw_response.py">EmailSendRawResponse</a></code>
@@ -143,17 +143,44 @@ Methods:
 - <code title="get /logs/{requestId}">client.logs.<a href="./src/ark/resources/logs.py">retrieve</a>(request_id) -> <a href="./src/ark/types/log_retrieve_response.py">LogRetrieveResponse</a></code>
 - <code title="get /logs">client.logs.<a href="./src/ark/resources/logs.py">list</a>(\*\*<a href="src/ark/types/log_list_params.py">params</a>) -> <a href="./src/ark/types/log_entry.py">SyncPageNumberPagination[LogEntry]</a></code>
 
+# Limits
+
+Types:
+
+```python
+from ark.types import LimitsData, LimitRetrieveResponse
+```
+
+Methods:
+
+- <code title="get /limits">client.limits.<a href="./src/ark/resources/limits.py">retrieve</a>() -> <a href="./src/ark/types/limit_retrieve_response.py">LimitRetrieveResponse</a></code>
+
 # Usage
 
 Types:
 
 ```python
-from ark.types import UsageRetrieveResponse
+from ark.types import (
+    BulkTenantUsage,
+    EmailCounts,
+    EmailRates,
+    TenantUsage,
+    TenantUsageTimeseries,
+    UsagePeriod,
+    UsageRetrieveResponse,
+    UsageExportResponse,
+    UsageRetrieveTenantTimeseriesResponse,
+    UsageRetrieveTenantUsageResponse,
+)
 ```
 
 Methods:
 
 - <code title="get /usage">client.usage.<a href="./src/ark/resources/usage.py">retrieve</a>() -> <a href="./src/ark/types/usage_retrieve_response.py">UsageRetrieveResponse</a></code>
+- <code title="get /usage/export">client.usage.<a href="./src/ark/resources/usage.py">export</a>(\*\*<a href="src/ark/types/usage_export_params.py">params</a>) -> <a href="./src/ark/types/usage_export_response.py">UsageExportResponse</a></code>
+- <code title="get /usage/by-tenant">client.usage.<a href="./src/ark/resources/usage.py">list_by_tenant</a>(\*\*<a href="src/ark/types/usage_list_by_tenant_params.py">params</a>) -> SyncOffsetPagination[Tenant]</code>
+- <code title="get /tenants/{tenantId}/usage/timeseries">client.usage.<a href="./src/ark/resources/usage.py">retrieve_tenant_timeseries</a>(tenant_id, \*\*<a href="src/ark/types/usage_retrieve_tenant_timeseries_params.py">params</a>) -> <a href="./src/ark/types/usage_retrieve_tenant_timeseries_response.py">UsageRetrieveTenantTimeseriesResponse</a></code>
+- <code title="get /tenants/{tenantId}/usage">client.usage.<a href="./src/ark/resources/usage.py">retrieve_tenant_usage</a>(tenant_id, \*\*<a href="src/ark/types/usage_retrieve_tenant_usage_params.py">params</a>) -> <a href="./src/ark/types/usage_retrieve_tenant_usage_response.py">UsageRetrieveTenantUsageResponse</a></code>
 
 # Tenants
 

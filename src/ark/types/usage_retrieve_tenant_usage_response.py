@@ -3,17 +3,17 @@
 from typing_extensions import Literal
 
 from .._models import BaseModel
-from .limits_data import LimitsData
+from .tenant_usage import TenantUsage
 from .shared.api_meta import APIMeta
 
-__all__ = ["UsageRetrieveResponse"]
+__all__ = ["UsageRetrieveTenantUsageResponse"]
 
 
-class UsageRetrieveResponse(BaseModel):
-    """Account usage and limits response"""
+class UsageRetrieveTenantUsageResponse(BaseModel):
+    """Usage statistics for a single tenant"""
 
-    data: LimitsData
-    """Current usage and limit information"""
+    data: TenantUsage
+    """Tenant usage statistics"""
 
     meta: APIMeta
 
