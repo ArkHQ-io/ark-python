@@ -31,10 +31,11 @@ from ._base_client import (
 )
 
 if TYPE_CHECKING:
-    from .resources import logs, usage, emails, domains, tenants, tracking, webhooks, suppressions
+    from .resources import logs, usage, emails, limits, domains, tenants, tracking, webhooks, suppressions
     from .resources.logs import LogsResource, AsyncLogsResource
     from .resources.usage import UsageResource, AsyncUsageResource
     from .resources.emails import EmailsResource, AsyncEmailsResource
+    from .resources.limits import LimitsResource, AsyncLimitsResource
     from .resources.domains import DomainsResource, AsyncDomainsResource
     from .resources.tracking import TrackingResource, AsyncTrackingResource
     from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
@@ -134,6 +135,12 @@ class Ark(SyncAPIClient):
         from .resources.logs import LogsResource
 
         return LogsResource(self)
+
+    @cached_property
+    def limits(self) -> LimitsResource:
+        from .resources.limits import LimitsResource
+
+        return LimitsResource(self)
 
     @cached_property
     def usage(self) -> UsageResource:
@@ -352,6 +359,12 @@ class AsyncArk(AsyncAPIClient):
         return AsyncLogsResource(self)
 
     @cached_property
+    def limits(self) -> AsyncLimitsResource:
+        from .resources.limits import AsyncLimitsResource
+
+        return AsyncLimitsResource(self)
+
+    @cached_property
     def usage(self) -> AsyncUsageResource:
         from .resources.usage import AsyncUsageResource
 
@@ -519,6 +532,12 @@ class ArkWithRawResponse:
         return LogsResourceWithRawResponse(self._client.logs)
 
     @cached_property
+    def limits(self) -> limits.LimitsResourceWithRawResponse:
+        from .resources.limits import LimitsResourceWithRawResponse
+
+        return LimitsResourceWithRawResponse(self._client.limits)
+
+    @cached_property
     def usage(self) -> usage.UsageResourceWithRawResponse:
         from .resources.usage import UsageResourceWithRawResponse
 
@@ -572,6 +591,12 @@ class AsyncArkWithRawResponse:
         from .resources.logs import AsyncLogsResourceWithRawResponse
 
         return AsyncLogsResourceWithRawResponse(self._client.logs)
+
+    @cached_property
+    def limits(self) -> limits.AsyncLimitsResourceWithRawResponse:
+        from .resources.limits import AsyncLimitsResourceWithRawResponse
+
+        return AsyncLimitsResourceWithRawResponse(self._client.limits)
 
     @cached_property
     def usage(self) -> usage.AsyncUsageResourceWithRawResponse:
@@ -629,6 +654,12 @@ class ArkWithStreamedResponse:
         return LogsResourceWithStreamingResponse(self._client.logs)
 
     @cached_property
+    def limits(self) -> limits.LimitsResourceWithStreamingResponse:
+        from .resources.limits import LimitsResourceWithStreamingResponse
+
+        return LimitsResourceWithStreamingResponse(self._client.limits)
+
+    @cached_property
     def usage(self) -> usage.UsageResourceWithStreamingResponse:
         from .resources.usage import UsageResourceWithStreamingResponse
 
@@ -682,6 +713,12 @@ class AsyncArkWithStreamedResponse:
         from .resources.logs import AsyncLogsResourceWithStreamingResponse
 
         return AsyncLogsResourceWithStreamingResponse(self._client.logs)
+
+    @cached_property
+    def limits(self) -> limits.AsyncLimitsResourceWithStreamingResponse:
+        from .resources.limits import AsyncLimitsResourceWithStreamingResponse
+
+        return AsyncLimitsResourceWithStreamingResponse(self._client.limits)
 
     @cached_property
     def usage(self) -> usage.AsyncUsageResourceWithStreamingResponse:
