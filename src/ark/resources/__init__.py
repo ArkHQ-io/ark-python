@@ -32,6 +32,14 @@ from .domains import (
     DomainsResourceWithStreamingResponse,
     AsyncDomainsResourceWithStreamingResponse,
 )
+from .tenants import (
+    TenantsResource,
+    AsyncTenantsResource,
+    TenantsResourceWithRawResponse,
+    AsyncTenantsResourceWithRawResponse,
+    TenantsResourceWithStreamingResponse,
+    AsyncTenantsResourceWithStreamingResponse,
+)
 from .tracking import (
     TrackingResource,
     AsyncTrackingResource,
@@ -100,4 +108,10 @@ __all__ = [
     "AsyncUsageResourceWithRawResponse",
     "UsageResourceWithStreamingResponse",
     "AsyncUsageResourceWithStreamingResponse",
+    "TenantsResource",
+    "AsyncTenantsResource",
+    "TenantsResourceWithRawResponse",
+    "AsyncTenantsResourceWithRawResponse",
+    "TenantsResourceWithStreamingResponse",
+    "AsyncTenantsResourceWithStreamingResponse",
 ]

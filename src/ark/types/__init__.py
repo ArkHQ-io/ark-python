@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .shared import APIMeta as APIMeta
+from .tenant import Tenant as Tenant
 from .log_entry import LogEntry as LogEntry
 from .dns_record import DNSRecord as DNSRecord
 from .track_domain import TrackDomain as TrackDomain
@@ -10,12 +11,15 @@ from .log_list_params import LogListParams as LogListParams
 from .log_entry_detail import LogEntryDetail as LogEntryDetail
 from .email_list_params import EmailListParams as EmailListParams
 from .email_send_params import EmailSendParams as EmailSendParams
+from .tenant_list_params import TenantListParams as TenantListParams
 from .email_list_response import EmailListResponse as EmailListResponse
 from .email_send_response import EmailSendResponse as EmailSendResponse
 from .webhook_test_params import WebhookTestParams as WebhookTestParams
 from .domain_create_params import DomainCreateParams as DomainCreateParams
 from .domain_list_response import DomainListResponse as DomainListResponse
 from .email_retry_response import EmailRetryResponse as EmailRetryResponse
+from .tenant_create_params import TenantCreateParams as TenantCreateParams
+from .tenant_update_params import TenantUpdateParams as TenantUpdateParams
 from .email_retrieve_params import EmailRetrieveParams as EmailRetrieveParams
 from .email_send_raw_params import EmailSendRawParams as EmailSendRawParams
 from .log_retrieve_response import LogRetrieveResponse as LogRetrieveResponse
@@ -26,6 +30,9 @@ from .webhook_update_params import WebhookUpdateParams as WebhookUpdateParams
 from .domain_create_response import DomainCreateResponse as DomainCreateResponse
 from .domain_delete_response import DomainDeleteResponse as DomainDeleteResponse
 from .domain_verify_response import DomainVerifyResponse as DomainVerifyResponse
+from .tenant_create_response import TenantCreateResponse as TenantCreateResponse
+from .tenant_delete_response import TenantDeleteResponse as TenantDeleteResponse
+from .tenant_update_response import TenantUpdateResponse as TenantUpdateResponse
 from .tracking_create_params import TrackingCreateParams as TrackingCreateParams
 from .tracking_list_response import TrackingListResponse as TrackingListResponse
 from .tracking_update_params import TrackingUpdateParams as TrackingUpdateParams
@@ -38,6 +45,7 @@ from .webhook_create_response import WebhookCreateResponse as WebhookCreateRespo
 from .webhook_delete_response import WebhookDeleteResponse as WebhookDeleteResponse
 from .webhook_update_response import WebhookUpdateResponse as WebhookUpdateResponse
 from .domain_retrieve_response import DomainRetrieveResponse as DomainRetrieveResponse
+from .tenant_retrieve_response import TenantRetrieveResponse as TenantRetrieveResponse
 from .tracking_create_response import TrackingCreateResponse as TrackingCreateResponse
 from .tracking_delete_response import TrackingDeleteResponse as TrackingDeleteResponse
 from .tracking_update_response import TrackingUpdateResponse as TrackingUpdateResponse
