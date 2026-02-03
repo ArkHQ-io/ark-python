@@ -1,6 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import List
+from typing import List, Optional
 from typing_extensions import Literal
 
 from .._models import BaseModel
@@ -20,6 +20,14 @@ class DataDomain(BaseModel):
     """Whether all DNS records (SPF, DKIM, Return Path) are correctly configured.
 
     Domain must be verified before sending emails.
+    """
+
+    tenant_id: Optional[str] = None
+    """ID of the tenant this domain belongs to (included when filtering by tenant_id)"""
+
+    tenant_name: Optional[str] = None
+    """
+    Name of the tenant this domain belongs to (included when filtering by tenant_id)
     """
 
 

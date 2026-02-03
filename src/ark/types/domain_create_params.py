@@ -10,3 +10,6 @@ __all__ = ["DomainCreateParams"]
 class DomainCreateParams(TypedDict, total=False):
     name: Required[str]
     """Domain name (e.g., "mail.example.com")"""
+
+    tenant_id: Required[str]
+    """ID of the tenant this domain belongs to"""

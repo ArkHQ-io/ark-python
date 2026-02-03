@@ -2,83 +2,92 @@
 
 from __future__ import annotations
 
-from typing import Dict, Union, Optional
 from typing_extensions import Literal
 
 import httpx
 
-from ..types import tenant_list_params, tenant_create_params, tenant_update_params
-from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from .._utils import maybe_transform, async_maybe_transform
-from .._compat import cached_property
-from .._resource import SyncAPIResource, AsyncAPIResource
-from .._response import (
+from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
+from ..._utils import maybe_transform, async_maybe_transform
+from ..._compat import cached_property
+from ..._resource import SyncAPIResource, AsyncAPIResource
+from ..._response import (
     to_raw_response_wrapper,
     to_streamed_response_wrapper,
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ..pagination import SyncPageNumberPagination, AsyncPageNumberPagination
-from .._base_client import AsyncPaginator, make_request_options
-from ..types.tenant import Tenant
-from ..types.tenant_create_response import TenantCreateResponse
-from ..types.tenant_delete_response import TenantDeleteResponse
-from ..types.tenant_update_response import TenantUpdateResponse
-from ..types.tenant_retrieve_response import TenantRetrieveResponse
+from ...pagination import SyncPageNumberPagination, AsyncPageNumberPagination
+from ..._base_client import AsyncPaginator, make_request_options
+from ...types.tenants import (
+    credential_list_params,
+    credential_create_params,
+    credential_update_params,
+    credential_retrieve_params,
+)
+from ...types.tenants.credential_list_response import CredentialListResponse
+from ...types.tenants.credential_create_response import CredentialCreateResponse
+from ...types.tenants.credential_delete_response import CredentialDeleteResponse
+from ...types.tenants.credential_update_response import CredentialUpdateResponse
+from ...types.tenants.credential_retrieve_response import CredentialRetrieveResponse
 
-__all__ = ["TenantsResource", "AsyncTenantsResource"]
+__all__ = ["CredentialsResource", "AsyncCredentialsResource"]
 
 
-class TenantsResource(SyncAPIResource):
+class CredentialsResource(SyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> TenantsResourceWithRawResponse:
+    def with_raw_response(self) -> CredentialsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/ArkHQ-io/ark-python#accessing-raw-response-data-eg-headers
         """
-        return TenantsResourceWithRawResponse(self)
+        return CredentialsResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> TenantsResourceWithStreamingResponse:
+    def with_streaming_response(self) -> CredentialsResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/ArkHQ-io/ark-python#with_streaming_response
         """
-        return TenantsResourceWithStreamingResponse(self)
+        return CredentialsResourceWithStreamingResponse(self)
 
     def create(
         self,
+        tenant_id: str,
         *,
         name: str,
-        metadata: Optional[Dict[str, Union[str, float, bool, None]]] | Omit = omit,
+        type: Literal["smtp", "api"],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TenantCreateResponse:
-        """Create a new tenant.
+    ) -> CredentialCreateResponse:
+        """Create a new SMTP or API credential for a tenant.
 
-        Returns the created tenant with a unique `id`.
+        The credential can be used to
+        send emails through Postal on behalf of the tenant.
 
-        Store this ID in your database to
-        reference this tenant later.
+        **Important:** The credential key is only returned once at creation time. Store
+        it securely - you cannot retrieve it again.
+
+        **Credential Types:**
+
+        - `smtp` - For SMTP-based email sending. Returns both `key` and `smtpUsername`.
+        - `api` - For API-based email sending. Returns only `key`.
 
         Args:
-          name: Display name for the tenant (e.g., your customer's company name)
+          name: Name for the credential. Can only contain letters, numbers, hyphens, and
+              underscores. Max 50 characters.
 
-          metadata: Custom key-value pairs. Useful for storing references to your internal systems.
+          type:
+              Type of credential:
 
-              **Limits:**
-
-              - Max 50 keys
-              - Key names max 40 characters
-              - String values max 500 characters
-              - Total size max 8KB
+              - `smtp` - For SMTP-based email sending
+              - `api` - For API-based email sending
 
           extra_headers: Send extra headers
 
@@ -88,36 +97,46 @@ class TenantsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._post(
-            "/tenants",
+            f"/tenants/{tenant_id}/credentials",
             body=maybe_transform(
                 {
                     "name": name,
-                    "metadata": metadata,
+                    "type": type,
                 },
-                tenant_create_params.TenantCreateParams,
+                credential_create_params.CredentialCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TenantCreateResponse,
+            cast_to=CredentialCreateResponse,
         )
 
     def retrieve(
         self,
-        tenant_id: str,
+        credential_id: int,
         *,
+        tenant_id: str,
+        reveal: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TenantRetrieveResponse:
+    ) -> CredentialRetrieveResponse:
         """
-        Get a tenant by ID.
+        Get details of a specific credential.
+
+        **Revealing the key:** By default, the credential key is not returned. Pass
+        `reveal=true` to include the key in the response. Use this sparingly and only
+        when you need to retrieve the key (e.g., for configuration).
 
         Args:
+          reveal: Set to `true` to include the credential key in the response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -129,46 +148,46 @@ class TenantsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}",
+            f"/tenants/{tenant_id}/credentials/{credential_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"reveal": reveal}, credential_retrieve_params.CredentialRetrieveParams),
             ),
-            cast_to=TenantRetrieveResponse,
+            cast_to=CredentialRetrieveResponse,
         )
 
     def update(
         self,
-        tenant_id: str,
+        credential_id: int,
         *,
-        metadata: Optional[Dict[str, Union[str, float, bool, None]]] | Omit = omit,
+        tenant_id: str,
+        hold: bool | Omit = omit,
         name: str | Omit = omit,
-        status: Literal["active", "suspended", "archived"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TenantUpdateResponse:
-        """Update a tenant's name, metadata, or status.
+    ) -> CredentialUpdateResponse:
+        """
+        Update a credential's name or hold status.
 
-        At least one field is required.
+        **Hold Status:**
 
-        Metadata is replaced entirely—include all keys you want to keep.
+        - When `hold: true`, the credential is disabled and cannot be used to send
+          emails.
+        - When `hold: false`, the credential is active and can send emails.
+        - Use this to temporarily disable a credential without deleting it.
 
         Args:
-          metadata: Custom key-value pairs. Useful for storing references to your internal systems.
+          hold: Set to `true` to disable the credential (put on hold). Set to `false` to enable
+              the credential (release from hold).
 
-              **Limits:**
-
-              - Max 50 keys
-              - Key names max 40 characters
-              - String values max 500 characters
-              - Total size max 8KB
-
-          name: Display name for the tenant
-
-          status: Tenant status
+          name: New name for the credential
 
           extra_headers: Send extra headers
 
@@ -181,44 +200,48 @@ class TenantsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._patch(
-            f"/tenants/{tenant_id}",
+            f"/tenants/{tenant_id}/credentials/{credential_id}",
             body=maybe_transform(
                 {
-                    "metadata": metadata,
+                    "hold": hold,
                     "name": name,
-                    "status": status,
                 },
-                tenant_update_params.TenantUpdateParams,
+                credential_update_params.CredentialUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TenantUpdateResponse,
+            cast_to=CredentialUpdateResponse,
         )
 
     def list(
         self,
+        tenant_id: str,
         *,
         page: int | Omit = omit,
         per_page: int | Omit = omit,
-        status: Literal["active", "suspended", "archived"] | Omit = omit,
+        type: Literal["smtp", "api"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SyncPageNumberPagination[Tenant]:
-        """List all tenants with pagination.
+    ) -> SyncPageNumberPagination[CredentialListResponse]:
+        """List all SMTP and API credentials for a tenant.
 
-        Filter by `status` if needed.
+        Credentials are used to send
+        emails through Postal on behalf of the tenant.
+
+        **Security:** Credential keys are not returned in the list response. Use the
+        retrieve endpoint with `reveal=true` to get the key.
 
         Args:
           page: Page number (1-indexed)
 
           per_page: Number of items per page (max 100)
 
-          status: Filter by tenant status
+          type: Filter by credential type
 
           extra_headers: Send extra headers
 
@@ -228,9 +251,11 @@ class TenantsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get_api_list(
-            "/tenants",
-            page=SyncPageNumberPagination[Tenant],
+            f"/tenants/{tenant_id}/credentials",
+            page=SyncPageNumberPagination[CredentialListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -240,28 +265,33 @@ class TenantsResource(SyncAPIResource):
                     {
                         "page": page,
                         "per_page": per_page,
-                        "status": status,
+                        "type": type,
                     },
-                    tenant_list_params.TenantListParams,
+                    credential_list_params.CredentialListParams,
                 ),
             ),
-            model=Tenant,
+            model=CredentialListResponse,
         )
 
     def delete(
         self,
-        tenant_id: str,
+        credential_id: int,
         *,
+        tenant_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TenantDeleteResponse:
-        """Permanently delete a tenant.
+    ) -> CredentialDeleteResponse:
+        """Permanently delete (revoke) a credential.
 
-        This cannot be undone.
+        The credential can no longer be used
+        to send emails.
+
+        **Warning:** This action is irreversible. If you want to temporarily disable a
+        credential, use the update endpoint to set `hold: true` instead.
 
         Args:
           extra_headers: Send extra headers
@@ -275,64 +305,69 @@ class TenantsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._delete(
-            f"/tenants/{tenant_id}",
+            f"/tenants/{tenant_id}/credentials/{credential_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TenantDeleteResponse,
+            cast_to=CredentialDeleteResponse,
         )
 
 
-class AsyncTenantsResource(AsyncAPIResource):
+class AsyncCredentialsResource(AsyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AsyncTenantsResourceWithRawResponse:
+    def with_raw_response(self) -> AsyncCredentialsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/ArkHQ-io/ark-python#accessing-raw-response-data-eg-headers
         """
-        return AsyncTenantsResourceWithRawResponse(self)
+        return AsyncCredentialsResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncTenantsResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AsyncCredentialsResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/ArkHQ-io/ark-python#with_streaming_response
         """
-        return AsyncTenantsResourceWithStreamingResponse(self)
+        return AsyncCredentialsResourceWithStreamingResponse(self)
 
     async def create(
         self,
+        tenant_id: str,
         *,
         name: str,
-        metadata: Optional[Dict[str, Union[str, float, bool, None]]] | Omit = omit,
+        type: Literal["smtp", "api"],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TenantCreateResponse:
-        """Create a new tenant.
+    ) -> CredentialCreateResponse:
+        """Create a new SMTP or API credential for a tenant.
 
-        Returns the created tenant with a unique `id`.
+        The credential can be used to
+        send emails through Postal on behalf of the tenant.
 
-        Store this ID in your database to
-        reference this tenant later.
+        **Important:** The credential key is only returned once at creation time. Store
+        it securely - you cannot retrieve it again.
+
+        **Credential Types:**
+
+        - `smtp` - For SMTP-based email sending. Returns both `key` and `smtpUsername`.
+        - `api` - For API-based email sending. Returns only `key`.
 
         Args:
-          name: Display name for the tenant (e.g., your customer's company name)
+          name: Name for the credential. Can only contain letters, numbers, hyphens, and
+              underscores. Max 50 characters.
 
-          metadata: Custom key-value pairs. Useful for storing references to your internal systems.
+          type:
+              Type of credential:
 
-              **Limits:**
-
-              - Max 50 keys
-              - Key names max 40 characters
-              - String values max 500 characters
-              - Total size max 8KB
+              - `smtp` - For SMTP-based email sending
+              - `api` - For API-based email sending
 
           extra_headers: Send extra headers
 
@@ -342,36 +377,46 @@ class AsyncTenantsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._post(
-            "/tenants",
+            f"/tenants/{tenant_id}/credentials",
             body=await async_maybe_transform(
                 {
                     "name": name,
-                    "metadata": metadata,
+                    "type": type,
                 },
-                tenant_create_params.TenantCreateParams,
+                credential_create_params.CredentialCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TenantCreateResponse,
+            cast_to=CredentialCreateResponse,
         )
 
     async def retrieve(
         self,
-        tenant_id: str,
+        credential_id: int,
         *,
+        tenant_id: str,
+        reveal: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TenantRetrieveResponse:
+    ) -> CredentialRetrieveResponse:
         """
-        Get a tenant by ID.
+        Get details of a specific credential.
+
+        **Revealing the key:** By default, the credential key is not returned. Pass
+        `reveal=true` to include the key in the response. Use this sparingly and only
+        when you need to retrieve the key (e.g., for configuration).
 
         Args:
+          reveal: Set to `true` to include the credential key in the response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -383,46 +428,48 @@ class AsyncTenantsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}",
+            f"/tenants/{tenant_id}/credentials/{credential_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"reveal": reveal}, credential_retrieve_params.CredentialRetrieveParams
+                ),
             ),
-            cast_to=TenantRetrieveResponse,
+            cast_to=CredentialRetrieveResponse,
         )
 
     async def update(
         self,
-        tenant_id: str,
+        credential_id: int,
         *,
-        metadata: Optional[Dict[str, Union[str, float, bool, None]]] | Omit = omit,
+        tenant_id: str,
+        hold: bool | Omit = omit,
         name: str | Omit = omit,
-        status: Literal["active", "suspended", "archived"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TenantUpdateResponse:
-        """Update a tenant's name, metadata, or status.
+    ) -> CredentialUpdateResponse:
+        """
+        Update a credential's name or hold status.
 
-        At least one field is required.
+        **Hold Status:**
 
-        Metadata is replaced entirely—include all keys you want to keep.
+        - When `hold: true`, the credential is disabled and cannot be used to send
+          emails.
+        - When `hold: false`, the credential is active and can send emails.
+        - Use this to temporarily disable a credential without deleting it.
 
         Args:
-          metadata: Custom key-value pairs. Useful for storing references to your internal systems.
+          hold: Set to `true` to disable the credential (put on hold). Set to `false` to enable
+              the credential (release from hold).
 
-              **Limits:**
-
-              - Max 50 keys
-              - Key names max 40 characters
-              - String values max 500 characters
-              - Total size max 8KB
-
-          name: Display name for the tenant
-
-          status: Tenant status
+          name: New name for the credential
 
           extra_headers: Send extra headers
 
@@ -435,44 +482,48 @@ class AsyncTenantsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._patch(
-            f"/tenants/{tenant_id}",
+            f"/tenants/{tenant_id}/credentials/{credential_id}",
             body=await async_maybe_transform(
                 {
-                    "metadata": metadata,
+                    "hold": hold,
                     "name": name,
-                    "status": status,
                 },
-                tenant_update_params.TenantUpdateParams,
+                credential_update_params.CredentialUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TenantUpdateResponse,
+            cast_to=CredentialUpdateResponse,
         )
 
     def list(
         self,
+        tenant_id: str,
         *,
         page: int | Omit = omit,
         per_page: int | Omit = omit,
-        status: Literal["active", "suspended", "archived"] | Omit = omit,
+        type: Literal["smtp", "api"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncPaginator[Tenant, AsyncPageNumberPagination[Tenant]]:
-        """List all tenants with pagination.
+    ) -> AsyncPaginator[CredentialListResponse, AsyncPageNumberPagination[CredentialListResponse]]:
+        """List all SMTP and API credentials for a tenant.
 
-        Filter by `status` if needed.
+        Credentials are used to send
+        emails through Postal on behalf of the tenant.
+
+        **Security:** Credential keys are not returned in the list response. Use the
+        retrieve endpoint with `reveal=true` to get the key.
 
         Args:
           page: Page number (1-indexed)
 
           per_page: Number of items per page (max 100)
 
-          status: Filter by tenant status
+          type: Filter by credential type
 
           extra_headers: Send extra headers
 
@@ -482,9 +533,11 @@ class AsyncTenantsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get_api_list(
-            "/tenants",
-            page=AsyncPageNumberPagination[Tenant],
+            f"/tenants/{tenant_id}/credentials",
+            page=AsyncPageNumberPagination[CredentialListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -494,28 +547,33 @@ class AsyncTenantsResource(AsyncAPIResource):
                     {
                         "page": page,
                         "per_page": per_page,
-                        "status": status,
+                        "type": type,
                     },
-                    tenant_list_params.TenantListParams,
+                    credential_list_params.CredentialListParams,
                 ),
             ),
-            model=Tenant,
+            model=CredentialListResponse,
         )
 
     async def delete(
         self,
-        tenant_id: str,
+        credential_id: int,
         *,
+        tenant_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TenantDeleteResponse:
-        """Permanently delete a tenant.
+    ) -> CredentialDeleteResponse:
+        """Permanently delete (revoke) a credential.
 
-        This cannot be undone.
+        The credential can no longer be used
+        to send emails.
+
+        **Warning:** This action is irreversible. If you want to temporarily disable a
+        credential, use the update endpoint to set `hold: true` instead.
 
         Args:
           extra_headers: Send extra headers
@@ -529,93 +587,93 @@ class AsyncTenantsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._delete(
-            f"/tenants/{tenant_id}",
+            f"/tenants/{tenant_id}/credentials/{credential_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=TenantDeleteResponse,
+            cast_to=CredentialDeleteResponse,
         )
 
 
-class TenantsResourceWithRawResponse:
-    def __init__(self, tenants: TenantsResource) -> None:
-        self._tenants = tenants
+class CredentialsResourceWithRawResponse:
+    def __init__(self, credentials: CredentialsResource) -> None:
+        self._credentials = credentials
 
         self.create = to_raw_response_wrapper(
-            tenants.create,
+            credentials.create,
         )
         self.retrieve = to_raw_response_wrapper(
-            tenants.retrieve,
+            credentials.retrieve,
         )
         self.update = to_raw_response_wrapper(
-            tenants.update,
+            credentials.update,
         )
         self.list = to_raw_response_wrapper(
-            tenants.list,
+            credentials.list,
         )
         self.delete = to_raw_response_wrapper(
-            tenants.delete,
+            credentials.delete,
         )
 
 
-class AsyncTenantsResourceWithRawResponse:
-    def __init__(self, tenants: AsyncTenantsResource) -> None:
-        self._tenants = tenants
+class AsyncCredentialsResourceWithRawResponse:
+    def __init__(self, credentials: AsyncCredentialsResource) -> None:
+        self._credentials = credentials
 
         self.create = async_to_raw_response_wrapper(
-            tenants.create,
+            credentials.create,
         )
         self.retrieve = async_to_raw_response_wrapper(
-            tenants.retrieve,
+            credentials.retrieve,
         )
         self.update = async_to_raw_response_wrapper(
-            tenants.update,
+            credentials.update,
         )
         self.list = async_to_raw_response_wrapper(
-            tenants.list,
+            credentials.list,
         )
         self.delete = async_to_raw_response_wrapper(
-            tenants.delete,
+            credentials.delete,
         )
 
 
-class TenantsResourceWithStreamingResponse:
-    def __init__(self, tenants: TenantsResource) -> None:
-        self._tenants = tenants
+class CredentialsResourceWithStreamingResponse:
+    def __init__(self, credentials: CredentialsResource) -> None:
+        self._credentials = credentials
 
         self.create = to_streamed_response_wrapper(
-            tenants.create,
+            credentials.create,
         )
         self.retrieve = to_streamed_response_wrapper(
-            tenants.retrieve,
+            credentials.retrieve,
         )
         self.update = to_streamed_response_wrapper(
-            tenants.update,
+            credentials.update,
         )
         self.list = to_streamed_response_wrapper(
-            tenants.list,
+            credentials.list,
         )
         self.delete = to_streamed_response_wrapper(
-            tenants.delete,
+            credentials.delete,
         )
 
 
-class AsyncTenantsResourceWithStreamingResponse:
-    def __init__(self, tenants: AsyncTenantsResource) -> None:
-        self._tenants = tenants
+class AsyncCredentialsResourceWithStreamingResponse:
+    def __init__(self, credentials: AsyncCredentialsResource) -> None:
+        self._credentials = credentials
 
         self.create = async_to_streamed_response_wrapper(
-            tenants.create,
+            credentials.create,
         )
         self.retrieve = async_to_streamed_response_wrapper(
-            tenants.retrieve,
+            credentials.retrieve,
         )
         self.update = async_to_streamed_response_wrapper(
-            tenants.update,
+            credentials.update,
         )
         self.list = async_to_streamed_response_wrapper(
-            tenants.list,
+            credentials.list,
         )
         self.delete = async_to_streamed_response_wrapper(
-            tenants.delete,
+            credentials.delete,
         )

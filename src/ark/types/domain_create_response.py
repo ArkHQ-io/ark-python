@@ -124,6 +124,12 @@ class Data(BaseModel):
     Domain must be verified before sending emails.
     """
 
+    tenant_id: Optional[str] = None
+    """ID of the tenant this domain belongs to"""
+
+    tenant_name: Optional[str] = None
+    """Name of the tenant this domain belongs to"""
+
     verified_at: Optional[datetime] = FieldInfo(alias="verifiedAt", default=None)
     """Timestamp when the domain ownership was verified, or null if not yet verified"""
 
