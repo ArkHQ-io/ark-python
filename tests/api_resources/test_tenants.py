@@ -37,7 +37,7 @@ class TestTenants:
             name="Acme Corp",
             metadata={
                 "plan": "pro",
-                "internal_id": "cust_12345",
+                "internalId": "cust_12345",
                 "region": "us-west",
             },
         )
@@ -118,7 +118,7 @@ class TestTenants:
             tenant_id="cm6abc123def456",
             metadata={
                 "plan": "pro",
-                "internal_id": "cust_12345",
+                "internalId": "cust_12345",
                 "region": "us-west",
             },
             name="Acme Corporation",
@@ -248,7 +248,7 @@ class TestAsyncTenants:
             name="Acme Corp",
             metadata={
                 "plan": "pro",
-                "internal_id": "cust_12345",
+                "internalId": "cust_12345",
                 "region": "us-west",
             },
         )
@@ -329,7 +329,7 @@ class TestAsyncTenants:
             tenant_id="cm6abc123def456",
             metadata={
                 "plan": "pro",
-                "internal_id": "cust_12345",
+                "internalId": "cust_12345",
                 "region": "us-west",
             },
             name="Acme Corporation",
