@@ -40,6 +40,14 @@ from .tenants import (
     TenantsResourceWithStreamingResponse,
     AsyncTenantsResourceWithStreamingResponse,
 )
+from .platform import (
+    PlatformResource,
+    AsyncPlatformResource,
+    PlatformResourceWithRawResponse,
+    AsyncPlatformResourceWithRawResponse,
+    PlatformResourceWithStreamingResponse,
+    AsyncPlatformResourceWithStreamingResponse,
+)
 
 __all__ = [
     "EmailsResource",
@@ -72,4 +80,10 @@ __all__ = [
     "AsyncTenantsResourceWithRawResponse",
     "TenantsResourceWithStreamingResponse",
     "AsyncTenantsResourceWithStreamingResponse",
+    "PlatformResource",
+    "AsyncPlatformResource",
+    "PlatformResourceWithRawResponse",
+    "AsyncPlatformResourceWithRawResponse",
+    "PlatformResourceWithStreamingResponse",
+    "AsyncPlatformResourceWithStreamingResponse",
 ]

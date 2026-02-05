@@ -235,3 +235,35 @@ Methods:
 
 - <code title="get /tenants/{tenantId}/usage">client.tenants.usage.<a href="./src/ark/resources/tenants/usage.py">retrieve</a>(tenant_id, \*\*<a href="src/ark/types/tenants/usage_retrieve_params.py">params</a>) -> <a href="./src/ark/types/tenants/usage_retrieve_response.py">UsageRetrieveResponse</a></code>
 - <code title="get /tenants/{tenantId}/usage/timeseries">client.tenants.usage.<a href="./src/ark/resources/tenants/usage.py">retrieve_timeseries</a>(tenant_id, \*\*<a href="src/ark/types/tenants/usage_retrieve_timeseries_params.py">params</a>) -> <a href="./src/ark/types/tenants/usage_retrieve_timeseries_response.py">UsageRetrieveTimeseriesResponse</a></code>
+
+# Platform
+
+## Webhooks
+
+Types:
+
+```python
+from ark.types.platform import (
+    WebhookCreateResponse,
+    WebhookRetrieveResponse,
+    WebhookUpdateResponse,
+    WebhookListResponse,
+    WebhookDeleteResponse,
+    WebhookListDeliveriesResponse,
+    WebhookReplayDeliveryResponse,
+    WebhookRetrieveDeliveryResponse,
+    WebhookTestResponse,
+)
+```
+
+Methods:
+
+- <code title="post /platform/webhooks">client.platform.webhooks.<a href="./src/ark/resources/platform/webhooks.py">create</a>(\*\*<a href="src/ark/types/platform/webhook_create_params.py">params</a>) -> <a href="./src/ark/types/platform/webhook_create_response.py">WebhookCreateResponse</a></code>
+- <code title="get /platform/webhooks/{webhookId}">client.platform.webhooks.<a href="./src/ark/resources/platform/webhooks.py">retrieve</a>(webhook_id) -> <a href="./src/ark/types/platform/webhook_retrieve_response.py">WebhookRetrieveResponse</a></code>
+- <code title="patch /platform/webhooks/{webhookId}">client.platform.webhooks.<a href="./src/ark/resources/platform/webhooks.py">update</a>(webhook_id, \*\*<a href="src/ark/types/platform/webhook_update_params.py">params</a>) -> <a href="./src/ark/types/platform/webhook_update_response.py">WebhookUpdateResponse</a></code>
+- <code title="get /platform/webhooks">client.platform.webhooks.<a href="./src/ark/resources/platform/webhooks.py">list</a>() -> <a href="./src/ark/types/platform/webhook_list_response.py">WebhookListResponse</a></code>
+- <code title="delete /platform/webhooks/{webhookId}">client.platform.webhooks.<a href="./src/ark/resources/platform/webhooks.py">delete</a>(webhook_id) -> <a href="./src/ark/types/platform/webhook_delete_response.py">WebhookDeleteResponse</a></code>
+- <code title="get /platform/webhooks/deliveries">client.platform.webhooks.<a href="./src/ark/resources/platform/webhooks.py">list_deliveries</a>(\*\*<a href="src/ark/types/platform/webhook_list_deliveries_params.py">params</a>) -> <a href="./src/ark/types/platform/webhook_list_deliveries_response.py">SyncPageNumberPagination[WebhookListDeliveriesResponse]</a></code>
+- <code title="post /platform/webhooks/deliveries/{deliveryId}/replay">client.platform.webhooks.<a href="./src/ark/resources/platform/webhooks.py">replay_delivery</a>(delivery_id) -> <a href="./src/ark/types/platform/webhook_replay_delivery_response.py">WebhookReplayDeliveryResponse</a></code>
+- <code title="get /platform/webhooks/deliveries/{deliveryId}">client.platform.webhooks.<a href="./src/ark/resources/platform/webhooks.py">retrieve_delivery</a>(delivery_id) -> <a href="./src/ark/types/platform/webhook_retrieve_delivery_response.py">WebhookRetrieveDeliveryResponse</a></code>
+- <code title="post /platform/webhooks/{webhookId}/test">client.platform.webhooks.<a href="./src/ark/resources/platform/webhooks.py">test</a>(webhook_id, \*\*<a href="src/ark/types/platform/webhook_test_params.py">params</a>) -> <a href="./src/ark/types/platform/webhook_test_response.py">WebhookTestResponse</a></code>
