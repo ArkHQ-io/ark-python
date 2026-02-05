@@ -31,12 +31,13 @@ from ._base_client import (
 )
 
 if TYPE_CHECKING:
-    from .resources import logs, usage, emails, limits, tenants
+    from .resources import logs, usage, emails, limits, tenants, platform
     from .resources.logs import LogsResource, AsyncLogsResource
     from .resources.usage import UsageResource, AsyncUsageResource
     from .resources.emails import EmailsResource, AsyncEmailsResource
     from .resources.limits import LimitsResource, AsyncLimitsResource
     from .resources.tenants.tenants import TenantsResource, AsyncTenantsResource
+    from .resources.platform.platform import PlatformResource, AsyncPlatformResource
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Ark", "AsyncArk", "Client", "AsyncClient"]
 
@@ -125,6 +126,12 @@ class Ark(SyncAPIClient):
         from .resources.tenants import TenantsResource
 
         return TenantsResource(self)
+
+    @cached_property
+    def platform(self) -> PlatformResource:
+        from .resources.platform import PlatformResource
+
+        return PlatformResource(self)
 
     @cached_property
     def with_raw_response(self) -> ArkWithRawResponse:
@@ -325,6 +332,12 @@ class AsyncArk(AsyncAPIClient):
         return AsyncTenantsResource(self)
 
     @cached_property
+    def platform(self) -> AsyncPlatformResource:
+        from .resources.platform import AsyncPlatformResource
+
+        return AsyncPlatformResource(self)
+
+    @cached_property
     def with_raw_response(self) -> AsyncArkWithRawResponse:
         return AsyncArkWithRawResponse(self)
 
@@ -473,6 +486,12 @@ class ArkWithRawResponse:
 
         return TenantsResourceWithRawResponse(self._client.tenants)
 
+    @cached_property
+    def platform(self) -> platform.PlatformResourceWithRawResponse:
+        from .resources.platform import PlatformResourceWithRawResponse
+
+        return PlatformResourceWithRawResponse(self._client.platform)
+
 
 class AsyncArkWithRawResponse:
     _client: AsyncArk
@@ -509,6 +528,12 @@ class AsyncArkWithRawResponse:
         from .resources.tenants import AsyncTenantsResourceWithRawResponse
 
         return AsyncTenantsResourceWithRawResponse(self._client.tenants)
+
+    @cached_property
+    def platform(self) -> platform.AsyncPlatformResourceWithRawResponse:
+        from .resources.platform import AsyncPlatformResourceWithRawResponse
+
+        return AsyncPlatformResourceWithRawResponse(self._client.platform)
 
 
 class ArkWithStreamedResponse:
@@ -547,6 +572,12 @@ class ArkWithStreamedResponse:
 
         return TenantsResourceWithStreamingResponse(self._client.tenants)
 
+    @cached_property
+    def platform(self) -> platform.PlatformResourceWithStreamingResponse:
+        from .resources.platform import PlatformResourceWithStreamingResponse
+
+        return PlatformResourceWithStreamingResponse(self._client.platform)
+
 
 class AsyncArkWithStreamedResponse:
     _client: AsyncArk
@@ -583,6 +614,12 @@ class AsyncArkWithStreamedResponse:
         from .resources.tenants import AsyncTenantsResourceWithStreamingResponse
 
         return AsyncTenantsResourceWithStreamingResponse(self._client.tenants)
+
+    @cached_property
+    def platform(self) -> platform.AsyncPlatformResourceWithStreamingResponse:
+        from .resources.platform import AsyncPlatformResourceWithStreamingResponse
+
+        return AsyncPlatformResourceWithStreamingResponse(self._client.platform)
 
 
 Client = Ark
