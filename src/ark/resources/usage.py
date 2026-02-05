@@ -2,17 +2,11 @@
 
 from __future__ import annotations
 
-import typing_extensions
 from typing_extensions import Literal
 
 import httpx
 
-from ..types import (
-    usage_export_params,
-    usage_list_by_tenant_params,
-    usage_retrieve_tenant_usage_params,
-    usage_retrieve_tenant_timeseries_params,
-)
+from ..types import usage_export_params, usage_retrieve_params, usage_list_tenants_params
 from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -23,13 +17,11 @@ from .._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ..pagination import SyncOffsetPagination, AsyncOffsetPagination
+from ..pagination import SyncPageNumberPagination, AsyncPageNumberPagination
 from .._base_client import AsyncPaginator, make_request_options
-from ..types.bulk_tenant_usage import Tenant
+from ..types.org_usage_summary import OrgUsageSummary
+from ..types.tenant_usage_item import TenantUsageItem
 from ..types.usage_export_response import UsageExportResponse
-from ..types.usage_retrieve_response import UsageRetrieveResponse
-from ..types.usage_retrieve_tenant_usage_response import UsageRetrieveTenantUsageResponse
-from ..types.usage_retrieve_tenant_timeseries_response import UsageRetrieveTenantTimeseriesResponse
 
 __all__ = ["UsageResource", "AsyncUsageResource"]
 
@@ -54,60 +46,84 @@ class UsageResource(SyncAPIResource):
         """
         return UsageResourceWithStreamingResponse(self)
 
-    @typing_extensions.deprecated("deprecated")
     def retrieve(
         self,
         *,
+        period: str | Omit = omit,
+        timezone: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> UsageRetrieveResponse:
-        """
-        > **Deprecated:** Use `GET /limits` instead for rate limits and send limits.
-        > This endpoint will be removed in a future version.
+    ) -> OrgUsageSummary:
+        """Returns aggregated email sending statistics for your entire organization.
 
-        Returns current usage and limit information for your account.
+        For
+        per-tenant breakdown, use `GET /usage/tenants`.
 
-        This endpoint is designed for:
+        **Use cases:**
 
-        - **AI agents/MCP servers:** Check constraints before planning batch operations
-        - **Monitoring dashboards:** Display current usage status
-        - **Rate limit awareness:** Know remaining capacity before making requests
+        - Platform dashboards showing org-wide metrics
+        - Quick health check on overall sending
+        - Monitoring total volume and delivery rates
 
         **Response includes:**
 
-        - `rateLimit` - API request rate limit (requests per second)
-        - `sendLimit` - Email sending limit (emails per hour)
-        - `billing` - Credit balance and auto-recharge configuration
+        - `emails` - Aggregated email counts across all tenants
+        - `rates` - Overall delivery and bounce rates
+        - `tenants` - Tenant count summary (total, active, with activity)
 
-        **Notes:**
+        **Related endpoints:**
 
-        - This request counts against your rate limit
-        - `sendLimit` may be null if Postal is temporarily unavailable
-        - `billing` is null if billing is not configured
-        - Send limit resets at the top of each hour
+        - `GET /usage/tenants` - Paginated usage per tenant
+        - `GET /usage/export` - Export usage data for billing
+        - `GET /tenants/{tenantId}/usage` - Single tenant usage details
+        - `GET /limits` - Rate limits and send limits
 
-        **Migration:**
+        Args:
+          period: Time period for usage data.
 
-        - For rate limits and send limits, use `GET /limits`
-        - For per-tenant usage analytics, use `GET /tenants/{tenantId}/usage`
-        - For bulk tenant usage, use `GET /usage/by-tenant`
+              **Shortcuts:** `today`, `yesterday`, `this_week`, `last_week`, `this_month`,
+              `last_month`, `last_7_days`, `last_30_days`, `last_90_days`
+
+              **Month format:** `2024-01` (YYYY-MM)
+
+              **Custom range:** `2024-01-01..2024-01-15`
+
+          timezone: Timezone for period calculations (IANA format)
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
         """
         return self._get(
             "/usage",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {
+                        "period": period,
+                        "timezone": timezone,
+                    },
+                    usage_retrieve_params.UsageRetrieveParams,
+                ),
             ),
-            cast_to=UsageRetrieveResponse,
+            cast_to=OrgUsageSummary,
         )
 
     def export(
         self,
         *,
-        format: Literal["csv", "jsonl", "json"] | Omit = omit,
+        format: Literal["csv", "jsonl"] | Omit = omit,
         min_sent: int | Omit = omit,
         period: str | Omit = omit,
         status: Literal["active", "suspended", "archived"] | Omit = omit,
@@ -119,40 +135,48 @@ class UsageResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UsageExportResponse:
-        """
-        Export usage data for all tenants in a format suitable for billing systems.
+        """Export email usage data for all tenants in CSV or JSON Lines format.
 
-        **Use cases:**
+        Designed
+        for billing system integration, data warehousing, and analytics.
 
-        - Import into billing systems (Stripe, Chargebee, etc.)
-        - Generate invoices
-        - Archive usage data
+        **Jobs to be done:**
+
+        - Import usage data into billing systems (Stripe, Chargebee, etc.)
+        - Load into data warehouses (Snowflake, BigQuery, etc.)
+        - Process in spreadsheets (Excel, Google Sheets)
+        - Feed into BI tools (Looker, Metabase, etc.)
 
         **Export formats:**
 
-        - `csv` - Comma-separated values (default)
-        - `jsonl` - JSON Lines (one JSON object per line)
-        - `json` - JSON array
+        - `csv` - UTF-8 with BOM for Excel compatibility (default)
+        - `jsonl` - JSON Lines (one JSON object per line, streamable)
+
+        **CSV columns:** `tenant_id`, `tenant_name`, `external_id`, `status`, `sent`,
+        `delivered`, `soft_failed`, `hard_failed`, `bounced`, `held`, `delivery_rate`,
+        `bounce_rate`, `period_start`, `period_end`
 
         **Response headers:**
 
-        - `X-Total-Tenants` - Total number of tenants in export
-        - `X-Total-Sent` - Total emails sent across all tenants
-        - `Content-Disposition` - Suggested filename for download
-
-        This endpoint returns up to 10,000 tenants per request. For organizations with
-        more tenants, use the `/usage/by-tenant` endpoint with pagination.
+        - `Content-Disposition` - Filename for download
+        - `Content-Type` - `text/csv` or `application/x-ndjson`
 
         Args:
           format: Export format
 
           min_sent: Only include tenants with at least this many emails sent
 
-          period: Time period for export. Defaults to current month.
+          period: Time period for export.
+
+              **Shortcuts:** `this_month`, `last_month`, `last_30_days`, etc.
+
+              **Month format:** `2024-01` (YYYY-MM)
+
+              **Custom range:** `2024-01-01..2024-01-15`
 
           status: Filter by tenant status
 
-          timezone: Timezone for period calculations (IANA format). Defaults to UTC.
+          timezone: Timezone for period calculations (IANA format)
 
           extra_headers: Send extra headers
 
@@ -183,14 +207,25 @@ class UsageResource(SyncAPIResource):
             cast_to=UsageExportResponse,
         )
 
-    def list_by_tenant(
+    def list_tenants(
         self,
         *,
-        limit: int | Omit = omit,
         min_sent: int | Omit = omit,
-        offset: int | Omit = omit,
+        page: int | Omit = omit,
         period: str | Omit = omit,
-        sort: Literal["sent", "-sent", "delivered", "-delivered", "bounce_rate", "-bounce_rate", "name", "-name"]
+        per_page: int | Omit = omit,
+        sort: Literal[
+            "sent",
+            "-sent",
+            "delivered",
+            "-delivered",
+            "bounce_rate",
+            "-bounce_rate",
+            "delivery_rate",
+            "-delivery_rate",
+            "tenant_name",
+            "-tenant_name",
+        ]
         | Omit = omit,
         status: Literal["active", "suspended", "archived"] | Omit = omit,
         timezone: str | Omit = omit,
@@ -200,38 +235,48 @@ class UsageResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SyncOffsetPagination[Tenant]:
-        """
-        Returns email usage statistics for all tenants in your organization.
+    ) -> SyncPageNumberPagination[TenantUsageItem]:
+        """Returns email usage statistics for all tenants in your organization.
 
-        **Use cases:**
+        Results are
+        paginated with page-based navigation.
 
-        - Generate monthly billing reports
+        **Jobs to be done:**
+
+        - Generate monthly billing invoices per tenant
         - Build admin dashboards showing all customer usage
         - Identify high-volume or problematic tenants
+        - Track usage against plan limits
 
         **Sorting options:**
 
         - `sent`, `-sent` - Sort by emails sent (ascending/descending)
         - `delivered`, `-delivered` - Sort by emails delivered
         - `bounce_rate`, `-bounce_rate` - Sort by bounce rate
-        - `name`, `-name` - Sort alphabetically by tenant name
+        - `tenant_name`, `-tenant_name` - Sort alphabetically by tenant name
 
         **Filtering:**
 
         - `status` - Filter by tenant status (active, suspended, archived)
-        - `min_sent` - Only include tenants with at least N emails sent
+        - `minSent` - Only include tenants with at least N emails sent
 
-        Results are paginated. Use `limit` and `offset` for pagination.
+        **Auto-pagination:** SDKs support iterating over all pages automatically.
 
         Args:
-          limit: Maximum number of tenants to return (1-100)
-
           min_sent: Only include tenants with at least this many emails sent
 
-          offset: Number of tenants to skip for pagination
+          page: Page number (1-indexed)
 
           period: Time period for usage data. Defaults to current month.
+
+              **Shortcuts:** `today`, `yesterday`, `this_week`, `last_week`, `this_month`,
+              `last_month`, `last_7_days`, `last_30_days`, `last_90_days`
+
+              **Month format:** `2024-01` (YYYY-MM)
+
+              **Custom range:** `2024-01-01..2024-01-15`
+
+          per_page: Results per page (max 100)
 
           sort: Sort order for results. Prefix with `-` for descending order.
 
@@ -248,8 +293,8 @@ class UsageResource(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return self._get_api_list(
-            "/usage/by-tenant",
-            page=SyncOffsetPagination[Tenant],
+            "/usage/tenants",
+            page=SyncPageNumberPagination[TenantUsageItem],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -257,162 +302,18 @@ class UsageResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "limit": limit,
                         "min_sent": min_sent,
-                        "offset": offset,
+                        "page": page,
                         "period": period,
+                        "per_page": per_page,
                         "sort": sort,
                         "status": status,
                         "timezone": timezone,
                     },
-                    usage_list_by_tenant_params.UsageListByTenantParams,
+                    usage_list_tenants_params.UsageListTenantsParams,
                 ),
             ),
-            model=Tenant,
-        )
-
-    def retrieve_tenant_timeseries(
-        self,
-        tenant_id: str,
-        *,
-        granularity: Literal["hour", "day", "week", "month"] | Omit = omit,
-        period: str | Omit = omit,
-        timezone: str | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> UsageRetrieveTenantTimeseriesResponse:
-        """
-        Returns time-bucketed email statistics for a specific tenant.
-
-        **Use cases:**
-
-        - Build usage charts and graphs
-        - Identify sending patterns
-        - Detect anomalies in delivery rates
-
-        **Granularity options:**
-
-        - `hour` - Hourly buckets (best for last 7 days)
-        - `day` - Daily buckets (best for last 30-90 days)
-        - `week` - Weekly buckets (best for last 6 months)
-        - `month` - Monthly buckets (best for year-over-year)
-
-        The response includes a data point for each time bucket with all email metrics.
-
-        Args:
-          granularity: Time bucket size for data points
-
-          period: Time period for timeseries data. Defaults to current month.
-
-          timezone: Timezone for period calculations (IANA format). Defaults to UTC.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not tenant_id:
-            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
-        return self._get(
-            f"/tenants/{tenant_id}/usage/timeseries",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform(
-                    {
-                        "granularity": granularity,
-                        "period": period,
-                        "timezone": timezone,
-                    },
-                    usage_retrieve_tenant_timeseries_params.UsageRetrieveTenantTimeseriesParams,
-                ),
-            ),
-            cast_to=UsageRetrieveTenantTimeseriesResponse,
-        )
-
-    def retrieve_tenant_usage(
-        self,
-        tenant_id: str,
-        *,
-        period: str | Omit = omit,
-        timezone: str | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> UsageRetrieveTenantUsageResponse:
-        """
-        Returns email sending statistics for a specific tenant over a time period.
-
-        **Use cases:**
-
-        - Display usage dashboard to your customers
-        - Calculate per-tenant billing
-        - Monitor tenant health and delivery rates
-
-        **Period formats:**
-
-        - Shortcuts: `today`, `yesterday`, `this_week`, `last_week`, `this_month`,
-          `last_month`, `last_7_days`, `last_30_days`, `last_90_days`
-        - Month: `2024-01` (full month)
-        - Date range: `2024-01-01..2024-01-31`
-        - Single day: `2024-01-15`
-
-        **Response includes:**
-
-        - `emails` - Counts for sent, delivered, soft_failed, hard_failed, bounced, held
-        - `rates` - Delivery rate and bounce rate as decimals (0.95 = 95%)
-
-        Args:
-          period: Time period for usage data. Defaults to current month.
-
-              **Formats:**
-
-              - Shortcuts: `today`, `yesterday`, `this_week`, `last_week`, `this_month`,
-                `last_month`, `last_7_days`, `last_30_days`, `last_90_days`
-              - Month: `2024-01`
-              - Range: `2024-01-01..2024-01-31`
-              - Day: `2024-01-15`
-
-          timezone: Timezone for period calculations (IANA format). Defaults to UTC.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not tenant_id:
-            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
-        return self._get(
-            f"/tenants/{tenant_id}/usage",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform(
-                    {
-                        "period": period,
-                        "timezone": timezone,
-                    },
-                    usage_retrieve_tenant_usage_params.UsageRetrieveTenantUsageParams,
-                ),
-            ),
-            cast_to=UsageRetrieveTenantUsageResponse,
+            model=TenantUsageItem,
         )
 
 
@@ -436,60 +337,84 @@ class AsyncUsageResource(AsyncAPIResource):
         """
         return AsyncUsageResourceWithStreamingResponse(self)
 
-    @typing_extensions.deprecated("deprecated")
     async def retrieve(
         self,
         *,
+        period: str | Omit = omit,
+        timezone: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> UsageRetrieveResponse:
-        """
-        > **Deprecated:** Use `GET /limits` instead for rate limits and send limits.
-        > This endpoint will be removed in a future version.
+    ) -> OrgUsageSummary:
+        """Returns aggregated email sending statistics for your entire organization.
 
-        Returns current usage and limit information for your account.
+        For
+        per-tenant breakdown, use `GET /usage/tenants`.
 
-        This endpoint is designed for:
+        **Use cases:**
 
-        - **AI agents/MCP servers:** Check constraints before planning batch operations
-        - **Monitoring dashboards:** Display current usage status
-        - **Rate limit awareness:** Know remaining capacity before making requests
+        - Platform dashboards showing org-wide metrics
+        - Quick health check on overall sending
+        - Monitoring total volume and delivery rates
 
         **Response includes:**
 
-        - `rateLimit` - API request rate limit (requests per second)
-        - `sendLimit` - Email sending limit (emails per hour)
-        - `billing` - Credit balance and auto-recharge configuration
+        - `emails` - Aggregated email counts across all tenants
+        - `rates` - Overall delivery and bounce rates
+        - `tenants` - Tenant count summary (total, active, with activity)
 
-        **Notes:**
+        **Related endpoints:**
 
-        - This request counts against your rate limit
-        - `sendLimit` may be null if Postal is temporarily unavailable
-        - `billing` is null if billing is not configured
-        - Send limit resets at the top of each hour
+        - `GET /usage/tenants` - Paginated usage per tenant
+        - `GET /usage/export` - Export usage data for billing
+        - `GET /tenants/{tenantId}/usage` - Single tenant usage details
+        - `GET /limits` - Rate limits and send limits
 
-        **Migration:**
+        Args:
+          period: Time period for usage data.
 
-        - For rate limits and send limits, use `GET /limits`
-        - For per-tenant usage analytics, use `GET /tenants/{tenantId}/usage`
-        - For bulk tenant usage, use `GET /usage/by-tenant`
+              **Shortcuts:** `today`, `yesterday`, `this_week`, `last_week`, `this_month`,
+              `last_month`, `last_7_days`, `last_30_days`, `last_90_days`
+
+              **Month format:** `2024-01` (YYYY-MM)
+
+              **Custom range:** `2024-01-01..2024-01-15`
+
+          timezone: Timezone for period calculations (IANA format)
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
         """
         return await self._get(
             "/usage",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {
+                        "period": period,
+                        "timezone": timezone,
+                    },
+                    usage_retrieve_params.UsageRetrieveParams,
+                ),
             ),
-            cast_to=UsageRetrieveResponse,
+            cast_to=OrgUsageSummary,
         )
 
     async def export(
         self,
         *,
-        format: Literal["csv", "jsonl", "json"] | Omit = omit,
+        format: Literal["csv", "jsonl"] | Omit = omit,
         min_sent: int | Omit = omit,
         period: str | Omit = omit,
         status: Literal["active", "suspended", "archived"] | Omit = omit,
@@ -501,40 +426,48 @@ class AsyncUsageResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UsageExportResponse:
-        """
-        Export usage data for all tenants in a format suitable for billing systems.
+        """Export email usage data for all tenants in CSV or JSON Lines format.
 
-        **Use cases:**
+        Designed
+        for billing system integration, data warehousing, and analytics.
 
-        - Import into billing systems (Stripe, Chargebee, etc.)
-        - Generate invoices
-        - Archive usage data
+        **Jobs to be done:**
+
+        - Import usage data into billing systems (Stripe, Chargebee, etc.)
+        - Load into data warehouses (Snowflake, BigQuery, etc.)
+        - Process in spreadsheets (Excel, Google Sheets)
+        - Feed into BI tools (Looker, Metabase, etc.)
 
         **Export formats:**
 
-        - `csv` - Comma-separated values (default)
-        - `jsonl` - JSON Lines (one JSON object per line)
-        - `json` - JSON array
+        - `csv` - UTF-8 with BOM for Excel compatibility (default)
+        - `jsonl` - JSON Lines (one JSON object per line, streamable)
+
+        **CSV columns:** `tenant_id`, `tenant_name`, `external_id`, `status`, `sent`,
+        `delivered`, `soft_failed`, `hard_failed`, `bounced`, `held`, `delivery_rate`,
+        `bounce_rate`, `period_start`, `period_end`
 
         **Response headers:**
 
-        - `X-Total-Tenants` - Total number of tenants in export
-        - `X-Total-Sent` - Total emails sent across all tenants
-        - `Content-Disposition` - Suggested filename for download
-
-        This endpoint returns up to 10,000 tenants per request. For organizations with
-        more tenants, use the `/usage/by-tenant` endpoint with pagination.
+        - `Content-Disposition` - Filename for download
+        - `Content-Type` - `text/csv` or `application/x-ndjson`
 
         Args:
           format: Export format
 
           min_sent: Only include tenants with at least this many emails sent
 
-          period: Time period for export. Defaults to current month.
+          period: Time period for export.
+
+              **Shortcuts:** `this_month`, `last_month`, `last_30_days`, etc.
+
+              **Month format:** `2024-01` (YYYY-MM)
+
+              **Custom range:** `2024-01-01..2024-01-15`
 
           status: Filter by tenant status
 
-          timezone: Timezone for period calculations (IANA format). Defaults to UTC.
+          timezone: Timezone for period calculations (IANA format)
 
           extra_headers: Send extra headers
 
@@ -565,14 +498,25 @@ class AsyncUsageResource(AsyncAPIResource):
             cast_to=UsageExportResponse,
         )
 
-    def list_by_tenant(
+    def list_tenants(
         self,
         *,
-        limit: int | Omit = omit,
         min_sent: int | Omit = omit,
-        offset: int | Omit = omit,
+        page: int | Omit = omit,
         period: str | Omit = omit,
-        sort: Literal["sent", "-sent", "delivered", "-delivered", "bounce_rate", "-bounce_rate", "name", "-name"]
+        per_page: int | Omit = omit,
+        sort: Literal[
+            "sent",
+            "-sent",
+            "delivered",
+            "-delivered",
+            "bounce_rate",
+            "-bounce_rate",
+            "delivery_rate",
+            "-delivery_rate",
+            "tenant_name",
+            "-tenant_name",
+        ]
         | Omit = omit,
         status: Literal["active", "suspended", "archived"] | Omit = omit,
         timezone: str | Omit = omit,
@@ -582,38 +526,48 @@ class AsyncUsageResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncPaginator[Tenant, AsyncOffsetPagination[Tenant]]:
-        """
-        Returns email usage statistics for all tenants in your organization.
+    ) -> AsyncPaginator[TenantUsageItem, AsyncPageNumberPagination[TenantUsageItem]]:
+        """Returns email usage statistics for all tenants in your organization.
 
-        **Use cases:**
+        Results are
+        paginated with page-based navigation.
 
-        - Generate monthly billing reports
+        **Jobs to be done:**
+
+        - Generate monthly billing invoices per tenant
         - Build admin dashboards showing all customer usage
         - Identify high-volume or problematic tenants
+        - Track usage against plan limits
 
         **Sorting options:**
 
         - `sent`, `-sent` - Sort by emails sent (ascending/descending)
         - `delivered`, `-delivered` - Sort by emails delivered
         - `bounce_rate`, `-bounce_rate` - Sort by bounce rate
-        - `name`, `-name` - Sort alphabetically by tenant name
+        - `tenant_name`, `-tenant_name` - Sort alphabetically by tenant name
 
         **Filtering:**
 
         - `status` - Filter by tenant status (active, suspended, archived)
-        - `min_sent` - Only include tenants with at least N emails sent
+        - `minSent` - Only include tenants with at least N emails sent
 
-        Results are paginated. Use `limit` and `offset` for pagination.
+        **Auto-pagination:** SDKs support iterating over all pages automatically.
 
         Args:
-          limit: Maximum number of tenants to return (1-100)
-
           min_sent: Only include tenants with at least this many emails sent
 
-          offset: Number of tenants to skip for pagination
+          page: Page number (1-indexed)
 
           period: Time period for usage data. Defaults to current month.
+
+              **Shortcuts:** `today`, `yesterday`, `this_week`, `last_week`, `this_month`,
+              `last_month`, `last_7_days`, `last_30_days`, `last_90_days`
+
+              **Month format:** `2024-01` (YYYY-MM)
+
+              **Custom range:** `2024-01-01..2024-01-15`
+
+          per_page: Results per page (max 100)
 
           sort: Sort order for results. Prefix with `-` for descending order.
 
@@ -630,8 +584,8 @@ class AsyncUsageResource(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return self._get_api_list(
-            "/usage/by-tenant",
-            page=AsyncOffsetPagination[Tenant],
+            "/usage/tenants",
+            page=AsyncPageNumberPagination[TenantUsageItem],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -639,162 +593,18 @@ class AsyncUsageResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "limit": limit,
                         "min_sent": min_sent,
-                        "offset": offset,
+                        "page": page,
                         "period": period,
+                        "per_page": per_page,
                         "sort": sort,
                         "status": status,
                         "timezone": timezone,
                     },
-                    usage_list_by_tenant_params.UsageListByTenantParams,
+                    usage_list_tenants_params.UsageListTenantsParams,
                 ),
             ),
-            model=Tenant,
-        )
-
-    async def retrieve_tenant_timeseries(
-        self,
-        tenant_id: str,
-        *,
-        granularity: Literal["hour", "day", "week", "month"] | Omit = omit,
-        period: str | Omit = omit,
-        timezone: str | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> UsageRetrieveTenantTimeseriesResponse:
-        """
-        Returns time-bucketed email statistics for a specific tenant.
-
-        **Use cases:**
-
-        - Build usage charts and graphs
-        - Identify sending patterns
-        - Detect anomalies in delivery rates
-
-        **Granularity options:**
-
-        - `hour` - Hourly buckets (best for last 7 days)
-        - `day` - Daily buckets (best for last 30-90 days)
-        - `week` - Weekly buckets (best for last 6 months)
-        - `month` - Monthly buckets (best for year-over-year)
-
-        The response includes a data point for each time bucket with all email metrics.
-
-        Args:
-          granularity: Time bucket size for data points
-
-          period: Time period for timeseries data. Defaults to current month.
-
-          timezone: Timezone for period calculations (IANA format). Defaults to UTC.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not tenant_id:
-            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
-        return await self._get(
-            f"/tenants/{tenant_id}/usage/timeseries",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=await async_maybe_transform(
-                    {
-                        "granularity": granularity,
-                        "period": period,
-                        "timezone": timezone,
-                    },
-                    usage_retrieve_tenant_timeseries_params.UsageRetrieveTenantTimeseriesParams,
-                ),
-            ),
-            cast_to=UsageRetrieveTenantTimeseriesResponse,
-        )
-
-    async def retrieve_tenant_usage(
-        self,
-        tenant_id: str,
-        *,
-        period: str | Omit = omit,
-        timezone: str | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> UsageRetrieveTenantUsageResponse:
-        """
-        Returns email sending statistics for a specific tenant over a time period.
-
-        **Use cases:**
-
-        - Display usage dashboard to your customers
-        - Calculate per-tenant billing
-        - Monitor tenant health and delivery rates
-
-        **Period formats:**
-
-        - Shortcuts: `today`, `yesterday`, `this_week`, `last_week`, `this_month`,
-          `last_month`, `last_7_days`, `last_30_days`, `last_90_days`
-        - Month: `2024-01` (full month)
-        - Date range: `2024-01-01..2024-01-31`
-        - Single day: `2024-01-15`
-
-        **Response includes:**
-
-        - `emails` - Counts for sent, delivered, soft_failed, hard_failed, bounced, held
-        - `rates` - Delivery rate and bounce rate as decimals (0.95 = 95%)
-
-        Args:
-          period: Time period for usage data. Defaults to current month.
-
-              **Formats:**
-
-              - Shortcuts: `today`, `yesterday`, `this_week`, `last_week`, `this_month`,
-                `last_month`, `last_7_days`, `last_30_days`, `last_90_days`
-              - Month: `2024-01`
-              - Range: `2024-01-01..2024-01-31`
-              - Day: `2024-01-15`
-
-          timezone: Timezone for period calculations (IANA format). Defaults to UTC.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not tenant_id:
-            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
-        return await self._get(
-            f"/tenants/{tenant_id}/usage",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=await async_maybe_transform(
-                    {
-                        "period": period,
-                        "timezone": timezone,
-                    },
-                    usage_retrieve_tenant_usage_params.UsageRetrieveTenantUsageParams,
-                ),
-            ),
-            cast_to=UsageRetrieveTenantUsageResponse,
+            model=TenantUsageItem,
         )
 
 
@@ -802,22 +612,14 @@ class UsageResourceWithRawResponse:
     def __init__(self, usage: UsageResource) -> None:
         self._usage = usage
 
-        self.retrieve = (  # pyright: ignore[reportDeprecated]
-            to_raw_response_wrapper(
-                usage.retrieve,  # pyright: ignore[reportDeprecated],
-            )
+        self.retrieve = to_raw_response_wrapper(
+            usage.retrieve,
         )
         self.export = to_raw_response_wrapper(
             usage.export,
         )
-        self.list_by_tenant = to_raw_response_wrapper(
-            usage.list_by_tenant,
-        )
-        self.retrieve_tenant_timeseries = to_raw_response_wrapper(
-            usage.retrieve_tenant_timeseries,
-        )
-        self.retrieve_tenant_usage = to_raw_response_wrapper(
-            usage.retrieve_tenant_usage,
+        self.list_tenants = to_raw_response_wrapper(
+            usage.list_tenants,
         )
 
 
@@ -825,22 +627,14 @@ class AsyncUsageResourceWithRawResponse:
     def __init__(self, usage: AsyncUsageResource) -> None:
         self._usage = usage
 
-        self.retrieve = (  # pyright: ignore[reportDeprecated]
-            async_to_raw_response_wrapper(
-                usage.retrieve,  # pyright: ignore[reportDeprecated],
-            )
+        self.retrieve = async_to_raw_response_wrapper(
+            usage.retrieve,
         )
         self.export = async_to_raw_response_wrapper(
             usage.export,
         )
-        self.list_by_tenant = async_to_raw_response_wrapper(
-            usage.list_by_tenant,
-        )
-        self.retrieve_tenant_timeseries = async_to_raw_response_wrapper(
-            usage.retrieve_tenant_timeseries,
-        )
-        self.retrieve_tenant_usage = async_to_raw_response_wrapper(
-            usage.retrieve_tenant_usage,
+        self.list_tenants = async_to_raw_response_wrapper(
+            usage.list_tenants,
         )
 
 
@@ -848,22 +642,14 @@ class UsageResourceWithStreamingResponse:
     def __init__(self, usage: UsageResource) -> None:
         self._usage = usage
 
-        self.retrieve = (  # pyright: ignore[reportDeprecated]
-            to_streamed_response_wrapper(
-                usage.retrieve,  # pyright: ignore[reportDeprecated],
-            )
+        self.retrieve = to_streamed_response_wrapper(
+            usage.retrieve,
         )
         self.export = to_streamed_response_wrapper(
             usage.export,
         )
-        self.list_by_tenant = to_streamed_response_wrapper(
-            usage.list_by_tenant,
-        )
-        self.retrieve_tenant_timeseries = to_streamed_response_wrapper(
-            usage.retrieve_tenant_timeseries,
-        )
-        self.retrieve_tenant_usage = to_streamed_response_wrapper(
-            usage.retrieve_tenant_usage,
+        self.list_tenants = to_streamed_response_wrapper(
+            usage.list_tenants,
         )
 
 
@@ -871,20 +657,12 @@ class AsyncUsageResourceWithStreamingResponse:
     def __init__(self, usage: AsyncUsageResource) -> None:
         self._usage = usage
 
-        self.retrieve = (  # pyright: ignore[reportDeprecated]
-            async_to_streamed_response_wrapper(
-                usage.retrieve,  # pyright: ignore[reportDeprecated],
-            )
+        self.retrieve = async_to_streamed_response_wrapper(
+            usage.retrieve,
         )
         self.export = async_to_streamed_response_wrapper(
             usage.export,
         )
-        self.list_by_tenant = async_to_streamed_response_wrapper(
-            usage.list_by_tenant,
-        )
-        self.retrieve_tenant_timeseries = async_to_streamed_response_wrapper(
-            usage.retrieve_tenant_timeseries,
-        )
-        self.retrieve_tenant_usage = async_to_streamed_response_wrapper(
-            usage.retrieve_tenant_usage,
+        self.list_tenants = async_to_streamed_response_wrapper(
+            usage.list_tenants,
         )

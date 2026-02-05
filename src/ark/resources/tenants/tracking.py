@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Literal
+from typing import Optional
 
 import httpx
 
@@ -16,78 +16,70 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ...pagination import SyncPageNumberPagination, AsyncPageNumberPagination
-from ..._base_client import AsyncPaginator, make_request_options
-from ...types.tenants import (
-    credential_list_params,
-    credential_create_params,
-    credential_update_params,
-    credential_retrieve_params,
-)
-from ...types.tenants.credential_list_response import CredentialListResponse
-from ...types.tenants.credential_create_response import CredentialCreateResponse
-from ...types.tenants.credential_delete_response import CredentialDeleteResponse
-from ...types.tenants.credential_update_response import CredentialUpdateResponse
-from ...types.tenants.credential_retrieve_response import CredentialRetrieveResponse
+from ..._base_client import make_request_options
+from ...types.tenants import tracking_create_params, tracking_update_params
+from ...types.tenants.tracking_list_response import TrackingListResponse
+from ...types.tenants.tracking_create_response import TrackingCreateResponse
+from ...types.tenants.tracking_delete_response import TrackingDeleteResponse
+from ...types.tenants.tracking_update_response import TrackingUpdateResponse
+from ...types.tenants.tracking_verify_response import TrackingVerifyResponse
+from ...types.tenants.tracking_retrieve_response import TrackingRetrieveResponse
 
-__all__ = ["CredentialsResource", "AsyncCredentialsResource"]
+__all__ = ["TrackingResource", "AsyncTrackingResource"]
 
 
-class CredentialsResource(SyncAPIResource):
+class TrackingResource(SyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> CredentialsResourceWithRawResponse:
+    def with_raw_response(self) -> TrackingResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/ArkHQ-io/ark-python#accessing-raw-response-data-eg-headers
         """
-        return CredentialsResourceWithRawResponse(self)
+        return TrackingResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> CredentialsResourceWithStreamingResponse:
+    def with_streaming_response(self) -> TrackingResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/ArkHQ-io/ark-python#with_streaming_response
         """
-        return CredentialsResourceWithStreamingResponse(self)
+        return TrackingResourceWithStreamingResponse(self)
 
     def create(
         self,
         tenant_id: str,
         *,
+        domain_id: int,
         name: str,
-        type: Literal["smtp", "api"],
+        ssl_enabled: Optional[bool] | Omit = omit,
+        track_clicks: Optional[bool] | Omit = omit,
+        track_opens: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> CredentialCreateResponse:
-        """Create a new SMTP or API credential for a tenant.
+    ) -> TrackingCreateResponse:
+        """
+        Create a new track domain for open/click tracking for a tenant.
 
-        The credential can be used to
-        send emails via Ark on behalf of the tenant.
-
-        **Important:** The credential key is only returned once at creation time. Store
-        it securely - you cannot retrieve it again.
-
-        **Credential Types:**
-
-        - `smtp` - For SMTP-based email sending. Returns both `key` and `smtpUsername`.
-        - `api` - For API-based email sending. Returns only `key`.
+        After creation, you must configure a CNAME record pointing to the provided DNS
+        value before tracking will work.
 
         Args:
-          name: Name for the credential. Can only contain letters, numbers, hyphens, and
-              underscores. Max 50 characters.
+          domain_id: ID of the sending domain to attach this track domain to
 
-          type:
-              Type of credential:
+          name: Subdomain name (e.g., 'track' for track.yourdomain.com)
 
-              - `smtp` - For SMTP-based email sending
-              - `api` - For API-based email sending
+          ssl_enabled: Enable SSL for tracking URLs (accepts null, defaults to true)
+
+          track_clicks: Enable click tracking (accepts null, defaults to true)
+
+          track_opens: Enable open tracking (tracking pixel, accepts null, defaults to true)
 
           extra_headers: Send extra headers
 
@@ -100,43 +92,140 @@ class CredentialsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/credentials",
+            f"/tenants/{tenant_id}/tracking",
             body=maybe_transform(
                 {
+                    "domain_id": domain_id,
                     "name": name,
-                    "type": type,
+                    "ssl_enabled": ssl_enabled,
+                    "track_clicks": track_clicks,
+                    "track_opens": track_opens,
                 },
-                credential_create_params.CredentialCreateParams,
+                tracking_create_params.TrackingCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=CredentialCreateResponse,
+            cast_to=TrackingCreateResponse,
         )
 
     def retrieve(
         self,
-        credential_id: int,
+        tracking_id: str,
         *,
         tenant_id: str,
-        reveal: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> CredentialRetrieveResponse:
+    ) -> TrackingRetrieveResponse:
         """
-        Get details of a specific credential.
-
-        **Revealing the key:** By default, the credential key is not returned. Pass
-        `reveal=true` to include the key in the response. Use this sparingly and only
-        when you need to retrieve the key (e.g., for configuration).
+        Get details of a specific track domain including DNS configuration.
 
         Args:
-          reveal: Set to `true` to include the credential key in the response
+          extra_headers: Send extra headers
 
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
+        if not tracking_id:
+            raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
+        return self._get(
+            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=TrackingRetrieveResponse,
+        )
+
+    def update(
+        self,
+        tracking_id: str,
+        *,
+        tenant_id: str,
+        excluded_click_domains: Optional[str] | Omit = omit,
+        ssl_enabled: Optional[bool] | Omit = omit,
+        track_clicks: Optional[bool] | Omit = omit,
+        track_opens: Optional[bool] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> TrackingUpdateResponse:
+        """
+        Update track domain settings.
+
+        Use this to:
+
+        - Enable/disable click tracking
+        - Enable/disable open tracking
+        - Enable/disable SSL
+        - Set excluded click domains
+
+        Args:
+          excluded_click_domains: Comma-separated list of domains to exclude from click tracking (accepts null)
+
+          ssl_enabled: Enable or disable SSL for tracking URLs (accepts null)
+
+          track_clicks: Enable or disable click tracking (accepts null)
+
+          track_opens: Enable or disable open tracking (accepts null)
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
+        if not tracking_id:
+            raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
+        return self._patch(
+            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            body=maybe_transform(
+                {
+                    "excluded_click_domains": excluded_click_domains,
+                    "ssl_enabled": ssl_enabled,
+                    "track_clicks": track_clicks,
+                    "track_opens": track_opens,
+                },
+                tracking_update_params.TrackingUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=TrackingUpdateResponse,
+        )
+
+    def list(
+        self,
+        tenant_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> TrackingListResponse:
+        """List all track domains configured for a tenant.
+
+        Track domains enable open and
+        click tracking for emails.
+
+        Args:
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -148,134 +237,16 @@ class CredentialsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/credentials/{credential_id}",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform({"reveal": reveal}, credential_retrieve_params.CredentialRetrieveParams),
-            ),
-            cast_to=CredentialRetrieveResponse,
-        )
-
-    def update(
-        self,
-        credential_id: int,
-        *,
-        tenant_id: str,
-        hold: bool | Omit = omit,
-        name: str | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> CredentialUpdateResponse:
-        """
-        Update a credential's name or hold status.
-
-        **Hold Status:**
-
-        - When `hold: true`, the credential is disabled and cannot be used to send
-          emails.
-        - When `hold: false`, the credential is active and can send emails.
-        - Use this to temporarily disable a credential without deleting it.
-
-        Args:
-          hold: Set to `true` to disable the credential (put on hold). Set to `false` to enable
-              the credential (release from hold).
-
-          name: New name for the credential
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not tenant_id:
-            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
-        return self._patch(
-            f"/tenants/{tenant_id}/credentials/{credential_id}",
-            body=maybe_transform(
-                {
-                    "hold": hold,
-                    "name": name,
-                },
-                credential_update_params.CredentialUpdateParams,
-            ),
+            f"/tenants/{tenant_id}/tracking",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=CredentialUpdateResponse,
-        )
-
-    def list(
-        self,
-        tenant_id: str,
-        *,
-        page: int | Omit = omit,
-        per_page: int | Omit = omit,
-        type: Literal["smtp", "api"] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SyncPageNumberPagination[CredentialListResponse]:
-        """List all SMTP and API credentials for a tenant.
-
-        Credentials are used to send
-        emails via Ark on behalf of the tenant.
-
-        **Security:** Credential keys are not returned in the list response. Use the
-        retrieve endpoint with `reveal=true` to get the key.
-
-        Args:
-          page: Page number (1-indexed)
-
-          per_page: Number of items per page (max 100)
-
-          type: Filter by credential type
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not tenant_id:
-            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
-        return self._get_api_list(
-            f"/tenants/{tenant_id}/credentials",
-            page=SyncPageNumberPagination[CredentialListResponse],
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform(
-                    {
-                        "page": page,
-                        "per_page": per_page,
-                        "type": type,
-                    },
-                    credential_list_params.CredentialListParams,
-                ),
-            ),
-            model=CredentialListResponse,
+            cast_to=TrackingListResponse,
         )
 
     def delete(
         self,
-        credential_id: int,
+        tracking_id: str,
         *,
         tenant_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -284,14 +255,11 @@ class CredentialsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> CredentialDeleteResponse:
-        """Permanently delete (revoke) a credential.
+    ) -> TrackingDeleteResponse:
+        """Delete a track domain.
 
-        The credential can no longer be used
-        to send emails.
-
-        **Warning:** This action is irreversible. If you want to temporarily disable a
-        credential, use the update endpoint to set `hold: true` instead.
+        This will disable tracking for any emails using this
+        domain.
 
         Args:
           extra_headers: Send extra headers
@@ -304,70 +272,108 @@ class CredentialsResource(SyncAPIResource):
         """
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
+        if not tracking_id:
+            raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return self._delete(
-            f"/tenants/{tenant_id}/credentials/{credential_id}",
+            f"/tenants/{tenant_id}/tracking/{tracking_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=CredentialDeleteResponse,
+            cast_to=TrackingDeleteResponse,
+        )
+
+    def verify(
+        self,
+        tracking_id: str,
+        *,
+        tenant_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> TrackingVerifyResponse:
+        """
+        Check DNS configuration for the track domain.
+
+        The track domain requires a CNAME record to be configured before open and click
+        tracking will work. Use this endpoint to verify the DNS is correctly set up.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
+        if not tracking_id:
+            raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
+        return self._post(
+            f"/tenants/{tenant_id}/tracking/{tracking_id}/verify",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=TrackingVerifyResponse,
         )
 
 
-class AsyncCredentialsResource(AsyncAPIResource):
+class AsyncTrackingResource(AsyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AsyncCredentialsResourceWithRawResponse:
+    def with_raw_response(self) -> AsyncTrackingResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/ArkHQ-io/ark-python#accessing-raw-response-data-eg-headers
         """
-        return AsyncCredentialsResourceWithRawResponse(self)
+        return AsyncTrackingResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncCredentialsResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AsyncTrackingResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/ArkHQ-io/ark-python#with_streaming_response
         """
-        return AsyncCredentialsResourceWithStreamingResponse(self)
+        return AsyncTrackingResourceWithStreamingResponse(self)
 
     async def create(
         self,
         tenant_id: str,
         *,
+        domain_id: int,
         name: str,
-        type: Literal["smtp", "api"],
+        ssl_enabled: Optional[bool] | Omit = omit,
+        track_clicks: Optional[bool] | Omit = omit,
+        track_opens: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> CredentialCreateResponse:
-        """Create a new SMTP or API credential for a tenant.
+    ) -> TrackingCreateResponse:
+        """
+        Create a new track domain for open/click tracking for a tenant.
 
-        The credential can be used to
-        send emails via Ark on behalf of the tenant.
-
-        **Important:** The credential key is only returned once at creation time. Store
-        it securely - you cannot retrieve it again.
-
-        **Credential Types:**
-
-        - `smtp` - For SMTP-based email sending. Returns both `key` and `smtpUsername`.
-        - `api` - For API-based email sending. Returns only `key`.
+        After creation, you must configure a CNAME record pointing to the provided DNS
+        value before tracking will work.
 
         Args:
-          name: Name for the credential. Can only contain letters, numbers, hyphens, and
-              underscores. Max 50 characters.
+          domain_id: ID of the sending domain to attach this track domain to
 
-          type:
-              Type of credential:
+          name: Subdomain name (e.g., 'track' for track.yourdomain.com)
 
-              - `smtp` - For SMTP-based email sending
-              - `api` - For API-based email sending
+          ssl_enabled: Enable SSL for tracking URLs (accepts null, defaults to true)
+
+          track_clicks: Enable click tracking (accepts null, defaults to true)
+
+          track_opens: Enable open tracking (tracking pixel, accepts null, defaults to true)
 
           extra_headers: Send extra headers
 
@@ -380,43 +386,140 @@ class AsyncCredentialsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/credentials",
+            f"/tenants/{tenant_id}/tracking",
             body=await async_maybe_transform(
                 {
+                    "domain_id": domain_id,
                     "name": name,
-                    "type": type,
+                    "ssl_enabled": ssl_enabled,
+                    "track_clicks": track_clicks,
+                    "track_opens": track_opens,
                 },
-                credential_create_params.CredentialCreateParams,
+                tracking_create_params.TrackingCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=CredentialCreateResponse,
+            cast_to=TrackingCreateResponse,
         )
 
     async def retrieve(
         self,
-        credential_id: int,
+        tracking_id: str,
         *,
         tenant_id: str,
-        reveal: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> CredentialRetrieveResponse:
+    ) -> TrackingRetrieveResponse:
         """
-        Get details of a specific credential.
-
-        **Revealing the key:** By default, the credential key is not returned. Pass
-        `reveal=true` to include the key in the response. Use this sparingly and only
-        when you need to retrieve the key (e.g., for configuration).
+        Get details of a specific track domain including DNS configuration.
 
         Args:
-          reveal: Set to `true` to include the credential key in the response
+          extra_headers: Send extra headers
 
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
+        if not tracking_id:
+            raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
+        return await self._get(
+            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=TrackingRetrieveResponse,
+        )
+
+    async def update(
+        self,
+        tracking_id: str,
+        *,
+        tenant_id: str,
+        excluded_click_domains: Optional[str] | Omit = omit,
+        ssl_enabled: Optional[bool] | Omit = omit,
+        track_clicks: Optional[bool] | Omit = omit,
+        track_opens: Optional[bool] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> TrackingUpdateResponse:
+        """
+        Update track domain settings.
+
+        Use this to:
+
+        - Enable/disable click tracking
+        - Enable/disable open tracking
+        - Enable/disable SSL
+        - Set excluded click domains
+
+        Args:
+          excluded_click_domains: Comma-separated list of domains to exclude from click tracking (accepts null)
+
+          ssl_enabled: Enable or disable SSL for tracking URLs (accepts null)
+
+          track_clicks: Enable or disable click tracking (accepts null)
+
+          track_opens: Enable or disable open tracking (accepts null)
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
+        if not tracking_id:
+            raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
+        return await self._patch(
+            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            body=await async_maybe_transform(
+                {
+                    "excluded_click_domains": excluded_click_domains,
+                    "ssl_enabled": ssl_enabled,
+                    "track_clicks": track_clicks,
+                    "track_opens": track_opens,
+                },
+                tracking_update_params.TrackingUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=TrackingUpdateResponse,
+        )
+
+    async def list(
+        self,
+        tenant_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> TrackingListResponse:
+        """List all track domains configured for a tenant.
+
+        Track domains enable open and
+        click tracking for emails.
+
+        Args:
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -428,136 +531,16 @@ class AsyncCredentialsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/credentials/{credential_id}",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=await async_maybe_transform(
-                    {"reveal": reveal}, credential_retrieve_params.CredentialRetrieveParams
-                ),
-            ),
-            cast_to=CredentialRetrieveResponse,
-        )
-
-    async def update(
-        self,
-        credential_id: int,
-        *,
-        tenant_id: str,
-        hold: bool | Omit = omit,
-        name: str | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> CredentialUpdateResponse:
-        """
-        Update a credential's name or hold status.
-
-        **Hold Status:**
-
-        - When `hold: true`, the credential is disabled and cannot be used to send
-          emails.
-        - When `hold: false`, the credential is active and can send emails.
-        - Use this to temporarily disable a credential without deleting it.
-
-        Args:
-          hold: Set to `true` to disable the credential (put on hold). Set to `false` to enable
-              the credential (release from hold).
-
-          name: New name for the credential
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not tenant_id:
-            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
-        return await self._patch(
-            f"/tenants/{tenant_id}/credentials/{credential_id}",
-            body=await async_maybe_transform(
-                {
-                    "hold": hold,
-                    "name": name,
-                },
-                credential_update_params.CredentialUpdateParams,
-            ),
+            f"/tenants/{tenant_id}/tracking",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=CredentialUpdateResponse,
-        )
-
-    def list(
-        self,
-        tenant_id: str,
-        *,
-        page: int | Omit = omit,
-        per_page: int | Omit = omit,
-        type: Literal["smtp", "api"] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncPaginator[CredentialListResponse, AsyncPageNumberPagination[CredentialListResponse]]:
-        """List all SMTP and API credentials for a tenant.
-
-        Credentials are used to send
-        emails via Ark on behalf of the tenant.
-
-        **Security:** Credential keys are not returned in the list response. Use the
-        retrieve endpoint with `reveal=true` to get the key.
-
-        Args:
-          page: Page number (1-indexed)
-
-          per_page: Number of items per page (max 100)
-
-          type: Filter by credential type
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not tenant_id:
-            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
-        return self._get_api_list(
-            f"/tenants/{tenant_id}/credentials",
-            page=AsyncPageNumberPagination[CredentialListResponse],
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform(
-                    {
-                        "page": page,
-                        "per_page": per_page,
-                        "type": type,
-                    },
-                    credential_list_params.CredentialListParams,
-                ),
-            ),
-            model=CredentialListResponse,
+            cast_to=TrackingListResponse,
         )
 
     async def delete(
         self,
-        credential_id: int,
+        tracking_id: str,
         *,
         tenant_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -566,14 +549,11 @@ class AsyncCredentialsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> CredentialDeleteResponse:
-        """Permanently delete (revoke) a credential.
+    ) -> TrackingDeleteResponse:
+        """Delete a track domain.
 
-        The credential can no longer be used
-        to send emails.
-
-        **Warning:** This action is irreversible. If you want to temporarily disable a
-        credential, use the update endpoint to set `hold: true` instead.
+        This will disable tracking for any emails using this
+        domain.
 
         Args:
           extra_headers: Send extra headers
@@ -586,94 +566,147 @@ class AsyncCredentialsResource(AsyncAPIResource):
         """
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
+        if not tracking_id:
+            raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return await self._delete(
-            f"/tenants/{tenant_id}/credentials/{credential_id}",
+            f"/tenants/{tenant_id}/tracking/{tracking_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=CredentialDeleteResponse,
+            cast_to=TrackingDeleteResponse,
+        )
+
+    async def verify(
+        self,
+        tracking_id: str,
+        *,
+        tenant_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> TrackingVerifyResponse:
+        """
+        Check DNS configuration for the track domain.
+
+        The track domain requires a CNAME record to be configured before open and click
+        tracking will work. Use this endpoint to verify the DNS is correctly set up.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not tenant_id:
+            raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
+        if not tracking_id:
+            raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
+        return await self._post(
+            f"/tenants/{tenant_id}/tracking/{tracking_id}/verify",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=TrackingVerifyResponse,
         )
 
 
-class CredentialsResourceWithRawResponse:
-    def __init__(self, credentials: CredentialsResource) -> None:
-        self._credentials = credentials
+class TrackingResourceWithRawResponse:
+    def __init__(self, tracking: TrackingResource) -> None:
+        self._tracking = tracking
 
         self.create = to_raw_response_wrapper(
-            credentials.create,
+            tracking.create,
         )
         self.retrieve = to_raw_response_wrapper(
-            credentials.retrieve,
+            tracking.retrieve,
         )
         self.update = to_raw_response_wrapper(
-            credentials.update,
+            tracking.update,
         )
         self.list = to_raw_response_wrapper(
-            credentials.list,
+            tracking.list,
         )
         self.delete = to_raw_response_wrapper(
-            credentials.delete,
+            tracking.delete,
+        )
+        self.verify = to_raw_response_wrapper(
+            tracking.verify,
         )
 
 
-class AsyncCredentialsResourceWithRawResponse:
-    def __init__(self, credentials: AsyncCredentialsResource) -> None:
-        self._credentials = credentials
+class AsyncTrackingResourceWithRawResponse:
+    def __init__(self, tracking: AsyncTrackingResource) -> None:
+        self._tracking = tracking
 
         self.create = async_to_raw_response_wrapper(
-            credentials.create,
+            tracking.create,
         )
         self.retrieve = async_to_raw_response_wrapper(
-            credentials.retrieve,
+            tracking.retrieve,
         )
         self.update = async_to_raw_response_wrapper(
-            credentials.update,
+            tracking.update,
         )
         self.list = async_to_raw_response_wrapper(
-            credentials.list,
+            tracking.list,
         )
         self.delete = async_to_raw_response_wrapper(
-            credentials.delete,
+            tracking.delete,
+        )
+        self.verify = async_to_raw_response_wrapper(
+            tracking.verify,
         )
 
 
-class CredentialsResourceWithStreamingResponse:
-    def __init__(self, credentials: CredentialsResource) -> None:
-        self._credentials = credentials
+class TrackingResourceWithStreamingResponse:
+    def __init__(self, tracking: TrackingResource) -> None:
+        self._tracking = tracking
 
         self.create = to_streamed_response_wrapper(
-            credentials.create,
+            tracking.create,
         )
         self.retrieve = to_streamed_response_wrapper(
-            credentials.retrieve,
+            tracking.retrieve,
         )
         self.update = to_streamed_response_wrapper(
-            credentials.update,
+            tracking.update,
         )
         self.list = to_streamed_response_wrapper(
-            credentials.list,
+            tracking.list,
         )
         self.delete = to_streamed_response_wrapper(
-            credentials.delete,
+            tracking.delete,
+        )
+        self.verify = to_streamed_response_wrapper(
+            tracking.verify,
         )
 
 
-class AsyncCredentialsResourceWithStreamingResponse:
-    def __init__(self, credentials: AsyncCredentialsResource) -> None:
-        self._credentials = credentials
+class AsyncTrackingResourceWithStreamingResponse:
+    def __init__(self, tracking: AsyncTrackingResource) -> None:
+        self._tracking = tracking
 
         self.create = async_to_streamed_response_wrapper(
-            credentials.create,
+            tracking.create,
         )
         self.retrieve = async_to_streamed_response_wrapper(
-            credentials.retrieve,
+            tracking.retrieve,
         )
         self.update = async_to_streamed_response_wrapper(
-            credentials.update,
+            tracking.update,
         )
         self.list = async_to_streamed_response_wrapper(
-            credentials.list,
+            tracking.list,
         )
         self.delete = async_to_streamed_response_wrapper(
-            credentials.delete,
+            tracking.delete,
+        )
+        self.verify = async_to_streamed_response_wrapper(
+            tracking.verify,
         )

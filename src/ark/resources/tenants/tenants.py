@@ -7,9 +7,41 @@ from typing_extensions import Literal
 
 import httpx
 
+from .usage import (
+    UsageResource,
+    AsyncUsageResource,
+    UsageResourceWithRawResponse,
+    AsyncUsageResourceWithRawResponse,
+    UsageResourceWithStreamingResponse,
+    AsyncUsageResourceWithStreamingResponse,
+)
 from ...types import tenant_list_params, tenant_create_params, tenant_update_params
+from .domains import (
+    DomainsResource,
+    AsyncDomainsResource,
+    DomainsResourceWithRawResponse,
+    AsyncDomainsResourceWithRawResponse,
+    DomainsResourceWithStreamingResponse,
+    AsyncDomainsResourceWithStreamingResponse,
+)
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
+from .tracking import (
+    TrackingResource,
+    AsyncTrackingResource,
+    TrackingResourceWithRawResponse,
+    AsyncTrackingResourceWithRawResponse,
+    TrackingResourceWithStreamingResponse,
+    AsyncTrackingResourceWithStreamingResponse,
+)
+from .webhooks import (
+    WebhooksResource,
+    AsyncWebhooksResource,
+    WebhooksResourceWithRawResponse,
+    AsyncWebhooksResourceWithRawResponse,
+    WebhooksResourceWithStreamingResponse,
+    AsyncWebhooksResourceWithStreamingResponse,
+)
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -27,6 +59,14 @@ from .credentials import (
     AsyncCredentialsResourceWithStreamingResponse,
 )
 from ...pagination import SyncPageNumberPagination, AsyncPageNumberPagination
+from .suppressions import (
+    SuppressionsResource,
+    AsyncSuppressionsResource,
+    SuppressionsResourceWithRawResponse,
+    AsyncSuppressionsResourceWithRawResponse,
+    SuppressionsResourceWithStreamingResponse,
+    AsyncSuppressionsResourceWithStreamingResponse,
+)
 from ..._base_client import AsyncPaginator, make_request_options
 from ...types.tenant import Tenant
 from ...types.tenant_create_response import TenantCreateResponse
@@ -41,6 +81,26 @@ class TenantsResource(SyncAPIResource):
     @cached_property
     def credentials(self) -> CredentialsResource:
         return CredentialsResource(self._client)
+
+    @cached_property
+    def domains(self) -> DomainsResource:
+        return DomainsResource(self._client)
+
+    @cached_property
+    def suppressions(self) -> SuppressionsResource:
+        return SuppressionsResource(self._client)
+
+    @cached_property
+    def webhooks(self) -> WebhooksResource:
+        return WebhooksResource(self._client)
+
+    @cached_property
+    def tracking(self) -> TrackingResource:
+        return TrackingResource(self._client)
+
+    @cached_property
+    def usage(self) -> UsageResource:
+        return UsageResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> TenantsResourceWithRawResponse:
@@ -299,6 +359,26 @@ class AsyncTenantsResource(AsyncAPIResource):
     @cached_property
     def credentials(self) -> AsyncCredentialsResource:
         return AsyncCredentialsResource(self._client)
+
+    @cached_property
+    def domains(self) -> AsyncDomainsResource:
+        return AsyncDomainsResource(self._client)
+
+    @cached_property
+    def suppressions(self) -> AsyncSuppressionsResource:
+        return AsyncSuppressionsResource(self._client)
+
+    @cached_property
+    def webhooks(self) -> AsyncWebhooksResource:
+        return AsyncWebhooksResource(self._client)
+
+    @cached_property
+    def tracking(self) -> AsyncTrackingResource:
+        return AsyncTrackingResource(self._client)
+
+    @cached_property
+    def usage(self) -> AsyncUsageResource:
+        return AsyncUsageResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> AsyncTenantsResourceWithRawResponse:
@@ -577,6 +657,26 @@ class TenantsResourceWithRawResponse:
     def credentials(self) -> CredentialsResourceWithRawResponse:
         return CredentialsResourceWithRawResponse(self._tenants.credentials)
 
+    @cached_property
+    def domains(self) -> DomainsResourceWithRawResponse:
+        return DomainsResourceWithRawResponse(self._tenants.domains)
+
+    @cached_property
+    def suppressions(self) -> SuppressionsResourceWithRawResponse:
+        return SuppressionsResourceWithRawResponse(self._tenants.suppressions)
+
+    @cached_property
+    def webhooks(self) -> WebhooksResourceWithRawResponse:
+        return WebhooksResourceWithRawResponse(self._tenants.webhooks)
+
+    @cached_property
+    def tracking(self) -> TrackingResourceWithRawResponse:
+        return TrackingResourceWithRawResponse(self._tenants.tracking)
+
+    @cached_property
+    def usage(self) -> UsageResourceWithRawResponse:
+        return UsageResourceWithRawResponse(self._tenants.usage)
+
 
 class AsyncTenantsResourceWithRawResponse:
     def __init__(self, tenants: AsyncTenantsResource) -> None:
@@ -601,6 +701,26 @@ class AsyncTenantsResourceWithRawResponse:
     @cached_property
     def credentials(self) -> AsyncCredentialsResourceWithRawResponse:
         return AsyncCredentialsResourceWithRawResponse(self._tenants.credentials)
+
+    @cached_property
+    def domains(self) -> AsyncDomainsResourceWithRawResponse:
+        return AsyncDomainsResourceWithRawResponse(self._tenants.domains)
+
+    @cached_property
+    def suppressions(self) -> AsyncSuppressionsResourceWithRawResponse:
+        return AsyncSuppressionsResourceWithRawResponse(self._tenants.suppressions)
+
+    @cached_property
+    def webhooks(self) -> AsyncWebhooksResourceWithRawResponse:
+        return AsyncWebhooksResourceWithRawResponse(self._tenants.webhooks)
+
+    @cached_property
+    def tracking(self) -> AsyncTrackingResourceWithRawResponse:
+        return AsyncTrackingResourceWithRawResponse(self._tenants.tracking)
+
+    @cached_property
+    def usage(self) -> AsyncUsageResourceWithRawResponse:
+        return AsyncUsageResourceWithRawResponse(self._tenants.usage)
 
 
 class TenantsResourceWithStreamingResponse:
@@ -627,6 +747,26 @@ class TenantsResourceWithStreamingResponse:
     def credentials(self) -> CredentialsResourceWithStreamingResponse:
         return CredentialsResourceWithStreamingResponse(self._tenants.credentials)
 
+    @cached_property
+    def domains(self) -> DomainsResourceWithStreamingResponse:
+        return DomainsResourceWithStreamingResponse(self._tenants.domains)
+
+    @cached_property
+    def suppressions(self) -> SuppressionsResourceWithStreamingResponse:
+        return SuppressionsResourceWithStreamingResponse(self._tenants.suppressions)
+
+    @cached_property
+    def webhooks(self) -> WebhooksResourceWithStreamingResponse:
+        return WebhooksResourceWithStreamingResponse(self._tenants.webhooks)
+
+    @cached_property
+    def tracking(self) -> TrackingResourceWithStreamingResponse:
+        return TrackingResourceWithStreamingResponse(self._tenants.tracking)
+
+    @cached_property
+    def usage(self) -> UsageResourceWithStreamingResponse:
+        return UsageResourceWithStreamingResponse(self._tenants.usage)
+
 
 class AsyncTenantsResourceWithStreamingResponse:
     def __init__(self, tenants: AsyncTenantsResource) -> None:
@@ -651,3 +791,23 @@ class AsyncTenantsResourceWithStreamingResponse:
     @cached_property
     def credentials(self) -> AsyncCredentialsResourceWithStreamingResponse:
         return AsyncCredentialsResourceWithStreamingResponse(self._tenants.credentials)
+
+    @cached_property
+    def domains(self) -> AsyncDomainsResourceWithStreamingResponse:
+        return AsyncDomainsResourceWithStreamingResponse(self._tenants.domains)
+
+    @cached_property
+    def suppressions(self) -> AsyncSuppressionsResourceWithStreamingResponse:
+        return AsyncSuppressionsResourceWithStreamingResponse(self._tenants.suppressions)
+
+    @cached_property
+    def webhooks(self) -> AsyncWebhooksResourceWithStreamingResponse:
+        return AsyncWebhooksResourceWithStreamingResponse(self._tenants.webhooks)
+
+    @cached_property
+    def tracking(self) -> AsyncTrackingResourceWithStreamingResponse:
+        return AsyncTrackingResourceWithStreamingResponse(self._tenants.tracking)
+
+    @cached_property
+    def usage(self) -> AsyncUsageResourceWithStreamingResponse:
+        return AsyncUsageResourceWithStreamingResponse(self._tenants.usage)
