@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.18.0 (2026-02-05)
+
+Full Changelog: [v0.17.0...v0.18.0](https://github.com/ArkHQ-io/ark-python/compare/v0.17.0...v0.18.0)
+
+### Features
+
+* **api:** add Credentials endpoint ([0ff55ca](https://github.com/ArkHQ-io/ark-python/commit/0ff55caabeb38ad0046cf489c28f8dad3caddfc2))
+* **api:** add Platform webhooks ([f0a53a7](https://github.com/ArkHQ-io/ark-python/commit/f0a53a79606bece5fd5cf9b2dad7a580b8bae94e))
+* **api:** endpoint updates ([0e54a04](https://github.com/ArkHQ-io/ark-python/commit/0e54a042195b1134b7c5cba9ee2ca4b98f35b361))
+* **api:** standardization improvements ([b52928d](https://github.com/ArkHQ-io/ark-python/commit/b52928d6147770b7c3a68001dad6d3861ff43967))
+* **api:** tenant usage ([09a4d02](https://github.com/ArkHQ-io/ark-python/commit/09a4d02d5acdb3b2a20ca62930e7c644bc5968c9))
+
 ## 0.17.0 (2026-02-03)
 
 Full Changelog: [v0.16.0...v0.17.0](https://github.com/ArkHQ-io/ark-python/compare/v0.16.0...v0.17.0)
