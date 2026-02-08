@@ -4,6 +4,8 @@ from typing import Dict, Union
 from datetime import datetime
 from typing_extensions import Literal
 
+from pydantic import Field as FieldInfo
+
 from .._models import BaseModel
 
 __all__ = ["Tenant"]
@@ -13,7 +15,7 @@ class Tenant(BaseModel):
     id: str
     """Unique identifier for the tenant"""
 
-    created_at: datetime
+    created_at: datetime = FieldInfo(alias="createdAt")
     """When the tenant was created"""
 
     metadata: Dict[str, Union[str, float, bool, None]]
@@ -30,5 +32,5 @@ class Tenant(BaseModel):
     - `archived` - Soft-deleted
     """
 
-    updated_at: datetime
+    updated_at: datetime = FieldInfo(alias="updatedAt")
     """When the tenant was last updated"""

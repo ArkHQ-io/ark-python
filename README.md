@@ -47,7 +47,7 @@ response = client.emails.send(
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
     metadata={
-        "user_id": "usr_123",
+        "user_id": "usr_123456",
         "campaign": "onboarding",
     },
     tag="welcome",
@@ -81,7 +81,7 @@ async def main() -> None:
         to=["user@example.com"],
         html="<h1>Welcome!</h1>",
         metadata={
-            "user_id": "usr_123",
+            "user_id": "usr_123456",
             "campaign": "onboarding",
         },
         tag="welcome",
@@ -125,7 +125,7 @@ async def main() -> None:
             to=["user@example.com"],
             html="<h1>Welcome!</h1>",
             metadata={
-                "user_id": "usr_123",
+                "user_id": "usr_123456",
                 "campaign": "onboarding",
             },
             tag="welcome",
@@ -242,7 +242,7 @@ try:
         to=["user@example.com"],
         html="<h1>Welcome!</h1>",
         metadata={
-            "user_id": "usr_123",
+            "user_id": "usr_123456",
             "campaign": "onboarding",
         },
         tag="welcome",
@@ -295,7 +295,7 @@ client.with_options(max_retries=5).emails.send(
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
     metadata={
-        "user_id": "usr_123",
+        "user_id": "usr_123456",
         "campaign": "onboarding",
     },
     tag="welcome",
@@ -328,7 +328,7 @@ client.with_options(timeout=5.0).emails.send(
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
     metadata={
-        "user_id": "usr_123",
+        "user_id": "usr_123456",
         "campaign": "onboarding",
     },
     tag="welcome",
@@ -379,7 +379,7 @@ response = client.emails.with_raw_response.send(
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
     metadata={
-        "user_id": "usr_123",
+        "user_id": "usr_123456",
         "campaign": "onboarding",
     },
     tag="welcome",
@@ -407,7 +407,7 @@ with client.emails.with_streaming_response.send(
     to=["user@example.com"],
     html="<h1>Welcome!</h1>",
     metadata={
-        "user_id": "usr_123",
+        "user_id": "usr_123456",
         "campaign": "onboarding",
     },
     tag="welcome",

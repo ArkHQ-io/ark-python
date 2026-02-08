@@ -31,15 +31,13 @@ from ._base_client import (
 )
 
 if TYPE_CHECKING:
-    from .resources import logs, usage, emails, domains, tenants, tracking, webhooks, suppressions
+    from .resources import logs, usage, emails, limits, tenants, platform
     from .resources.logs import LogsResource, AsyncLogsResource
     from .resources.usage import UsageResource, AsyncUsageResource
     from .resources.emails import EmailsResource, AsyncEmailsResource
-    from .resources.domains import DomainsResource, AsyncDomainsResource
-    from .resources.tenants import TenantsResource, AsyncTenantsResource
-    from .resources.tracking import TrackingResource, AsyncTrackingResource
-    from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
-    from .resources.suppressions import SuppressionsResource, AsyncSuppressionsResource
+    from .resources.limits import LimitsResource, AsyncLimitsResource
+    from .resources.tenants.tenants import TenantsResource, AsyncTenantsResource
+    from .resources.platform.platform import PlatformResource, AsyncPlatformResource
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Ark", "AsyncArk", "Client", "AsyncClient"]
 
@@ -106,30 +104,6 @@ class Ark(SyncAPIClient):
         return EmailsResource(self)
 
     @cached_property
-    def domains(self) -> DomainsResource:
-        from .resources.domains import DomainsResource
-
-        return DomainsResource(self)
-
-    @cached_property
-    def suppressions(self) -> SuppressionsResource:
-        from .resources.suppressions import SuppressionsResource
-
-        return SuppressionsResource(self)
-
-    @cached_property
-    def webhooks(self) -> WebhooksResource:
-        from .resources.webhooks import WebhooksResource
-
-        return WebhooksResource(self)
-
-    @cached_property
-    def tracking(self) -> TrackingResource:
-        from .resources.tracking import TrackingResource
-
-        return TrackingResource(self)
-
-    @cached_property
     def logs(self) -> LogsResource:
         from .resources.logs import LogsResource
 
@@ -142,10 +116,22 @@ class Ark(SyncAPIClient):
         return UsageResource(self)
 
     @cached_property
+    def limits(self) -> LimitsResource:
+        from .resources.limits import LimitsResource
+
+        return LimitsResource(self)
+
+    @cached_property
     def tenants(self) -> TenantsResource:
         from .resources.tenants import TenantsResource
 
         return TenantsResource(self)
+
+    @cached_property
+    def platform(self) -> PlatformResource:
+        from .resources.platform import PlatformResource
+
+        return PlatformResource(self)
 
     @cached_property
     def with_raw_response(self) -> ArkWithRawResponse:
@@ -322,30 +308,6 @@ class AsyncArk(AsyncAPIClient):
         return AsyncEmailsResource(self)
 
     @cached_property
-    def domains(self) -> AsyncDomainsResource:
-        from .resources.domains import AsyncDomainsResource
-
-        return AsyncDomainsResource(self)
-
-    @cached_property
-    def suppressions(self) -> AsyncSuppressionsResource:
-        from .resources.suppressions import AsyncSuppressionsResource
-
-        return AsyncSuppressionsResource(self)
-
-    @cached_property
-    def webhooks(self) -> AsyncWebhooksResource:
-        from .resources.webhooks import AsyncWebhooksResource
-
-        return AsyncWebhooksResource(self)
-
-    @cached_property
-    def tracking(self) -> AsyncTrackingResource:
-        from .resources.tracking import AsyncTrackingResource
-
-        return AsyncTrackingResource(self)
-
-    @cached_property
     def logs(self) -> AsyncLogsResource:
         from .resources.logs import AsyncLogsResource
 
@@ -358,10 +320,22 @@ class AsyncArk(AsyncAPIClient):
         return AsyncUsageResource(self)
 
     @cached_property
+    def limits(self) -> AsyncLimitsResource:
+        from .resources.limits import AsyncLimitsResource
+
+        return AsyncLimitsResource(self)
+
+    @cached_property
     def tenants(self) -> AsyncTenantsResource:
         from .resources.tenants import AsyncTenantsResource
 
         return AsyncTenantsResource(self)
+
+    @cached_property
+    def platform(self) -> AsyncPlatformResource:
+        from .resources.platform import AsyncPlatformResource
+
+        return AsyncPlatformResource(self)
 
     @cached_property
     def with_raw_response(self) -> AsyncArkWithRawResponse:
@@ -489,30 +463,6 @@ class ArkWithRawResponse:
         return EmailsResourceWithRawResponse(self._client.emails)
 
     @cached_property
-    def domains(self) -> domains.DomainsResourceWithRawResponse:
-        from .resources.domains import DomainsResourceWithRawResponse
-
-        return DomainsResourceWithRawResponse(self._client.domains)
-
-    @cached_property
-    def suppressions(self) -> suppressions.SuppressionsResourceWithRawResponse:
-        from .resources.suppressions import SuppressionsResourceWithRawResponse
-
-        return SuppressionsResourceWithRawResponse(self._client.suppressions)
-
-    @cached_property
-    def webhooks(self) -> webhooks.WebhooksResourceWithRawResponse:
-        from .resources.webhooks import WebhooksResourceWithRawResponse
-
-        return WebhooksResourceWithRawResponse(self._client.webhooks)
-
-    @cached_property
-    def tracking(self) -> tracking.TrackingResourceWithRawResponse:
-        from .resources.tracking import TrackingResourceWithRawResponse
-
-        return TrackingResourceWithRawResponse(self._client.tracking)
-
-    @cached_property
     def logs(self) -> logs.LogsResourceWithRawResponse:
         from .resources.logs import LogsResourceWithRawResponse
 
@@ -525,10 +475,22 @@ class ArkWithRawResponse:
         return UsageResourceWithRawResponse(self._client.usage)
 
     @cached_property
+    def limits(self) -> limits.LimitsResourceWithRawResponse:
+        from .resources.limits import LimitsResourceWithRawResponse
+
+        return LimitsResourceWithRawResponse(self._client.limits)
+
+    @cached_property
     def tenants(self) -> tenants.TenantsResourceWithRawResponse:
         from .resources.tenants import TenantsResourceWithRawResponse
 
         return TenantsResourceWithRawResponse(self._client.tenants)
+
+    @cached_property
+    def platform(self) -> platform.PlatformResourceWithRawResponse:
+        from .resources.platform import PlatformResourceWithRawResponse
+
+        return PlatformResourceWithRawResponse(self._client.platform)
 
 
 class AsyncArkWithRawResponse:
@@ -544,30 +506,6 @@ class AsyncArkWithRawResponse:
         return AsyncEmailsResourceWithRawResponse(self._client.emails)
 
     @cached_property
-    def domains(self) -> domains.AsyncDomainsResourceWithRawResponse:
-        from .resources.domains import AsyncDomainsResourceWithRawResponse
-
-        return AsyncDomainsResourceWithRawResponse(self._client.domains)
-
-    @cached_property
-    def suppressions(self) -> suppressions.AsyncSuppressionsResourceWithRawResponse:
-        from .resources.suppressions import AsyncSuppressionsResourceWithRawResponse
-
-        return AsyncSuppressionsResourceWithRawResponse(self._client.suppressions)
-
-    @cached_property
-    def webhooks(self) -> webhooks.AsyncWebhooksResourceWithRawResponse:
-        from .resources.webhooks import AsyncWebhooksResourceWithRawResponse
-
-        return AsyncWebhooksResourceWithRawResponse(self._client.webhooks)
-
-    @cached_property
-    def tracking(self) -> tracking.AsyncTrackingResourceWithRawResponse:
-        from .resources.tracking import AsyncTrackingResourceWithRawResponse
-
-        return AsyncTrackingResourceWithRawResponse(self._client.tracking)
-
-    @cached_property
     def logs(self) -> logs.AsyncLogsResourceWithRawResponse:
         from .resources.logs import AsyncLogsResourceWithRawResponse
 
@@ -580,10 +518,22 @@ class AsyncArkWithRawResponse:
         return AsyncUsageResourceWithRawResponse(self._client.usage)
 
     @cached_property
+    def limits(self) -> limits.AsyncLimitsResourceWithRawResponse:
+        from .resources.limits import AsyncLimitsResourceWithRawResponse
+
+        return AsyncLimitsResourceWithRawResponse(self._client.limits)
+
+    @cached_property
     def tenants(self) -> tenants.AsyncTenantsResourceWithRawResponse:
         from .resources.tenants import AsyncTenantsResourceWithRawResponse
 
         return AsyncTenantsResourceWithRawResponse(self._client.tenants)
+
+    @cached_property
+    def platform(self) -> platform.AsyncPlatformResourceWithRawResponse:
+        from .resources.platform import AsyncPlatformResourceWithRawResponse
+
+        return AsyncPlatformResourceWithRawResponse(self._client.platform)
 
 
 class ArkWithStreamedResponse:
@@ -599,30 +549,6 @@ class ArkWithStreamedResponse:
         return EmailsResourceWithStreamingResponse(self._client.emails)
 
     @cached_property
-    def domains(self) -> domains.DomainsResourceWithStreamingResponse:
-        from .resources.domains import DomainsResourceWithStreamingResponse
-
-        return DomainsResourceWithStreamingResponse(self._client.domains)
-
-    @cached_property
-    def suppressions(self) -> suppressions.SuppressionsResourceWithStreamingResponse:
-        from .resources.suppressions import SuppressionsResourceWithStreamingResponse
-
-        return SuppressionsResourceWithStreamingResponse(self._client.suppressions)
-
-    @cached_property
-    def webhooks(self) -> webhooks.WebhooksResourceWithStreamingResponse:
-        from .resources.webhooks import WebhooksResourceWithStreamingResponse
-
-        return WebhooksResourceWithStreamingResponse(self._client.webhooks)
-
-    @cached_property
-    def tracking(self) -> tracking.TrackingResourceWithStreamingResponse:
-        from .resources.tracking import TrackingResourceWithStreamingResponse
-
-        return TrackingResourceWithStreamingResponse(self._client.tracking)
-
-    @cached_property
     def logs(self) -> logs.LogsResourceWithStreamingResponse:
         from .resources.logs import LogsResourceWithStreamingResponse
 
@@ -635,10 +561,22 @@ class ArkWithStreamedResponse:
         return UsageResourceWithStreamingResponse(self._client.usage)
 
     @cached_property
+    def limits(self) -> limits.LimitsResourceWithStreamingResponse:
+        from .resources.limits import LimitsResourceWithStreamingResponse
+
+        return LimitsResourceWithStreamingResponse(self._client.limits)
+
+    @cached_property
     def tenants(self) -> tenants.TenantsResourceWithStreamingResponse:
         from .resources.tenants import TenantsResourceWithStreamingResponse
 
         return TenantsResourceWithStreamingResponse(self._client.tenants)
+
+    @cached_property
+    def platform(self) -> platform.PlatformResourceWithStreamingResponse:
+        from .resources.platform import PlatformResourceWithStreamingResponse
+
+        return PlatformResourceWithStreamingResponse(self._client.platform)
 
 
 class AsyncArkWithStreamedResponse:
@@ -654,30 +592,6 @@ class AsyncArkWithStreamedResponse:
         return AsyncEmailsResourceWithStreamingResponse(self._client.emails)
 
     @cached_property
-    def domains(self) -> domains.AsyncDomainsResourceWithStreamingResponse:
-        from .resources.domains import AsyncDomainsResourceWithStreamingResponse
-
-        return AsyncDomainsResourceWithStreamingResponse(self._client.domains)
-
-    @cached_property
-    def suppressions(self) -> suppressions.AsyncSuppressionsResourceWithStreamingResponse:
-        from .resources.suppressions import AsyncSuppressionsResourceWithStreamingResponse
-
-        return AsyncSuppressionsResourceWithStreamingResponse(self._client.suppressions)
-
-    @cached_property
-    def webhooks(self) -> webhooks.AsyncWebhooksResourceWithStreamingResponse:
-        from .resources.webhooks import AsyncWebhooksResourceWithStreamingResponse
-
-        return AsyncWebhooksResourceWithStreamingResponse(self._client.webhooks)
-
-    @cached_property
-    def tracking(self) -> tracking.AsyncTrackingResourceWithStreamingResponse:
-        from .resources.tracking import AsyncTrackingResourceWithStreamingResponse
-
-        return AsyncTrackingResourceWithStreamingResponse(self._client.tracking)
-
-    @cached_property
     def logs(self) -> logs.AsyncLogsResourceWithStreamingResponse:
         from .resources.logs import AsyncLogsResourceWithStreamingResponse
 
@@ -690,10 +604,22 @@ class AsyncArkWithStreamedResponse:
         return AsyncUsageResourceWithStreamingResponse(self._client.usage)
 
     @cached_property
+    def limits(self) -> limits.AsyncLimitsResourceWithStreamingResponse:
+        from .resources.limits import AsyncLimitsResourceWithStreamingResponse
+
+        return AsyncLimitsResourceWithStreamingResponse(self._client.limits)
+
+    @cached_property
     def tenants(self) -> tenants.AsyncTenantsResourceWithStreamingResponse:
         from .resources.tenants import AsyncTenantsResourceWithStreamingResponse
 
         return AsyncTenantsResourceWithStreamingResponse(self._client.tenants)
+
+    @cached_property
+    def platform(self) -> platform.AsyncPlatformResourceWithStreamingResponse:
+        from .resources.platform import AsyncPlatformResourceWithStreamingResponse
+
+        return AsyncPlatformResourceWithStreamingResponse(self._client.platform)
 
 
 Client = Ark
