@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.18.1 (2026-02-18)
+
+Full Changelog: [v0.18.0...v0.18.1](https://github.com/ArkHQ-io/ark-python/compare/v0.18.0...v0.18.1)
+
+### Chores
+
+* format all `api.md` files ([0bb7fa6](https://github.com/ArkHQ-io/ark-python/commit/0bb7fa631696cd81593b96fed2a10b0928fa96e5))
+* **internal:** bump dependencies ([63156f5](https://github.com/ArkHQ-io/ark-python/commit/63156f537a5cd335171716189b8c2b485186b3ea))
+* **internal:** fix lint error on Python 3.14 ([8ed190d](https://github.com/ArkHQ-io/ark-python/commit/8ed190d76e8eee53ab12dde18e07b007eed57dbc))
+
 ## 0.18.0 (2026-02-05)
 
 Full Changelog: [v0.17.0...v0.18.0](https://github.com/ArkHQ-io/ark-python/compare/v0.17.0...v0.18.0)
