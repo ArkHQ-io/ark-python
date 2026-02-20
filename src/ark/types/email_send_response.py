@@ -18,6 +18,9 @@ class Data(BaseModel):
     status: Literal["pending", "sent"]
     """Current delivery status"""
 
+    tenant_id: str = FieldInfo(alias="tenantId")
+    """The tenant ID this email was sent from"""
+
     to: List[str]
     """List of recipient addresses"""
 

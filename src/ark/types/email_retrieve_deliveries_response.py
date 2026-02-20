@@ -170,6 +170,9 @@ class Data(BaseModel):
     - `bounced` - Bounced by recipient server
     """
 
+    tenant_id: str = FieldInfo(alias="tenantId")
+    """The tenant ID this email belongs to"""
+
 
 class EmailRetrieveDeliveriesResponse(BaseModel):
     data: Data

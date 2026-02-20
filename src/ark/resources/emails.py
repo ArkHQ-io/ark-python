@@ -317,6 +317,7 @@ class EmailsResource(SyncAPIResource):
         metadata: Optional[Dict[str, str]] | Omit = omit,
         reply_to: Optional[str] | Omit = omit,
         tag: Optional[str] | Omit = omit,
+        tenant_id: Optional[str] | Omit = omit,
         text: Optional[str] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -396,6 +397,14 @@ class EmailsResource(SyncAPIResource):
 
           tag: Tag for categorization and filtering (accepts null)
 
+          tenant_id: The tenant ID to send this email from. Determines which tenant's configuration
+              (domains, webhooks, tracking) is used.
+
+              - If your API key is scoped to a specific tenant, this must match that tenant or
+                be omitted.
+              - If your API key is org-level, specify the tenant to send from.
+              - If omitted, the organization's default tenant is used.
+
           text: Plain text body (accepts null, auto-generated from HTML if not provided).
               Maximum 5MB (5,242,880 characters).
 
@@ -423,6 +432,7 @@ class EmailsResource(SyncAPIResource):
                     "metadata": metadata,
                     "reply_to": reply_to,
                     "tag": tag,
+                    "tenant_id": tenant_id,
                     "text": text,
                 },
                 email_send_params.EmailSendParams,
@@ -438,6 +448,7 @@ class EmailsResource(SyncAPIResource):
         *,
         emails: Iterable[email_send_batch_params.Email],
         from_: str,
+        tenant_id: Optional[str] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -459,6 +470,14 @@ class EmailsResource(SyncAPIResource):
         Args:
           from_: Sender email for all messages
 
+          tenant_id: The tenant ID to send this batch from. Determines which tenant's configuration
+              (domains, webhooks, tracking) is used.
+
+              - If your API key is scoped to a specific tenant, this must match that tenant or
+                be omitted.
+              - If your API key is org-level, specify the tenant to send from.
+              - If omitted, the organization's default tenant is used.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -474,6 +493,7 @@ class EmailsResource(SyncAPIResource):
                 {
                     "emails": emails,
                     "from_": from_,
+                    "tenant_id": tenant_id,
                 },
                 email_send_batch_params.EmailSendBatchParams,
             ),
@@ -490,6 +510,7 @@ class EmailsResource(SyncAPIResource):
         raw_message: str,
         to: SequenceNotStr[str],
         bounce: Optional[bool] | Omit = omit,
+        tenant_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -527,6 +548,14 @@ class EmailsResource(SyncAPIResource):
 
           bounce: Whether this is a bounce message (accepts null)
 
+          tenant_id: The tenant ID to send this email from. Determines which tenant's configuration
+              (domains, webhooks, tracking) is used.
+
+              - If your API key is scoped to a specific tenant, this must match that tenant or
+                be omitted.
+              - If your API key is org-level, specify the tenant to send from.
+              - If omitted, the organization's default tenant is used.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -543,6 +572,7 @@ class EmailsResource(SyncAPIResource):
                     "raw_message": raw_message,
                     "to": to,
                     "bounce": bounce,
+                    "tenant_id": tenant_id,
                 },
                 email_send_raw_params.EmailSendRawParams,
             ),
@@ -833,6 +863,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         metadata: Optional[Dict[str, str]] | Omit = omit,
         reply_to: Optional[str] | Omit = omit,
         tag: Optional[str] | Omit = omit,
+        tenant_id: Optional[str] | Omit = omit,
         text: Optional[str] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -912,6 +943,14 @@ class AsyncEmailsResource(AsyncAPIResource):
 
           tag: Tag for categorization and filtering (accepts null)
 
+          tenant_id: The tenant ID to send this email from. Determines which tenant's configuration
+              (domains, webhooks, tracking) is used.
+
+              - If your API key is scoped to a specific tenant, this must match that tenant or
+                be omitted.
+              - If your API key is org-level, specify the tenant to send from.
+              - If omitted, the organization's default tenant is used.
+
           text: Plain text body (accepts null, auto-generated from HTML if not provided).
               Maximum 5MB (5,242,880 characters).
 
@@ -939,6 +978,7 @@ class AsyncEmailsResource(AsyncAPIResource):
                     "metadata": metadata,
                     "reply_to": reply_to,
                     "tag": tag,
+                    "tenant_id": tenant_id,
                     "text": text,
                 },
                 email_send_params.EmailSendParams,
@@ -954,6 +994,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         *,
         emails: Iterable[email_send_batch_params.Email],
         from_: str,
+        tenant_id: Optional[str] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -975,6 +1016,14 @@ class AsyncEmailsResource(AsyncAPIResource):
         Args:
           from_: Sender email for all messages
 
+          tenant_id: The tenant ID to send this batch from. Determines which tenant's configuration
+              (domains, webhooks, tracking) is used.
+
+              - If your API key is scoped to a specific tenant, this must match that tenant or
+                be omitted.
+              - If your API key is org-level, specify the tenant to send from.
+              - If omitted, the organization's default tenant is used.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -990,6 +1039,7 @@ class AsyncEmailsResource(AsyncAPIResource):
                 {
                     "emails": emails,
                     "from_": from_,
+                    "tenant_id": tenant_id,
                 },
                 email_send_batch_params.EmailSendBatchParams,
             ),
@@ -1006,6 +1056,7 @@ class AsyncEmailsResource(AsyncAPIResource):
         raw_message: str,
         to: SequenceNotStr[str],
         bounce: Optional[bool] | Omit = omit,
+        tenant_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1043,6 +1094,14 @@ class AsyncEmailsResource(AsyncAPIResource):
 
           bounce: Whether this is a bounce message (accepts null)
 
+          tenant_id: The tenant ID to send this email from. Determines which tenant's configuration
+              (domains, webhooks, tracking) is used.
+
+              - If your API key is scoped to a specific tenant, this must match that tenant or
+                be omitted.
+              - If your API key is org-level, specify the tenant to send from.
+              - If omitted, the organization's default tenant is used.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -1059,6 +1118,7 @@ class AsyncEmailsResource(AsyncAPIResource):
                     "raw_message": raw_message,
                     "to": to,
                     "bounce": bounce,
+                    "tenant_id": tenant_id,
                 },
                 email_send_raw_params.EmailSendRawParams,
             ),
