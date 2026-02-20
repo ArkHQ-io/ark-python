@@ -2,6 +2,8 @@
 
 from typing_extensions import Literal
 
+from pydantic import Field as FieldInfo
+
 from .._models import BaseModel
 from .shared.api_meta import APIMeta
 
@@ -13,6 +15,9 @@ class Data(BaseModel):
     """Email identifier (token)"""
 
     message: str
+
+    tenant_id: str = FieldInfo(alias="tenantId")
+    """The tenant ID this email belongs to"""
 
 
 class EmailRetryResponse(BaseModel):

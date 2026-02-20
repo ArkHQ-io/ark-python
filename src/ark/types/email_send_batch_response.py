@@ -3,6 +3,8 @@
 from typing import Dict, Optional
 from typing_extensions import Literal
 
+from pydantic import Field as FieldInfo
+
 from .._models import BaseModel
 from .shared.api_meta import APIMeta
 
@@ -23,6 +25,9 @@ class Data(BaseModel):
 
     messages: Dict[str, DataMessages]
     """Map of recipient email to message info"""
+
+    tenant_id: str = FieldInfo(alias="tenantId")
+    """The tenant ID this batch was sent from"""
 
     total: int
     """Total emails in the batch"""

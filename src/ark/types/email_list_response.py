@@ -30,6 +30,9 @@ class EmailListResponse(BaseModel):
 
     subject: str
 
+    tenant_id: str = FieldInfo(alias="tenantId")
+    """The tenant ID this email belongs to"""
+
     timestamp: float
 
     timestamp_iso: datetime = FieldInfo(alias="timestampIso")
