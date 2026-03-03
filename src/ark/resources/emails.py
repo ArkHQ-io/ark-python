@@ -38,6 +38,16 @@ __all__ = ["EmailsResource", "AsyncEmailsResource"]
 
 
 class EmailsResource(SyncAPIResource):
+    """Send and manage email messages.
+
+    **Quick Reference:**
+    - `POST /emails` - Send a single email
+    - `POST /emails/batch` - Send up to 100 emails
+    - `GET /emails/{emailId}` - Get email status and details
+    - `GET /emails` - List sent emails
+    - `POST /emails/{emailId}/retry` - Retry failed delivery
+    """
+
     @cached_property
     def with_raw_response(self) -> EmailsResourceWithRawResponse:
         """
@@ -584,6 +594,16 @@ class EmailsResource(SyncAPIResource):
 
 
 class AsyncEmailsResource(AsyncAPIResource):
+    """Send and manage email messages.
+
+    **Quick Reference:**
+    - `POST /emails` - Send a single email
+    - `POST /emails/batch` - Send up to 100 emails
+    - `GET /emails/{emailId}` - Get email status and details
+    - `GET /emails` - List sent emails
+    - `POST /emails/{emailId}/retry` - Retry failed delivery
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncEmailsResourceWithRawResponse:
         """

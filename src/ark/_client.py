@@ -99,30 +99,103 @@ class Ark(SyncAPIClient):
 
     @cached_property
     def emails(self) -> EmailsResource:
+        """Send and manage email messages.
+
+        **Quick Reference:**
+        - `POST /emails` - Send a single email
+        - `POST /emails/batch` - Send up to 100 emails
+        - `GET /emails/{emailId}` - Get email status and details
+        - `GET /emails` - List sent emails
+        - `POST /emails/{emailId}/retry` - Retry failed delivery
+        """
         from .resources.emails import EmailsResource
 
         return EmailsResource(self)
 
     @cached_property
     def logs(self) -> LogsResource:
+        """Access API request logs for debugging and monitoring.
+
+        Every API request is logged with details including:
+        - Request method, path, and endpoint
+        - Response status code and duration
+        - Error details (code, message) for failed requests
+        - SDK information (name, version)
+        - Rate limit state at time of request
+        - Request and response bodies (for single log retrieval)
+
+        **Retention:** Logs are retained for 90 days.
+
+        **Body storage:** Request and response bodies are stored encrypted
+        and truncated at 25KB. Bodies are only returned when retrieving
+        a single log entry.
+
+        **Quick Reference:**
+        - `GET /logs` - List API request logs with filters
+        - `GET /logs/{requestId}` - Get full details including request/response bodies
+        """
         from .resources.logs import LogsResource
 
         return LogsResource(self)
 
     @cached_property
     def usage(self) -> UsageResource:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         from .resources.usage import UsageResource
 
         return UsageResource(self)
 
     @cached_property
     def limits(self) -> LimitsResource:
+        """Check account rate limits and send limits.
+
+        The limits endpoint returns current status for operational limits:
+        - **Rate limit:** API requests per second (currently 10/sec)
+        - **Send limit:** Emails per hour (default 100/hour for new accounts)
+        - **Billing:** Credit balance and auto-recharge configuration
+
+        **AI Integration Note:** This endpoint is designed for AI agents and MCP servers
+        to understand account constraints before taking actions. Call this endpoint
+        first when planning batch operations to avoid hitting limits unexpectedly.
+
+        **Quick Reference:**
+        - `GET /limits` - Get current rate limits and send limits
+        - `GET /usage` - (Deprecated) Use `/limits` instead
+        """
         from .resources.limits import LimitsResource
 
         return LimitsResource(self)
 
     @cached_property
     def tenants(self) -> TenantsResource:
+        """Manage tenants (your customers).
+
+        Create a tenant for each of your customers to track their email sending separately.
+        Store the tenant `id` in your database and use `metadata` for any custom data.
+
+        **Quick Reference:**
+        - `POST /tenants` - Create a new tenant
+        - `GET /tenants` - List all tenants (paginated)
+        - `GET /tenants/{id}` - Get tenant details
+        - `PATCH /tenants/{id}` - Update tenant name, metadata, or status
+        - `DELETE /tenants/{id}` - Delete a tenant
+        """
         from .resources.tenants import TenantsResource
 
         return TenantsResource(self)
@@ -303,30 +376,103 @@ class AsyncArk(AsyncAPIClient):
 
     @cached_property
     def emails(self) -> AsyncEmailsResource:
+        """Send and manage email messages.
+
+        **Quick Reference:**
+        - `POST /emails` - Send a single email
+        - `POST /emails/batch` - Send up to 100 emails
+        - `GET /emails/{emailId}` - Get email status and details
+        - `GET /emails` - List sent emails
+        - `POST /emails/{emailId}/retry` - Retry failed delivery
+        """
         from .resources.emails import AsyncEmailsResource
 
         return AsyncEmailsResource(self)
 
     @cached_property
     def logs(self) -> AsyncLogsResource:
+        """Access API request logs for debugging and monitoring.
+
+        Every API request is logged with details including:
+        - Request method, path, and endpoint
+        - Response status code and duration
+        - Error details (code, message) for failed requests
+        - SDK information (name, version)
+        - Rate limit state at time of request
+        - Request and response bodies (for single log retrieval)
+
+        **Retention:** Logs are retained for 90 days.
+
+        **Body storage:** Request and response bodies are stored encrypted
+        and truncated at 25KB. Bodies are only returned when retrieving
+        a single log entry.
+
+        **Quick Reference:**
+        - `GET /logs` - List API request logs with filters
+        - `GET /logs/{requestId}` - Get full details including request/response bodies
+        """
         from .resources.logs import AsyncLogsResource
 
         return AsyncLogsResource(self)
 
     @cached_property
     def usage(self) -> AsyncUsageResource:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         from .resources.usage import AsyncUsageResource
 
         return AsyncUsageResource(self)
 
     @cached_property
     def limits(self) -> AsyncLimitsResource:
+        """Check account rate limits and send limits.
+
+        The limits endpoint returns current status for operational limits:
+        - **Rate limit:** API requests per second (currently 10/sec)
+        - **Send limit:** Emails per hour (default 100/hour for new accounts)
+        - **Billing:** Credit balance and auto-recharge configuration
+
+        **AI Integration Note:** This endpoint is designed for AI agents and MCP servers
+        to understand account constraints before taking actions. Call this endpoint
+        first when planning batch operations to avoid hitting limits unexpectedly.
+
+        **Quick Reference:**
+        - `GET /limits` - Get current rate limits and send limits
+        - `GET /usage` - (Deprecated) Use `/limits` instead
+        """
         from .resources.limits import AsyncLimitsResource
 
         return AsyncLimitsResource(self)
 
     @cached_property
     def tenants(self) -> AsyncTenantsResource:
+        """Manage tenants (your customers).
+
+        Create a tenant for each of your customers to track their email sending separately.
+        Store the tenant `id` in your database and use `metadata` for any custom data.
+
+        **Quick Reference:**
+        - `POST /tenants` - Create a new tenant
+        - `GET /tenants` - List all tenants (paginated)
+        - `GET /tenants/{id}` - Get tenant details
+        - `PATCH /tenants/{id}` - Update tenant name, metadata, or status
+        - `DELETE /tenants/{id}` - Delete a tenant
+        """
         from .resources.tenants import AsyncTenantsResource
 
         return AsyncTenantsResource(self)
@@ -458,30 +604,103 @@ class ArkWithRawResponse:
 
     @cached_property
     def emails(self) -> emails.EmailsResourceWithRawResponse:
+        """Send and manage email messages.
+
+        **Quick Reference:**
+        - `POST /emails` - Send a single email
+        - `POST /emails/batch` - Send up to 100 emails
+        - `GET /emails/{emailId}` - Get email status and details
+        - `GET /emails` - List sent emails
+        - `POST /emails/{emailId}/retry` - Retry failed delivery
+        """
         from .resources.emails import EmailsResourceWithRawResponse
 
         return EmailsResourceWithRawResponse(self._client.emails)
 
     @cached_property
     def logs(self) -> logs.LogsResourceWithRawResponse:
+        """Access API request logs for debugging and monitoring.
+
+        Every API request is logged with details including:
+        - Request method, path, and endpoint
+        - Response status code and duration
+        - Error details (code, message) for failed requests
+        - SDK information (name, version)
+        - Rate limit state at time of request
+        - Request and response bodies (for single log retrieval)
+
+        **Retention:** Logs are retained for 90 days.
+
+        **Body storage:** Request and response bodies are stored encrypted
+        and truncated at 25KB. Bodies are only returned when retrieving
+        a single log entry.
+
+        **Quick Reference:**
+        - `GET /logs` - List API request logs with filters
+        - `GET /logs/{requestId}` - Get full details including request/response bodies
+        """
         from .resources.logs import LogsResourceWithRawResponse
 
         return LogsResourceWithRawResponse(self._client.logs)
 
     @cached_property
     def usage(self) -> usage.UsageResourceWithRawResponse:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         from .resources.usage import UsageResourceWithRawResponse
 
         return UsageResourceWithRawResponse(self._client.usage)
 
     @cached_property
     def limits(self) -> limits.LimitsResourceWithRawResponse:
+        """Check account rate limits and send limits.
+
+        The limits endpoint returns current status for operational limits:
+        - **Rate limit:** API requests per second (currently 10/sec)
+        - **Send limit:** Emails per hour (default 100/hour for new accounts)
+        - **Billing:** Credit balance and auto-recharge configuration
+
+        **AI Integration Note:** This endpoint is designed for AI agents and MCP servers
+        to understand account constraints before taking actions. Call this endpoint
+        first when planning batch operations to avoid hitting limits unexpectedly.
+
+        **Quick Reference:**
+        - `GET /limits` - Get current rate limits and send limits
+        - `GET /usage` - (Deprecated) Use `/limits` instead
+        """
         from .resources.limits import LimitsResourceWithRawResponse
 
         return LimitsResourceWithRawResponse(self._client.limits)
 
     @cached_property
     def tenants(self) -> tenants.TenantsResourceWithRawResponse:
+        """Manage tenants (your customers).
+
+        Create a tenant for each of your customers to track their email sending separately.
+        Store the tenant `id` in your database and use `metadata` for any custom data.
+
+        **Quick Reference:**
+        - `POST /tenants` - Create a new tenant
+        - `GET /tenants` - List all tenants (paginated)
+        - `GET /tenants/{id}` - Get tenant details
+        - `PATCH /tenants/{id}` - Update tenant name, metadata, or status
+        - `DELETE /tenants/{id}` - Delete a tenant
+        """
         from .resources.tenants import TenantsResourceWithRawResponse
 
         return TenantsResourceWithRawResponse(self._client.tenants)
@@ -501,30 +720,103 @@ class AsyncArkWithRawResponse:
 
     @cached_property
     def emails(self) -> emails.AsyncEmailsResourceWithRawResponse:
+        """Send and manage email messages.
+
+        **Quick Reference:**
+        - `POST /emails` - Send a single email
+        - `POST /emails/batch` - Send up to 100 emails
+        - `GET /emails/{emailId}` - Get email status and details
+        - `GET /emails` - List sent emails
+        - `POST /emails/{emailId}/retry` - Retry failed delivery
+        """
         from .resources.emails import AsyncEmailsResourceWithRawResponse
 
         return AsyncEmailsResourceWithRawResponse(self._client.emails)
 
     @cached_property
     def logs(self) -> logs.AsyncLogsResourceWithRawResponse:
+        """Access API request logs for debugging and monitoring.
+
+        Every API request is logged with details including:
+        - Request method, path, and endpoint
+        - Response status code and duration
+        - Error details (code, message) for failed requests
+        - SDK information (name, version)
+        - Rate limit state at time of request
+        - Request and response bodies (for single log retrieval)
+
+        **Retention:** Logs are retained for 90 days.
+
+        **Body storage:** Request and response bodies are stored encrypted
+        and truncated at 25KB. Bodies are only returned when retrieving
+        a single log entry.
+
+        **Quick Reference:**
+        - `GET /logs` - List API request logs with filters
+        - `GET /logs/{requestId}` - Get full details including request/response bodies
+        """
         from .resources.logs import AsyncLogsResourceWithRawResponse
 
         return AsyncLogsResourceWithRawResponse(self._client.logs)
 
     @cached_property
     def usage(self) -> usage.AsyncUsageResourceWithRawResponse:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         from .resources.usage import AsyncUsageResourceWithRawResponse
 
         return AsyncUsageResourceWithRawResponse(self._client.usage)
 
     @cached_property
     def limits(self) -> limits.AsyncLimitsResourceWithRawResponse:
+        """Check account rate limits and send limits.
+
+        The limits endpoint returns current status for operational limits:
+        - **Rate limit:** API requests per second (currently 10/sec)
+        - **Send limit:** Emails per hour (default 100/hour for new accounts)
+        - **Billing:** Credit balance and auto-recharge configuration
+
+        **AI Integration Note:** This endpoint is designed for AI agents and MCP servers
+        to understand account constraints before taking actions. Call this endpoint
+        first when planning batch operations to avoid hitting limits unexpectedly.
+
+        **Quick Reference:**
+        - `GET /limits` - Get current rate limits and send limits
+        - `GET /usage` - (Deprecated) Use `/limits` instead
+        """
         from .resources.limits import AsyncLimitsResourceWithRawResponse
 
         return AsyncLimitsResourceWithRawResponse(self._client.limits)
 
     @cached_property
     def tenants(self) -> tenants.AsyncTenantsResourceWithRawResponse:
+        """Manage tenants (your customers).
+
+        Create a tenant for each of your customers to track their email sending separately.
+        Store the tenant `id` in your database and use `metadata` for any custom data.
+
+        **Quick Reference:**
+        - `POST /tenants` - Create a new tenant
+        - `GET /tenants` - List all tenants (paginated)
+        - `GET /tenants/{id}` - Get tenant details
+        - `PATCH /tenants/{id}` - Update tenant name, metadata, or status
+        - `DELETE /tenants/{id}` - Delete a tenant
+        """
         from .resources.tenants import AsyncTenantsResourceWithRawResponse
 
         return AsyncTenantsResourceWithRawResponse(self._client.tenants)
@@ -544,30 +836,103 @@ class ArkWithStreamedResponse:
 
     @cached_property
     def emails(self) -> emails.EmailsResourceWithStreamingResponse:
+        """Send and manage email messages.
+
+        **Quick Reference:**
+        - `POST /emails` - Send a single email
+        - `POST /emails/batch` - Send up to 100 emails
+        - `GET /emails/{emailId}` - Get email status and details
+        - `GET /emails` - List sent emails
+        - `POST /emails/{emailId}/retry` - Retry failed delivery
+        """
         from .resources.emails import EmailsResourceWithStreamingResponse
 
         return EmailsResourceWithStreamingResponse(self._client.emails)
 
     @cached_property
     def logs(self) -> logs.LogsResourceWithStreamingResponse:
+        """Access API request logs for debugging and monitoring.
+
+        Every API request is logged with details including:
+        - Request method, path, and endpoint
+        - Response status code and duration
+        - Error details (code, message) for failed requests
+        - SDK information (name, version)
+        - Rate limit state at time of request
+        - Request and response bodies (for single log retrieval)
+
+        **Retention:** Logs are retained for 90 days.
+
+        **Body storage:** Request and response bodies are stored encrypted
+        and truncated at 25KB. Bodies are only returned when retrieving
+        a single log entry.
+
+        **Quick Reference:**
+        - `GET /logs` - List API request logs with filters
+        - `GET /logs/{requestId}` - Get full details including request/response bodies
+        """
         from .resources.logs import LogsResourceWithStreamingResponse
 
         return LogsResourceWithStreamingResponse(self._client.logs)
 
     @cached_property
     def usage(self) -> usage.UsageResourceWithStreamingResponse:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         from .resources.usage import UsageResourceWithStreamingResponse
 
         return UsageResourceWithStreamingResponse(self._client.usage)
 
     @cached_property
     def limits(self) -> limits.LimitsResourceWithStreamingResponse:
+        """Check account rate limits and send limits.
+
+        The limits endpoint returns current status for operational limits:
+        - **Rate limit:** API requests per second (currently 10/sec)
+        - **Send limit:** Emails per hour (default 100/hour for new accounts)
+        - **Billing:** Credit balance and auto-recharge configuration
+
+        **AI Integration Note:** This endpoint is designed for AI agents and MCP servers
+        to understand account constraints before taking actions. Call this endpoint
+        first when planning batch operations to avoid hitting limits unexpectedly.
+
+        **Quick Reference:**
+        - `GET /limits` - Get current rate limits and send limits
+        - `GET /usage` - (Deprecated) Use `/limits` instead
+        """
         from .resources.limits import LimitsResourceWithStreamingResponse
 
         return LimitsResourceWithStreamingResponse(self._client.limits)
 
     @cached_property
     def tenants(self) -> tenants.TenantsResourceWithStreamingResponse:
+        """Manage tenants (your customers).
+
+        Create a tenant for each of your customers to track their email sending separately.
+        Store the tenant `id` in your database and use `metadata` for any custom data.
+
+        **Quick Reference:**
+        - `POST /tenants` - Create a new tenant
+        - `GET /tenants` - List all tenants (paginated)
+        - `GET /tenants/{id}` - Get tenant details
+        - `PATCH /tenants/{id}` - Update tenant name, metadata, or status
+        - `DELETE /tenants/{id}` - Delete a tenant
+        """
         from .resources.tenants import TenantsResourceWithStreamingResponse
 
         return TenantsResourceWithStreamingResponse(self._client.tenants)
@@ -587,30 +952,103 @@ class AsyncArkWithStreamedResponse:
 
     @cached_property
     def emails(self) -> emails.AsyncEmailsResourceWithStreamingResponse:
+        """Send and manage email messages.
+
+        **Quick Reference:**
+        - `POST /emails` - Send a single email
+        - `POST /emails/batch` - Send up to 100 emails
+        - `GET /emails/{emailId}` - Get email status and details
+        - `GET /emails` - List sent emails
+        - `POST /emails/{emailId}/retry` - Retry failed delivery
+        """
         from .resources.emails import AsyncEmailsResourceWithStreamingResponse
 
         return AsyncEmailsResourceWithStreamingResponse(self._client.emails)
 
     @cached_property
     def logs(self) -> logs.AsyncLogsResourceWithStreamingResponse:
+        """Access API request logs for debugging and monitoring.
+
+        Every API request is logged with details including:
+        - Request method, path, and endpoint
+        - Response status code and duration
+        - Error details (code, message) for failed requests
+        - SDK information (name, version)
+        - Rate limit state at time of request
+        - Request and response bodies (for single log retrieval)
+
+        **Retention:** Logs are retained for 90 days.
+
+        **Body storage:** Request and response bodies are stored encrypted
+        and truncated at 25KB. Bodies are only returned when retrieving
+        a single log entry.
+
+        **Quick Reference:**
+        - `GET /logs` - List API request logs with filters
+        - `GET /logs/{requestId}` - Get full details including request/response bodies
+        """
         from .resources.logs import AsyncLogsResourceWithStreamingResponse
 
         return AsyncLogsResourceWithStreamingResponse(self._client.logs)
 
     @cached_property
     def usage(self) -> usage.AsyncUsageResourceWithStreamingResponse:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         from .resources.usage import AsyncUsageResourceWithStreamingResponse
 
         return AsyncUsageResourceWithStreamingResponse(self._client.usage)
 
     @cached_property
     def limits(self) -> limits.AsyncLimitsResourceWithStreamingResponse:
+        """Check account rate limits and send limits.
+
+        The limits endpoint returns current status for operational limits:
+        - **Rate limit:** API requests per second (currently 10/sec)
+        - **Send limit:** Emails per hour (default 100/hour for new accounts)
+        - **Billing:** Credit balance and auto-recharge configuration
+
+        **AI Integration Note:** This endpoint is designed for AI agents and MCP servers
+        to understand account constraints before taking actions. Call this endpoint
+        first when planning batch operations to avoid hitting limits unexpectedly.
+
+        **Quick Reference:**
+        - `GET /limits` - Get current rate limits and send limits
+        - `GET /usage` - (Deprecated) Use `/limits` instead
+        """
         from .resources.limits import AsyncLimitsResourceWithStreamingResponse
 
         return AsyncLimitsResourceWithStreamingResponse(self._client.limits)
 
     @cached_property
     def tenants(self) -> tenants.AsyncTenantsResourceWithStreamingResponse:
+        """Manage tenants (your customers).
+
+        Create a tenant for each of your customers to track their email sending separately.
+        Store the tenant `id` in your database and use `metadata` for any custom data.
+
+        **Quick Reference:**
+        - `POST /tenants` - Create a new tenant
+        - `GET /tenants` - List all tenants (paginated)
+        - `GET /tenants/{id}` - Get tenant details
+        - `PATCH /tenants/{id}` - Update tenant name, metadata, or status
+        - `DELETE /tenants/{id}` - Delete a tenant
+        """
         from .resources.tenants import AsyncTenantsResourceWithStreamingResponse
 
         return AsyncTenantsResourceWithStreamingResponse(self._client.tenants)
