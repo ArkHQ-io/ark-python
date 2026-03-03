@@ -25,6 +25,24 @@ __all__ = ["UsageResource", "AsyncUsageResource"]
 
 
 class UsageResource(SyncAPIResource):
+    """Per-tenant usage analytics and bulk reporting.
+
+    Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+    **Single Tenant Usage:**
+    - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+    - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+    **Bulk Usage:**
+    - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+    - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+    **Period Formats:**
+    - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+    - Month: `2024-01`
+    - Date range: `2024-01-01..2024-01-15`
+    """
+
     @cached_property
     def with_raw_response(self) -> UsageResourceWithRawResponse:
         """
@@ -190,6 +208,24 @@ class UsageResource(SyncAPIResource):
 
 
 class AsyncUsageResource(AsyncAPIResource):
+    """Per-tenant usage analytics and bulk reporting.
+
+    Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+    **Single Tenant Usage:**
+    - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+    - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+    **Bulk Usage:**
+    - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+    - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+    **Period Formats:**
+    - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+    - Month: `2024-01`
+    - Date range: `2024-01-01..2024-01-15`
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncUsageResourceWithRawResponse:
         """

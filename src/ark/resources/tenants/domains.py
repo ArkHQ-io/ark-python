@@ -26,6 +26,20 @@ __all__ = ["DomainsResource", "AsyncDomainsResource"]
 
 
 class DomainsResource(SyncAPIResource):
+    """Manage sending domains.
+
+    Before you can send emails, you need to:
+    1. Add a domain
+    2. Configure DNS records (SPF, DKIM, Return Path)
+    3. Verify the domain
+
+    **Quick Reference:**
+    - `POST /domains` - Add a new domain
+    - `GET /domains` - List all domains
+    - `POST /domains/{id}/verify` - Check DNS and verify domain
+    - `DELETE /domains/{id}` - Remove a domain
+    """
+
     @cached_property
     def with_raw_response(self) -> DomainsResourceWithRawResponse:
         """
@@ -246,6 +260,20 @@ class DomainsResource(SyncAPIResource):
 
 
 class AsyncDomainsResource(AsyncAPIResource):
+    """Manage sending domains.
+
+    Before you can send emails, you need to:
+    1. Add a domain
+    2. Configure DNS records (SPF, DKIM, Return Path)
+    3. Verify the domain
+
+    **Quick Reference:**
+    - `POST /domains` - Add a new domain
+    - `GET /domains` - List all domains
+    - `POST /domains/{id}/verify` - Check DNS and verify domain
+    - `DELETE /domains/{id}` - Remove a domain
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncDomainsResourceWithRawResponse:
         """
