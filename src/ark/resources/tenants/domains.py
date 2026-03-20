@@ -5,7 +5,7 @@ from __future__ import annotations
 import httpx
 
 from ..._types import Body, Query, Headers, NotGiven, not_given
-from ..._utils import maybe_transform, async_maybe_transform
+from ..._utils import path_template, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -101,7 +101,7 @@ class DomainsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/domains",
+            path_template("/tenants/{tenant_id}/domains", tenant_id=tenant_id),
             body=maybe_transform({"name": name}, domain_create_params.DomainCreateParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -138,7 +138,7 @@ class DomainsResource(SyncAPIResource):
         if not domain_id:
             raise ValueError(f"Expected a non-empty value for `domain_id` but received {domain_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/domains/{domain_id}",
+            path_template("/tenants/{tenant_id}/domains/{domain_id}", tenant_id=tenant_id, domain_id=domain_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -171,7 +171,7 @@ class DomainsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/domains",
+            path_template("/tenants/{tenant_id}/domains", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -211,7 +211,7 @@ class DomainsResource(SyncAPIResource):
         if not domain_id:
             raise ValueError(f"Expected a non-empty value for `domain_id` but received {domain_id!r}")
         return self._delete(
-            f"/tenants/{tenant_id}/domains/{domain_id}",
+            path_template("/tenants/{tenant_id}/domains/{domain_id}", tenant_id=tenant_id, domain_id=domain_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -251,7 +251,7 @@ class DomainsResource(SyncAPIResource):
         if not domain_id:
             raise ValueError(f"Expected a non-empty value for `domain_id` but received {domain_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/domains/{domain_id}/verify",
+            path_template("/tenants/{tenant_id}/domains/{domain_id}/verify", tenant_id=tenant_id, domain_id=domain_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -335,7 +335,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/domains",
+            path_template("/tenants/{tenant_id}/domains", tenant_id=tenant_id),
             body=await async_maybe_transform({"name": name}, domain_create_params.DomainCreateParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -372,7 +372,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         if not domain_id:
             raise ValueError(f"Expected a non-empty value for `domain_id` but received {domain_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/domains/{domain_id}",
+            path_template("/tenants/{tenant_id}/domains/{domain_id}", tenant_id=tenant_id, domain_id=domain_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -405,7 +405,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/domains",
+            path_template("/tenants/{tenant_id}/domains", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -445,7 +445,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         if not domain_id:
             raise ValueError(f"Expected a non-empty value for `domain_id` but received {domain_id!r}")
         return await self._delete(
-            f"/tenants/{tenant_id}/domains/{domain_id}",
+            path_template("/tenants/{tenant_id}/domains/{domain_id}", tenant_id=tenant_id, domain_id=domain_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -485,7 +485,7 @@ class AsyncDomainsResource(AsyncAPIResource):
         if not domain_id:
             raise ValueError(f"Expected a non-empty value for `domain_id` but received {domain_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/domains/{domain_id}/verify",
+            path_template("/tenants/{tenant_id}/domains/{domain_id}/verify", tenant_id=tenant_id, domain_id=domain_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

@@ -8,7 +8,7 @@ from typing_extensions import Literal
 import httpx
 
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
-from ..._utils import maybe_transform, async_maybe_transform
+from ..._utils import path_template, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -187,7 +187,7 @@ class WebhooksResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/webhooks",
+            path_template("/tenants/{tenant_id}/webhooks", tenant_id=tenant_id),
             body=maybe_transform(
                 {
                     "name": name,
@@ -233,7 +233,7 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -274,7 +274,7 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._patch(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             body=maybe_transform(
                 {
                     "all_events": all_events,
@@ -317,7 +317,7 @@ class WebhooksResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/webhooks",
+            path_template("/tenants/{tenant_id}/webhooks", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -353,7 +353,7 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._delete(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -432,7 +432,9 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries", tenant_id=tenant_id, webhook_id=webhook_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -500,7 +502,12 @@ class WebhooksResource(SyncAPIResource):
         if not delivery_id:
             raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+                tenant_id=tenant_id,
+                webhook_id=webhook_id,
+                delivery_id=delivery_id,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -548,7 +555,12 @@ class WebhooksResource(SyncAPIResource):
         if not delivery_id:
             raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}",
+                tenant_id=tenant_id,
+                webhook_id=webhook_id,
+                delivery_id=delivery_id,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -607,7 +619,9 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/test",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/test", tenant_id=tenant_id, webhook_id=webhook_id
+            ),
             body=maybe_transform({"event": event}, webhook_test_params.WebhookTestParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -766,7 +780,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/webhooks",
+            path_template("/tenants/{tenant_id}/webhooks", tenant_id=tenant_id),
             body=await async_maybe_transform(
                 {
                     "name": name,
@@ -812,7 +826,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -853,7 +867,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._patch(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             body=await async_maybe_transform(
                 {
                     "all_events": all_events,
@@ -896,7 +910,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/webhooks",
+            path_template("/tenants/{tenant_id}/webhooks", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -932,7 +946,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._delete(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1011,7 +1025,9 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries", tenant_id=tenant_id, webhook_id=webhook_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -1079,7 +1095,12 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not delivery_id:
             raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+                tenant_id=tenant_id,
+                webhook_id=webhook_id,
+                delivery_id=delivery_id,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1127,7 +1148,12 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not delivery_id:
             raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}",
+                tenant_id=tenant_id,
+                webhook_id=webhook_id,
+                delivery_id=delivery_id,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1186,7 +1212,9 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/test",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/test", tenant_id=tenant_id, webhook_id=webhook_id
+            ),
             body=await async_maybe_transform({"event": event}, webhook_test_params.WebhookTestParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
