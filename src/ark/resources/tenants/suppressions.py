@@ -7,7 +7,7 @@ from typing import Optional
 import httpx
 
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from ..._utils import maybe_transform, async_maybe_transform
+from ..._utils import path_template, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -93,7 +93,7 @@ class SuppressionsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/suppressions",
+            path_template("/tenants/{tenant_id}/suppressions", tenant_id=tenant_id),
             body=maybe_transform(
                 {
                     "address": address,
@@ -136,7 +136,7 @@ class SuppressionsResource(SyncAPIResource):
         if not email:
             raise ValueError(f"Expected a non-empty value for `email` but received {email!r}")
         return self._get(
-            f"/tenants/{tenant_id}/suppressions/{email}",
+            path_template("/tenants/{tenant_id}/suppressions/{email}", tenant_id=tenant_id, email=email),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -173,7 +173,7 @@ class SuppressionsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get_api_list(
-            f"/tenants/{tenant_id}/suppressions",
+            path_template("/tenants/{tenant_id}/suppressions", tenant_id=tenant_id),
             page=SyncPageNumberPagination[SuppressionListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -222,7 +222,7 @@ class SuppressionsResource(SyncAPIResource):
         if not email:
             raise ValueError(f"Expected a non-empty value for `email` but received {email!r}")
         return self._delete(
-            f"/tenants/{tenant_id}/suppressions/{email}",
+            path_template("/tenants/{tenant_id}/suppressions/{email}", tenant_id=tenant_id, email=email),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -296,7 +296,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/suppressions",
+            path_template("/tenants/{tenant_id}/suppressions", tenant_id=tenant_id),
             body=await async_maybe_transform(
                 {
                     "address": address,
@@ -339,7 +339,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         if not email:
             raise ValueError(f"Expected a non-empty value for `email` but received {email!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/suppressions/{email}",
+            path_template("/tenants/{tenant_id}/suppressions/{email}", tenant_id=tenant_id, email=email),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -376,7 +376,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get_api_list(
-            f"/tenants/{tenant_id}/suppressions",
+            path_template("/tenants/{tenant_id}/suppressions", tenant_id=tenant_id),
             page=AsyncPageNumberPagination[SuppressionListResponse],
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -425,7 +425,7 @@ class AsyncSuppressionsResource(AsyncAPIResource):
         if not email:
             raise ValueError(f"Expected a non-empty value for `email` but received {email!r}")
         return await self._delete(
-            f"/tenants/{tenant_id}/suppressions/{email}",
+            path_template("/tenants/{tenant_id}/suppressions/{email}", tenant_id=tenant_id, email=email),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
