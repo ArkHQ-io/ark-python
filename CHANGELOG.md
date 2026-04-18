@@ -1,5 +1,55 @@
 # Changelog
 
+## 0.19.0 (2026-04-18)
+
+Full Changelog: [v0.18.1...v0.19.0](https://github.com/ArkHQ-io/ark-python/compare/v0.18.1...v0.19.0)
+
+### Features
+
+* **api:** add tenantId to send ([3eddd67](https://github.com/ArkHQ-io/ark-python/commit/3eddd677b69f387149336e11abe71a6143290ac4))
+* **internal:** implement indices array format for query and form serialization ([6b0e47e](https://github.com/ArkHQ-io/ark-python/commit/6b0e47e19fdb9c5c52804bfe7f2a65e7dad7d9a9))
+
+
+### Bug Fixes
+
+* **client:** preserve hardcoded query params when merging with user params ([8c48bf3](https://github.com/ArkHQ-io/ark-python/commit/8c48bf31ef7fdce13c5e23e23c144134b004ecb6))
+* **deps:** bump minimum typing-extensions version ([f968d32](https://github.com/ArkHQ-io/ark-python/commit/f968d32304f3254d028211fd71f3cc4be8a9d61b))
+* ensure file data are only sent as 1 parameter ([6c9b9b8](https://github.com/ArkHQ-io/ark-python/commit/6c9b9b804042c0472d0de84a1ee7241bb2b66f92))
+* **pydantic:** do not pass `by_alias` unless set ([5c61281](https://github.com/ArkHQ-io/ark-python/commit/5c612819f12b4b87159d751625fc2e64d1e3dd1f))
+* sanitize endpoint path params ([d4ca0b1](https://github.com/ArkHQ-io/ark-python/commit/d4ca0b1e86263ef3e7ededd8c9a88949dfc15e2e))
+
+
+### Performance Improvements
+
+* **client:** optimize file structure copying in multipart requests ([56e6c32](https://github.com/ArkHQ-io/ark-python/commit/56e6c326d177ea84008c9622e2d835cdc669e8b3))
+
+
+### Chores
+
+* **ci:** bump uv version ([e7115ed](https://github.com/ArkHQ-io/ark-python/commit/e7115edad4dd96f45c7b87f76b00792b8d096647))
+* **ci:** skip lint on metadata-only changes ([7a77a86](https://github.com/ArkHQ-io/ark-python/commit/7a77a86a2f0ff316277469d42e5185dd3f154dc9))
+* **ci:** skip uploading artifacts on stainless-internal branches ([5ad9ccb](https://github.com/ArkHQ-io/ark-python/commit/5ad9ccb223dc029f721420b94bb87a7a7207bdb3))
+* **internal:** add request options to SSE classes ([fdc5e91](https://github.com/ArkHQ-io/ark-python/commit/fdc5e91d4774006a051e8a289bbd1b3c7eec1b8c))
+* **internal:** codegen related update ([a6cc237](https://github.com/ArkHQ-io/ark-python/commit/a6cc237ae03c83da16f8cc279dac4fe5e91e0816))
+* **internal:** make `test_proxy_environment_variables` more resilient ([709aff4](https://github.com/ArkHQ-io/ark-python/commit/709aff401224092c3e5059559951c8bc82c59866))
+* **internal:** make `test_proxy_environment_variables` more resilient to env ([df5b863](https://github.com/ArkHQ-io/ark-python/commit/df5b8639e08e14c7a64e51081f60c41d0450617b))
+* **internal:** tweak CI branches ([a50b7f8](https://github.com/ArkHQ-io/ark-python/commit/a50b7f8017b23cae995700f9a0a579bfc4b5a57b))
+* **internal:** update gitignore ([f048789](https://github.com/ArkHQ-io/ark-python/commit/f04878939392dd78362c34806681a3d7082888ae))
+* **test:** do not count install time for mock server timeout ([e9620f6](https://github.com/ArkHQ-io/ark-python/commit/e9620f619e9f8bafc0d3fdc2b070cb4e6f5454b3))
+* **tests:** bump steady to v0.19.4 ([2f78979](https://github.com/ArkHQ-io/ark-python/commit/2f78979a8b73ee72108b8e514373d36a62aafc26))
+* **tests:** bump steady to v0.19.5 ([41a53dc](https://github.com/ArkHQ-io/ark-python/commit/41a53dc50fca7e7e9a2928ad72d06ad2259837d3))
+* **tests:** bump steady to v0.19.6 ([b952880](https://github.com/ArkHQ-io/ark-python/commit/b95288045bc908c0bb6a76addf6ac8d344f69ac3))
+* **tests:** bump steady to v0.19.7 ([c07a4ff](https://github.com/ArkHQ-io/ark-python/commit/c07a4ffc2a582f51718e6f31e5908a1aa55d2d30))
+* **tests:** bump steady to v0.20.1 ([ba432f3](https://github.com/ArkHQ-io/ark-python/commit/ba432f3f2ccbde4b5144f0836de29e957f6024b4))
+* **tests:** bump steady to v0.20.2 ([0d2aa8d](https://github.com/ArkHQ-io/ark-python/commit/0d2aa8dc868885578f6a2e9e2423f3a0f2132134))
+* **tests:** bump steady to v0.22.1 ([02c097b](https://github.com/ArkHQ-io/ark-python/commit/02c097b129dc7c64bb163a288789e75a95121c60))
+* update mock server docs ([b4e4ce8](https://github.com/ArkHQ-io/ark-python/commit/b4e4ce8a56859a87137349e5f97ede2c8acaad25))
+
+
+### Refactors
+
+* **tests:** switch from prism to steady ([18f705f](https://github.com/ArkHQ-io/ark-python/commit/18f705f1fff9c42d14de17f0eb50eb1232ff9019))
+
 ## 0.18.1 (2026-02-18)
 
 Full Changelog: [v0.18.0...v0.18.1](https://github.com/ArkHQ-io/ark-python/compare/v0.18.0...v0.18.1)
