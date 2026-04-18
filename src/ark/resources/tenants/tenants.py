@@ -25,7 +25,7 @@ from .domains import (
     AsyncDomainsResourceWithStreamingResponse,
 )
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from ..._utils import maybe_transform, async_maybe_transform
+from ..._utils import path_template, maybe_transform, async_maybe_transform
 from .tracking import (
     TrackingResource,
     AsyncTrackingResource,
@@ -78,28 +78,155 @@ __all__ = ["TenantsResource", "AsyncTenantsResource"]
 
 
 class TenantsResource(SyncAPIResource):
+    """Manage tenants (your customers).
+
+    Create a tenant for each of your customers to track their email sending separately.
+    Store the tenant `id` in your database and use `metadata` for any custom data.
+
+    **Quick Reference:**
+    - `POST /tenants` - Create a new tenant
+    - `GET /tenants` - List all tenants (paginated)
+    - `GET /tenants/{id}` - Get tenant details
+    - `PATCH /tenants/{id}` - Update tenant name, metadata, or status
+    - `DELETE /tenants/{id}` - Delete a tenant
+    """
+
     @cached_property
     def credentials(self) -> CredentialsResource:
         return CredentialsResource(self._client)
 
     @cached_property
     def domains(self) -> DomainsResource:
+        """Manage sending domains.
+
+        Before you can send emails, you need to:
+        1. Add a domain
+        2. Configure DNS records (SPF, DKIM, Return Path)
+        3. Verify the domain
+
+        **Quick Reference:**
+        - `POST /domains` - Add a new domain
+        - `GET /domains` - List all domains
+        - `POST /domains/{id}/verify` - Check DNS and verify domain
+        - `DELETE /domains/{id}` - Remove a domain
+        """
         return DomainsResource(self._client)
 
     @cached_property
     def suppressions(self) -> SuppressionsResource:
+        """Manage the suppression list.
+
+        Suppressed email addresses will not receive any emails. Addresses are
+        automatically suppressed when they hard bounce or file spam complaints.
+
+        **Quick Reference:**
+        - `GET /suppressions` - List suppressed addresses
+        - `POST /suppressions` - Add to suppression list
+        - `DELETE /suppressions/{email}` - Remove from suppression list
+        - `GET /suppressions/{email}` - Check if address is suppressed
+        """
         return SuppressionsResource(self._client)
 
     @cached_property
     def webhooks(self) -> WebhooksResource:
+        """Configure webhook endpoints for real-time notifications.
+
+        Webhooks notify your application when email events occur:
+        - Email delivered, bounced, or failed
+        - Email opened or link clicked
+        - Spam complaint received
+
+        **Quick Reference:**
+        - `POST /webhooks` - Create a webhook endpoint
+        - `GET /webhooks` - List all webhooks
+        - `POST /webhooks/{id}/test` - Test a webhook with sample data
+        - `PATCH /webhooks/{id}` - Update webhook configuration
+        - `DELETE /webhooks/{id}` - Remove a webhook
+        - `GET /webhooks/{id}/deliveries` - List delivery attempts
+        - `GET /webhooks/{id}/deliveries/{deliveryId}` - Get delivery details
+        - `POST /webhooks/{id}/deliveries/{deliveryId}/replay` - Replay a delivery
+
+        ## Webhook Signatures
+
+        All webhooks are cryptographically signed using RSA-SHA256 for security.
+        Each webhook request includes:
+
+        | Header | Description |
+        |--------|-------------|
+        | `X-Ark-Signature` | Base64-encoded RSA-SHA256 signature of the request body |
+        | `X-Ark-Signature-KID` | Key ID identifying which public key was used |
+
+        Verify signatures by fetching the public key from:
+        ```
+        GET https://mail.arkhq.io/.well-known/jwks.json
+        ```
+
+        ```javascript
+        const crypto = require('crypto');
+
+        async function verifyWebhook(payload, signatureBase64, publicKey) {
+          const signature = Buffer.from(signatureBase64, 'base64');
+          const verifier = crypto.createVerify('RSA-SHA256');
+          verifier.update(payload);
+          return verifier.verify(publicKey, signature);
+        }
+
+        // In your webhook handler:
+        const isValid = await verifyWebhook(
+          rawBody,
+          req.headers['x-ark-signature'],
+          cachedPublicKey
+        );
+        ```
+
+        **Important:** Always verify signatures before processing webhook data.
+        See the [Webhook Integration Guide](/guides/webhook-integration) for complete examples.
+        """
         return WebhooksResource(self._client)
 
     @cached_property
     def tracking(self) -> TrackingResource:
+        """Manage track domains for open and click tracking.
+
+        Track domains enable you to track when recipients:
+        - Open your emails (tracking pixel)
+        - Click links in your emails
+
+        **Setup Process:**
+        1. Create a track domain with `POST /tracking`
+        2. Add the CNAME record to your DNS
+        3. Verify DNS with `POST /tracking/{id}/verify`
+        4. Track domain is ready when `dnsOk` is true
+
+        **Quick Reference:**
+        - `POST /tracking` - Create a new track domain
+        - `GET /tracking` - List all track domains
+        - `GET /tracking/{id}` - Get track domain details
+        - `POST /tracking/{id}/verify` - Verify DNS configuration
+        - `PATCH /tracking/{id}` - Enable/disable tracking features
+        - `DELETE /tracking/{id}` - Remove a track domain
+        """
         return TrackingResource(self._client)
 
     @cached_property
     def usage(self) -> UsageResource:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         return UsageResource(self._client)
 
     @cached_property
@@ -201,7 +328,7 @@ class TenantsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}",
+            path_template("/tenants/{tenant_id}", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -253,7 +380,7 @@ class TenantsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._patch(
-            f"/tenants/{tenant_id}",
+            path_template("/tenants/{tenant_id}", tenant_id=tenant_id),
             body=maybe_transform(
                 {
                     "metadata": metadata,
@@ -347,7 +474,7 @@ class TenantsResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._delete(
-            f"/tenants/{tenant_id}",
+            path_template("/tenants/{tenant_id}", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -356,28 +483,155 @@ class TenantsResource(SyncAPIResource):
 
 
 class AsyncTenantsResource(AsyncAPIResource):
+    """Manage tenants (your customers).
+
+    Create a tenant for each of your customers to track their email sending separately.
+    Store the tenant `id` in your database and use `metadata` for any custom data.
+
+    **Quick Reference:**
+    - `POST /tenants` - Create a new tenant
+    - `GET /tenants` - List all tenants (paginated)
+    - `GET /tenants/{id}` - Get tenant details
+    - `PATCH /tenants/{id}` - Update tenant name, metadata, or status
+    - `DELETE /tenants/{id}` - Delete a tenant
+    """
+
     @cached_property
     def credentials(self) -> AsyncCredentialsResource:
         return AsyncCredentialsResource(self._client)
 
     @cached_property
     def domains(self) -> AsyncDomainsResource:
+        """Manage sending domains.
+
+        Before you can send emails, you need to:
+        1. Add a domain
+        2. Configure DNS records (SPF, DKIM, Return Path)
+        3. Verify the domain
+
+        **Quick Reference:**
+        - `POST /domains` - Add a new domain
+        - `GET /domains` - List all domains
+        - `POST /domains/{id}/verify` - Check DNS and verify domain
+        - `DELETE /domains/{id}` - Remove a domain
+        """
         return AsyncDomainsResource(self._client)
 
     @cached_property
     def suppressions(self) -> AsyncSuppressionsResource:
+        """Manage the suppression list.
+
+        Suppressed email addresses will not receive any emails. Addresses are
+        automatically suppressed when they hard bounce or file spam complaints.
+
+        **Quick Reference:**
+        - `GET /suppressions` - List suppressed addresses
+        - `POST /suppressions` - Add to suppression list
+        - `DELETE /suppressions/{email}` - Remove from suppression list
+        - `GET /suppressions/{email}` - Check if address is suppressed
+        """
         return AsyncSuppressionsResource(self._client)
 
     @cached_property
     def webhooks(self) -> AsyncWebhooksResource:
+        """Configure webhook endpoints for real-time notifications.
+
+        Webhooks notify your application when email events occur:
+        - Email delivered, bounced, or failed
+        - Email opened or link clicked
+        - Spam complaint received
+
+        **Quick Reference:**
+        - `POST /webhooks` - Create a webhook endpoint
+        - `GET /webhooks` - List all webhooks
+        - `POST /webhooks/{id}/test` - Test a webhook with sample data
+        - `PATCH /webhooks/{id}` - Update webhook configuration
+        - `DELETE /webhooks/{id}` - Remove a webhook
+        - `GET /webhooks/{id}/deliveries` - List delivery attempts
+        - `GET /webhooks/{id}/deliveries/{deliveryId}` - Get delivery details
+        - `POST /webhooks/{id}/deliveries/{deliveryId}/replay` - Replay a delivery
+
+        ## Webhook Signatures
+
+        All webhooks are cryptographically signed using RSA-SHA256 for security.
+        Each webhook request includes:
+
+        | Header | Description |
+        |--------|-------------|
+        | `X-Ark-Signature` | Base64-encoded RSA-SHA256 signature of the request body |
+        | `X-Ark-Signature-KID` | Key ID identifying which public key was used |
+
+        Verify signatures by fetching the public key from:
+        ```
+        GET https://mail.arkhq.io/.well-known/jwks.json
+        ```
+
+        ```javascript
+        const crypto = require('crypto');
+
+        async function verifyWebhook(payload, signatureBase64, publicKey) {
+          const signature = Buffer.from(signatureBase64, 'base64');
+          const verifier = crypto.createVerify('RSA-SHA256');
+          verifier.update(payload);
+          return verifier.verify(publicKey, signature);
+        }
+
+        // In your webhook handler:
+        const isValid = await verifyWebhook(
+          rawBody,
+          req.headers['x-ark-signature'],
+          cachedPublicKey
+        );
+        ```
+
+        **Important:** Always verify signatures before processing webhook data.
+        See the [Webhook Integration Guide](/guides/webhook-integration) for complete examples.
+        """
         return AsyncWebhooksResource(self._client)
 
     @cached_property
     def tracking(self) -> AsyncTrackingResource:
+        """Manage track domains for open and click tracking.
+
+        Track domains enable you to track when recipients:
+        - Open your emails (tracking pixel)
+        - Click links in your emails
+
+        **Setup Process:**
+        1. Create a track domain with `POST /tracking`
+        2. Add the CNAME record to your DNS
+        3. Verify DNS with `POST /tracking/{id}/verify`
+        4. Track domain is ready when `dnsOk` is true
+
+        **Quick Reference:**
+        - `POST /tracking` - Create a new track domain
+        - `GET /tracking` - List all track domains
+        - `GET /tracking/{id}` - Get track domain details
+        - `POST /tracking/{id}/verify` - Verify DNS configuration
+        - `PATCH /tracking/{id}` - Enable/disable tracking features
+        - `DELETE /tracking/{id}` - Remove a track domain
+        """
         return AsyncTrackingResource(self._client)
 
     @cached_property
     def usage(self) -> AsyncUsageResource:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         return AsyncUsageResource(self._client)
 
     @cached_property
@@ -479,7 +733,7 @@ class AsyncTenantsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}",
+            path_template("/tenants/{tenant_id}", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -531,7 +785,7 @@ class AsyncTenantsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._patch(
-            f"/tenants/{tenant_id}",
+            path_template("/tenants/{tenant_id}", tenant_id=tenant_id),
             body=await async_maybe_transform(
                 {
                     "metadata": metadata,
@@ -625,7 +879,7 @@ class AsyncTenantsResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._delete(
-            f"/tenants/{tenant_id}",
+            path_template("/tenants/{tenant_id}", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -659,22 +913,136 @@ class TenantsResourceWithRawResponse:
 
     @cached_property
     def domains(self) -> DomainsResourceWithRawResponse:
+        """Manage sending domains.
+
+        Before you can send emails, you need to:
+        1. Add a domain
+        2. Configure DNS records (SPF, DKIM, Return Path)
+        3. Verify the domain
+
+        **Quick Reference:**
+        - `POST /domains` - Add a new domain
+        - `GET /domains` - List all domains
+        - `POST /domains/{id}/verify` - Check DNS and verify domain
+        - `DELETE /domains/{id}` - Remove a domain
+        """
         return DomainsResourceWithRawResponse(self._tenants.domains)
 
     @cached_property
     def suppressions(self) -> SuppressionsResourceWithRawResponse:
+        """Manage the suppression list.
+
+        Suppressed email addresses will not receive any emails. Addresses are
+        automatically suppressed when they hard bounce or file spam complaints.
+
+        **Quick Reference:**
+        - `GET /suppressions` - List suppressed addresses
+        - `POST /suppressions` - Add to suppression list
+        - `DELETE /suppressions/{email}` - Remove from suppression list
+        - `GET /suppressions/{email}` - Check if address is suppressed
+        """
         return SuppressionsResourceWithRawResponse(self._tenants.suppressions)
 
     @cached_property
     def webhooks(self) -> WebhooksResourceWithRawResponse:
+        """Configure webhook endpoints for real-time notifications.
+
+        Webhooks notify your application when email events occur:
+        - Email delivered, bounced, or failed
+        - Email opened or link clicked
+        - Spam complaint received
+
+        **Quick Reference:**
+        - `POST /webhooks` - Create a webhook endpoint
+        - `GET /webhooks` - List all webhooks
+        - `POST /webhooks/{id}/test` - Test a webhook with sample data
+        - `PATCH /webhooks/{id}` - Update webhook configuration
+        - `DELETE /webhooks/{id}` - Remove a webhook
+        - `GET /webhooks/{id}/deliveries` - List delivery attempts
+        - `GET /webhooks/{id}/deliveries/{deliveryId}` - Get delivery details
+        - `POST /webhooks/{id}/deliveries/{deliveryId}/replay` - Replay a delivery
+
+        ## Webhook Signatures
+
+        All webhooks are cryptographically signed using RSA-SHA256 for security.
+        Each webhook request includes:
+
+        | Header | Description |
+        |--------|-------------|
+        | `X-Ark-Signature` | Base64-encoded RSA-SHA256 signature of the request body |
+        | `X-Ark-Signature-KID` | Key ID identifying which public key was used |
+
+        Verify signatures by fetching the public key from:
+        ```
+        GET https://mail.arkhq.io/.well-known/jwks.json
+        ```
+
+        ```javascript
+        const crypto = require('crypto');
+
+        async function verifyWebhook(payload, signatureBase64, publicKey) {
+          const signature = Buffer.from(signatureBase64, 'base64');
+          const verifier = crypto.createVerify('RSA-SHA256');
+          verifier.update(payload);
+          return verifier.verify(publicKey, signature);
+        }
+
+        // In your webhook handler:
+        const isValid = await verifyWebhook(
+          rawBody,
+          req.headers['x-ark-signature'],
+          cachedPublicKey
+        );
+        ```
+
+        **Important:** Always verify signatures before processing webhook data.
+        See the [Webhook Integration Guide](/guides/webhook-integration) for complete examples.
+        """
         return WebhooksResourceWithRawResponse(self._tenants.webhooks)
 
     @cached_property
     def tracking(self) -> TrackingResourceWithRawResponse:
+        """Manage track domains for open and click tracking.
+
+        Track domains enable you to track when recipients:
+        - Open your emails (tracking pixel)
+        - Click links in your emails
+
+        **Setup Process:**
+        1. Create a track domain with `POST /tracking`
+        2. Add the CNAME record to your DNS
+        3. Verify DNS with `POST /tracking/{id}/verify`
+        4. Track domain is ready when `dnsOk` is true
+
+        **Quick Reference:**
+        - `POST /tracking` - Create a new track domain
+        - `GET /tracking` - List all track domains
+        - `GET /tracking/{id}` - Get track domain details
+        - `POST /tracking/{id}/verify` - Verify DNS configuration
+        - `PATCH /tracking/{id}` - Enable/disable tracking features
+        - `DELETE /tracking/{id}` - Remove a track domain
+        """
         return TrackingResourceWithRawResponse(self._tenants.tracking)
 
     @cached_property
     def usage(self) -> UsageResourceWithRawResponse:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         return UsageResourceWithRawResponse(self._tenants.usage)
 
 
@@ -704,22 +1072,136 @@ class AsyncTenantsResourceWithRawResponse:
 
     @cached_property
     def domains(self) -> AsyncDomainsResourceWithRawResponse:
+        """Manage sending domains.
+
+        Before you can send emails, you need to:
+        1. Add a domain
+        2. Configure DNS records (SPF, DKIM, Return Path)
+        3. Verify the domain
+
+        **Quick Reference:**
+        - `POST /domains` - Add a new domain
+        - `GET /domains` - List all domains
+        - `POST /domains/{id}/verify` - Check DNS and verify domain
+        - `DELETE /domains/{id}` - Remove a domain
+        """
         return AsyncDomainsResourceWithRawResponse(self._tenants.domains)
 
     @cached_property
     def suppressions(self) -> AsyncSuppressionsResourceWithRawResponse:
+        """Manage the suppression list.
+
+        Suppressed email addresses will not receive any emails. Addresses are
+        automatically suppressed when they hard bounce or file spam complaints.
+
+        **Quick Reference:**
+        - `GET /suppressions` - List suppressed addresses
+        - `POST /suppressions` - Add to suppression list
+        - `DELETE /suppressions/{email}` - Remove from suppression list
+        - `GET /suppressions/{email}` - Check if address is suppressed
+        """
         return AsyncSuppressionsResourceWithRawResponse(self._tenants.suppressions)
 
     @cached_property
     def webhooks(self) -> AsyncWebhooksResourceWithRawResponse:
+        """Configure webhook endpoints for real-time notifications.
+
+        Webhooks notify your application when email events occur:
+        - Email delivered, bounced, or failed
+        - Email opened or link clicked
+        - Spam complaint received
+
+        **Quick Reference:**
+        - `POST /webhooks` - Create a webhook endpoint
+        - `GET /webhooks` - List all webhooks
+        - `POST /webhooks/{id}/test` - Test a webhook with sample data
+        - `PATCH /webhooks/{id}` - Update webhook configuration
+        - `DELETE /webhooks/{id}` - Remove a webhook
+        - `GET /webhooks/{id}/deliveries` - List delivery attempts
+        - `GET /webhooks/{id}/deliveries/{deliveryId}` - Get delivery details
+        - `POST /webhooks/{id}/deliveries/{deliveryId}/replay` - Replay a delivery
+
+        ## Webhook Signatures
+
+        All webhooks are cryptographically signed using RSA-SHA256 for security.
+        Each webhook request includes:
+
+        | Header | Description |
+        |--------|-------------|
+        | `X-Ark-Signature` | Base64-encoded RSA-SHA256 signature of the request body |
+        | `X-Ark-Signature-KID` | Key ID identifying which public key was used |
+
+        Verify signatures by fetching the public key from:
+        ```
+        GET https://mail.arkhq.io/.well-known/jwks.json
+        ```
+
+        ```javascript
+        const crypto = require('crypto');
+
+        async function verifyWebhook(payload, signatureBase64, publicKey) {
+          const signature = Buffer.from(signatureBase64, 'base64');
+          const verifier = crypto.createVerify('RSA-SHA256');
+          verifier.update(payload);
+          return verifier.verify(publicKey, signature);
+        }
+
+        // In your webhook handler:
+        const isValid = await verifyWebhook(
+          rawBody,
+          req.headers['x-ark-signature'],
+          cachedPublicKey
+        );
+        ```
+
+        **Important:** Always verify signatures before processing webhook data.
+        See the [Webhook Integration Guide](/guides/webhook-integration) for complete examples.
+        """
         return AsyncWebhooksResourceWithRawResponse(self._tenants.webhooks)
 
     @cached_property
     def tracking(self) -> AsyncTrackingResourceWithRawResponse:
+        """Manage track domains for open and click tracking.
+
+        Track domains enable you to track when recipients:
+        - Open your emails (tracking pixel)
+        - Click links in your emails
+
+        **Setup Process:**
+        1. Create a track domain with `POST /tracking`
+        2. Add the CNAME record to your DNS
+        3. Verify DNS with `POST /tracking/{id}/verify`
+        4. Track domain is ready when `dnsOk` is true
+
+        **Quick Reference:**
+        - `POST /tracking` - Create a new track domain
+        - `GET /tracking` - List all track domains
+        - `GET /tracking/{id}` - Get track domain details
+        - `POST /tracking/{id}/verify` - Verify DNS configuration
+        - `PATCH /tracking/{id}` - Enable/disable tracking features
+        - `DELETE /tracking/{id}` - Remove a track domain
+        """
         return AsyncTrackingResourceWithRawResponse(self._tenants.tracking)
 
     @cached_property
     def usage(self) -> AsyncUsageResourceWithRawResponse:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         return AsyncUsageResourceWithRawResponse(self._tenants.usage)
 
 
@@ -749,22 +1231,136 @@ class TenantsResourceWithStreamingResponse:
 
     @cached_property
     def domains(self) -> DomainsResourceWithStreamingResponse:
+        """Manage sending domains.
+
+        Before you can send emails, you need to:
+        1. Add a domain
+        2. Configure DNS records (SPF, DKIM, Return Path)
+        3. Verify the domain
+
+        **Quick Reference:**
+        - `POST /domains` - Add a new domain
+        - `GET /domains` - List all domains
+        - `POST /domains/{id}/verify` - Check DNS and verify domain
+        - `DELETE /domains/{id}` - Remove a domain
+        """
         return DomainsResourceWithStreamingResponse(self._tenants.domains)
 
     @cached_property
     def suppressions(self) -> SuppressionsResourceWithStreamingResponse:
+        """Manage the suppression list.
+
+        Suppressed email addresses will not receive any emails. Addresses are
+        automatically suppressed when they hard bounce or file spam complaints.
+
+        **Quick Reference:**
+        - `GET /suppressions` - List suppressed addresses
+        - `POST /suppressions` - Add to suppression list
+        - `DELETE /suppressions/{email}` - Remove from suppression list
+        - `GET /suppressions/{email}` - Check if address is suppressed
+        """
         return SuppressionsResourceWithStreamingResponse(self._tenants.suppressions)
 
     @cached_property
     def webhooks(self) -> WebhooksResourceWithStreamingResponse:
+        """Configure webhook endpoints for real-time notifications.
+
+        Webhooks notify your application when email events occur:
+        - Email delivered, bounced, or failed
+        - Email opened or link clicked
+        - Spam complaint received
+
+        **Quick Reference:**
+        - `POST /webhooks` - Create a webhook endpoint
+        - `GET /webhooks` - List all webhooks
+        - `POST /webhooks/{id}/test` - Test a webhook with sample data
+        - `PATCH /webhooks/{id}` - Update webhook configuration
+        - `DELETE /webhooks/{id}` - Remove a webhook
+        - `GET /webhooks/{id}/deliveries` - List delivery attempts
+        - `GET /webhooks/{id}/deliveries/{deliveryId}` - Get delivery details
+        - `POST /webhooks/{id}/deliveries/{deliveryId}/replay` - Replay a delivery
+
+        ## Webhook Signatures
+
+        All webhooks are cryptographically signed using RSA-SHA256 for security.
+        Each webhook request includes:
+
+        | Header | Description |
+        |--------|-------------|
+        | `X-Ark-Signature` | Base64-encoded RSA-SHA256 signature of the request body |
+        | `X-Ark-Signature-KID` | Key ID identifying which public key was used |
+
+        Verify signatures by fetching the public key from:
+        ```
+        GET https://mail.arkhq.io/.well-known/jwks.json
+        ```
+
+        ```javascript
+        const crypto = require('crypto');
+
+        async function verifyWebhook(payload, signatureBase64, publicKey) {
+          const signature = Buffer.from(signatureBase64, 'base64');
+          const verifier = crypto.createVerify('RSA-SHA256');
+          verifier.update(payload);
+          return verifier.verify(publicKey, signature);
+        }
+
+        // In your webhook handler:
+        const isValid = await verifyWebhook(
+          rawBody,
+          req.headers['x-ark-signature'],
+          cachedPublicKey
+        );
+        ```
+
+        **Important:** Always verify signatures before processing webhook data.
+        See the [Webhook Integration Guide](/guides/webhook-integration) for complete examples.
+        """
         return WebhooksResourceWithStreamingResponse(self._tenants.webhooks)
 
     @cached_property
     def tracking(self) -> TrackingResourceWithStreamingResponse:
+        """Manage track domains for open and click tracking.
+
+        Track domains enable you to track when recipients:
+        - Open your emails (tracking pixel)
+        - Click links in your emails
+
+        **Setup Process:**
+        1. Create a track domain with `POST /tracking`
+        2. Add the CNAME record to your DNS
+        3. Verify DNS with `POST /tracking/{id}/verify`
+        4. Track domain is ready when `dnsOk` is true
+
+        **Quick Reference:**
+        - `POST /tracking` - Create a new track domain
+        - `GET /tracking` - List all track domains
+        - `GET /tracking/{id}` - Get track domain details
+        - `POST /tracking/{id}/verify` - Verify DNS configuration
+        - `PATCH /tracking/{id}` - Enable/disable tracking features
+        - `DELETE /tracking/{id}` - Remove a track domain
+        """
         return TrackingResourceWithStreamingResponse(self._tenants.tracking)
 
     @cached_property
     def usage(self) -> UsageResourceWithStreamingResponse:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         return UsageResourceWithStreamingResponse(self._tenants.usage)
 
 
@@ -794,20 +1390,134 @@ class AsyncTenantsResourceWithStreamingResponse:
 
     @cached_property
     def domains(self) -> AsyncDomainsResourceWithStreamingResponse:
+        """Manage sending domains.
+
+        Before you can send emails, you need to:
+        1. Add a domain
+        2. Configure DNS records (SPF, DKIM, Return Path)
+        3. Verify the domain
+
+        **Quick Reference:**
+        - `POST /domains` - Add a new domain
+        - `GET /domains` - List all domains
+        - `POST /domains/{id}/verify` - Check DNS and verify domain
+        - `DELETE /domains/{id}` - Remove a domain
+        """
         return AsyncDomainsResourceWithStreamingResponse(self._tenants.domains)
 
     @cached_property
     def suppressions(self) -> AsyncSuppressionsResourceWithStreamingResponse:
+        """Manage the suppression list.
+
+        Suppressed email addresses will not receive any emails. Addresses are
+        automatically suppressed when they hard bounce or file spam complaints.
+
+        **Quick Reference:**
+        - `GET /suppressions` - List suppressed addresses
+        - `POST /suppressions` - Add to suppression list
+        - `DELETE /suppressions/{email}` - Remove from suppression list
+        - `GET /suppressions/{email}` - Check if address is suppressed
+        """
         return AsyncSuppressionsResourceWithStreamingResponse(self._tenants.suppressions)
 
     @cached_property
     def webhooks(self) -> AsyncWebhooksResourceWithStreamingResponse:
+        """Configure webhook endpoints for real-time notifications.
+
+        Webhooks notify your application when email events occur:
+        - Email delivered, bounced, or failed
+        - Email opened or link clicked
+        - Spam complaint received
+
+        **Quick Reference:**
+        - `POST /webhooks` - Create a webhook endpoint
+        - `GET /webhooks` - List all webhooks
+        - `POST /webhooks/{id}/test` - Test a webhook with sample data
+        - `PATCH /webhooks/{id}` - Update webhook configuration
+        - `DELETE /webhooks/{id}` - Remove a webhook
+        - `GET /webhooks/{id}/deliveries` - List delivery attempts
+        - `GET /webhooks/{id}/deliveries/{deliveryId}` - Get delivery details
+        - `POST /webhooks/{id}/deliveries/{deliveryId}/replay` - Replay a delivery
+
+        ## Webhook Signatures
+
+        All webhooks are cryptographically signed using RSA-SHA256 for security.
+        Each webhook request includes:
+
+        | Header | Description |
+        |--------|-------------|
+        | `X-Ark-Signature` | Base64-encoded RSA-SHA256 signature of the request body |
+        | `X-Ark-Signature-KID` | Key ID identifying which public key was used |
+
+        Verify signatures by fetching the public key from:
+        ```
+        GET https://mail.arkhq.io/.well-known/jwks.json
+        ```
+
+        ```javascript
+        const crypto = require('crypto');
+
+        async function verifyWebhook(payload, signatureBase64, publicKey) {
+          const signature = Buffer.from(signatureBase64, 'base64');
+          const verifier = crypto.createVerify('RSA-SHA256');
+          verifier.update(payload);
+          return verifier.verify(publicKey, signature);
+        }
+
+        // In your webhook handler:
+        const isValid = await verifyWebhook(
+          rawBody,
+          req.headers['x-ark-signature'],
+          cachedPublicKey
+        );
+        ```
+
+        **Important:** Always verify signatures before processing webhook data.
+        See the [Webhook Integration Guide](/guides/webhook-integration) for complete examples.
+        """
         return AsyncWebhooksResourceWithStreamingResponse(self._tenants.webhooks)
 
     @cached_property
     def tracking(self) -> AsyncTrackingResourceWithStreamingResponse:
+        """Manage track domains for open and click tracking.
+
+        Track domains enable you to track when recipients:
+        - Open your emails (tracking pixel)
+        - Click links in your emails
+
+        **Setup Process:**
+        1. Create a track domain with `POST /tracking`
+        2. Add the CNAME record to your DNS
+        3. Verify DNS with `POST /tracking/{id}/verify`
+        4. Track domain is ready when `dnsOk` is true
+
+        **Quick Reference:**
+        - `POST /tracking` - Create a new track domain
+        - `GET /tracking` - List all track domains
+        - `GET /tracking/{id}` - Get track domain details
+        - `POST /tracking/{id}/verify` - Verify DNS configuration
+        - `PATCH /tracking/{id}` - Enable/disable tracking features
+        - `DELETE /tracking/{id}` - Remove a track domain
+        """
         return AsyncTrackingResourceWithStreamingResponse(self._tenants.tracking)
 
     @cached_property
     def usage(self) -> AsyncUsageResourceWithStreamingResponse:
+        """Per-tenant usage analytics and bulk reporting.
+
+        Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+        **Single Tenant Usage:**
+        - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+        - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+        **Bulk Usage:**
+        - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+        - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+        **Period Formats:**
+        - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+        - Month: `2024-01`
+        - Date range: `2024-01-01..2024-01-15`
+        """
         return AsyncUsageResourceWithStreamingResponse(self._tenants.usage)

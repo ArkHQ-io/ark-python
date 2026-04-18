@@ -219,6 +219,7 @@ class TestEmails:
             },
             reply_to="dev@stainless.com",
             tag="tag",
+            tenant_id="cm6abc123def456",
             text="text",
             idempotency_key="user_123_order_456",
         )
@@ -299,6 +300,7 @@ class TestEmails:
                 },
             ],
             from_="notifications@myapp.com",
+            tenant_id="cm6abc123def456",
             idempotency_key="user_123_order_456",
         )
         assert_matches_type(EmailSendBatchResponse, email, path=["response"])
@@ -363,6 +365,7 @@ class TestEmails:
             raw_message="x",
             to=["user@example.com"],
             bounce=True,
+            tenant_id="cm6abc123def456",
         )
         assert_matches_type(EmailSendRawResponse, email, path=["response"])
 
@@ -593,6 +596,7 @@ class TestAsyncEmails:
             },
             reply_to="dev@stainless.com",
             tag="tag",
+            tenant_id="cm6abc123def456",
             text="text",
             idempotency_key="user_123_order_456",
         )
@@ -673,6 +677,7 @@ class TestAsyncEmails:
                 },
             ],
             from_="notifications@myapp.com",
+            tenant_id="cm6abc123def456",
             idempotency_key="user_123_order_456",
         )
         assert_matches_type(EmailSendBatchResponse, email, path=["response"])
@@ -737,6 +742,7 @@ class TestAsyncEmails:
             raw_message="x",
             to=["user@example.com"],
             bounce=True,
+            tenant_id="cm6abc123def456",
         )
         assert_matches_type(EmailSendRawResponse, email, path=["response"])
 

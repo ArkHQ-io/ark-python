@@ -7,7 +7,7 @@ from typing_extensions import Literal
 import httpx
 
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from ..._utils import maybe_transform, async_maybe_transform
+from ..._utils import path_template, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -25,6 +25,24 @@ __all__ = ["UsageResource", "AsyncUsageResource"]
 
 
 class UsageResource(SyncAPIResource):
+    """Per-tenant usage analytics and bulk reporting.
+
+    Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+    **Single Tenant Usage:**
+    - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+    - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+    **Bulk Usage:**
+    - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+    - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+    **Period Formats:**
+    - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+    - Month: `2024-01`
+    - Date range: `2024-01-01..2024-01-15`
+    """
+
     @cached_property
     def with_raw_response(self) -> UsageResourceWithRawResponse:
         """
@@ -103,7 +121,7 @@ class UsageResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/usage",
+            path_template("/tenants/{tenant_id}/usage", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -170,7 +188,7 @@ class UsageResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/usage/timeseries",
+            path_template("/tenants/{tenant_id}/usage/timeseries", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -190,6 +208,24 @@ class UsageResource(SyncAPIResource):
 
 
 class AsyncUsageResource(AsyncAPIResource):
+    """Per-tenant usage analytics and bulk reporting.
+
+    Track email sending statistics for each tenant to power billing, dashboards, and monitoring.
+
+    **Single Tenant Usage:**
+    - `GET /tenants/{id}/usage` - Get usage stats for a specific tenant
+    - `GET /tenants/{id}/usage/timeseries` - Get time-bucketed data for charts
+
+    **Bulk Usage:**
+    - `GET /usage/tenants` - Get usage for all tenants (paginated, sortable)
+    - `GET /usage/export` - Export usage data as CSV, JSONL, or JSON
+
+    **Period Formats:**
+    - Shortcuts: `today`, `yesterday`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
+    - Month: `2024-01`
+    - Date range: `2024-01-01..2024-01-15`
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncUsageResourceWithRawResponse:
         """
@@ -268,7 +304,7 @@ class AsyncUsageResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/usage",
+            path_template("/tenants/{tenant_id}/usage", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -335,7 +371,7 @@ class AsyncUsageResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/usage/timeseries",
+            path_template("/tenants/{tenant_id}/usage/timeseries", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,

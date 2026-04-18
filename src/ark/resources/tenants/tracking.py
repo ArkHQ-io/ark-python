@@ -7,7 +7,7 @@ from typing import Optional
 import httpx
 
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from ..._utils import maybe_transform, async_maybe_transform
+from ..._utils import path_template, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -29,6 +29,27 @@ __all__ = ["TrackingResource", "AsyncTrackingResource"]
 
 
 class TrackingResource(SyncAPIResource):
+    """Manage track domains for open and click tracking.
+
+    Track domains enable you to track when recipients:
+    - Open your emails (tracking pixel)
+    - Click links in your emails
+
+    **Setup Process:**
+    1. Create a track domain with `POST /tracking`
+    2. Add the CNAME record to your DNS
+    3. Verify DNS with `POST /tracking/{id}/verify`
+    4. Track domain is ready when `dnsOk` is true
+
+    **Quick Reference:**
+    - `POST /tracking` - Create a new track domain
+    - `GET /tracking` - List all track domains
+    - `GET /tracking/{id}` - Get track domain details
+    - `POST /tracking/{id}/verify` - Verify DNS configuration
+    - `PATCH /tracking/{id}` - Enable/disable tracking features
+    - `DELETE /tracking/{id}` - Remove a track domain
+    """
+
     @cached_property
     def with_raw_response(self) -> TrackingResourceWithRawResponse:
         """
@@ -92,7 +113,7 @@ class TrackingResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/tracking",
+            path_template("/tenants/{tenant_id}/tracking", tenant_id=tenant_id),
             body=maybe_transform(
                 {
                     "domain_id": domain_id,
@@ -138,7 +159,7 @@ class TrackingResource(SyncAPIResource):
         if not tracking_id:
             raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            path_template("/tenants/{tenant_id}/tracking/{tracking_id}", tenant_id=tenant_id, tracking_id=tracking_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -193,7 +214,7 @@ class TrackingResource(SyncAPIResource):
         if not tracking_id:
             raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return self._patch(
-            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            path_template("/tenants/{tenant_id}/tracking/{tracking_id}", tenant_id=tenant_id, tracking_id=tracking_id),
             body=maybe_transform(
                 {
                     "excluded_click_domains": excluded_click_domains,
@@ -237,7 +258,7 @@ class TrackingResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/tracking",
+            path_template("/tenants/{tenant_id}/tracking", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -275,7 +296,7 @@ class TrackingResource(SyncAPIResource):
         if not tracking_id:
             raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return self._delete(
-            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            path_template("/tenants/{tenant_id}/tracking/{tracking_id}", tenant_id=tenant_id, tracking_id=tracking_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -314,7 +335,9 @@ class TrackingResource(SyncAPIResource):
         if not tracking_id:
             raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/tracking/{tracking_id}/verify",
+            path_template(
+                "/tenants/{tenant_id}/tracking/{tracking_id}/verify", tenant_id=tenant_id, tracking_id=tracking_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -323,6 +346,27 @@ class TrackingResource(SyncAPIResource):
 
 
 class AsyncTrackingResource(AsyncAPIResource):
+    """Manage track domains for open and click tracking.
+
+    Track domains enable you to track when recipients:
+    - Open your emails (tracking pixel)
+    - Click links in your emails
+
+    **Setup Process:**
+    1. Create a track domain with `POST /tracking`
+    2. Add the CNAME record to your DNS
+    3. Verify DNS with `POST /tracking/{id}/verify`
+    4. Track domain is ready when `dnsOk` is true
+
+    **Quick Reference:**
+    - `POST /tracking` - Create a new track domain
+    - `GET /tracking` - List all track domains
+    - `GET /tracking/{id}` - Get track domain details
+    - `POST /tracking/{id}/verify` - Verify DNS configuration
+    - `PATCH /tracking/{id}` - Enable/disable tracking features
+    - `DELETE /tracking/{id}` - Remove a track domain
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncTrackingResourceWithRawResponse:
         """
@@ -386,7 +430,7 @@ class AsyncTrackingResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/tracking",
+            path_template("/tenants/{tenant_id}/tracking", tenant_id=tenant_id),
             body=await async_maybe_transform(
                 {
                     "domain_id": domain_id,
@@ -432,7 +476,7 @@ class AsyncTrackingResource(AsyncAPIResource):
         if not tracking_id:
             raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            path_template("/tenants/{tenant_id}/tracking/{tracking_id}", tenant_id=tenant_id, tracking_id=tracking_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -487,7 +531,7 @@ class AsyncTrackingResource(AsyncAPIResource):
         if not tracking_id:
             raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return await self._patch(
-            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            path_template("/tenants/{tenant_id}/tracking/{tracking_id}", tenant_id=tenant_id, tracking_id=tracking_id),
             body=await async_maybe_transform(
                 {
                     "excluded_click_domains": excluded_click_domains,
@@ -531,7 +575,7 @@ class AsyncTrackingResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/tracking",
+            path_template("/tenants/{tenant_id}/tracking", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -569,7 +613,7 @@ class AsyncTrackingResource(AsyncAPIResource):
         if not tracking_id:
             raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return await self._delete(
-            f"/tenants/{tenant_id}/tracking/{tracking_id}",
+            path_template("/tenants/{tenant_id}/tracking/{tracking_id}", tenant_id=tenant_id, tracking_id=tracking_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -608,7 +652,9 @@ class AsyncTrackingResource(AsyncAPIResource):
         if not tracking_id:
             raise ValueError(f"Expected a non-empty value for `tracking_id` but received {tracking_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/tracking/{tracking_id}/verify",
+            path_template(
+                "/tenants/{tenant_id}/tracking/{tracking_id}/verify", tenant_id=tenant_id, tracking_id=tracking_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

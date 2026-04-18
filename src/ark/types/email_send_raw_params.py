@@ -37,3 +37,14 @@ class EmailSendRawParams(TypedDict, total=False):
 
     bounce: Optional[bool]
     """Whether this is a bounce message (accepts null)"""
+
+    tenant_id: Annotated[Optional[str], PropertyInfo(alias="tenantId")]
+    """The tenant ID to send this email from.
+
+    Determines which tenant's configuration (domains, webhooks, tracking) is used.
+
+    - If your API key is scoped to a specific tenant, this must match that tenant or
+      be omitted.
+    - If your API key is org-level, specify the tenant to send from.
+    - If omitted, the organization's default tenant is used.
+    """

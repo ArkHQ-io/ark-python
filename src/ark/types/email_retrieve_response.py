@@ -179,6 +179,9 @@ class Data(BaseModel):
     subject: str
     """Email subject line"""
 
+    tenant_id: str = FieldInfo(alias="tenantId")
+    """The tenant ID this email belongs to"""
+
     timestamp: float
     """Unix timestamp when the email was sent"""
 

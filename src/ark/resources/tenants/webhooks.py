@@ -8,7 +8,7 @@ from typing_extensions import Literal
 import httpx
 
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
-from ..._utils import maybe_transform, async_maybe_transform
+from ..._utils import path_template, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -38,6 +38,60 @@ __all__ = ["WebhooksResource", "AsyncWebhooksResource"]
 
 
 class WebhooksResource(SyncAPIResource):
+    """Configure webhook endpoints for real-time notifications.
+
+    Webhooks notify your application when email events occur:
+    - Email delivered, bounced, or failed
+    - Email opened or link clicked
+    - Spam complaint received
+
+    **Quick Reference:**
+    - `POST /webhooks` - Create a webhook endpoint
+    - `GET /webhooks` - List all webhooks
+    - `POST /webhooks/{id}/test` - Test a webhook with sample data
+    - `PATCH /webhooks/{id}` - Update webhook configuration
+    - `DELETE /webhooks/{id}` - Remove a webhook
+    - `GET /webhooks/{id}/deliveries` - List delivery attempts
+    - `GET /webhooks/{id}/deliveries/{deliveryId}` - Get delivery details
+    - `POST /webhooks/{id}/deliveries/{deliveryId}/replay` - Replay a delivery
+
+    ## Webhook Signatures
+
+    All webhooks are cryptographically signed using RSA-SHA256 for security.
+    Each webhook request includes:
+
+    | Header | Description |
+    |--------|-------------|
+    | `X-Ark-Signature` | Base64-encoded RSA-SHA256 signature of the request body |
+    | `X-Ark-Signature-KID` | Key ID identifying which public key was used |
+
+    Verify signatures by fetching the public key from:
+    ```
+    GET https://mail.arkhq.io/.well-known/jwks.json
+    ```
+
+    ```javascript
+    const crypto = require('crypto');
+
+    async function verifyWebhook(payload, signatureBase64, publicKey) {
+      const signature = Buffer.from(signatureBase64, 'base64');
+      const verifier = crypto.createVerify('RSA-SHA256');
+      verifier.update(payload);
+      return verifier.verify(publicKey, signature);
+    }
+
+    // In your webhook handler:
+    const isValid = await verifyWebhook(
+      rawBody,
+      req.headers['x-ark-signature'],
+      cachedPublicKey
+    );
+    ```
+
+    **Important:** Always verify signatures before processing webhook data.
+    See the [Webhook Integration Guide](/guides/webhook-integration) for complete examples.
+    """
+
     @cached_property
     def with_raw_response(self) -> WebhooksResourceWithRawResponse:
         """
@@ -133,7 +187,7 @@ class WebhooksResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/webhooks",
+            path_template("/tenants/{tenant_id}/webhooks", tenant_id=tenant_id),
             body=maybe_transform(
                 {
                     "name": name,
@@ -179,7 +233,7 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -220,7 +274,7 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._patch(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             body=maybe_transform(
                 {
                     "all_events": all_events,
@@ -263,7 +317,7 @@ class WebhooksResource(SyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/webhooks",
+            path_template("/tenants/{tenant_id}/webhooks", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -299,7 +353,7 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._delete(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -378,7 +432,9 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries", tenant_id=tenant_id, webhook_id=webhook_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -446,7 +502,12 @@ class WebhooksResource(SyncAPIResource):
         if not delivery_id:
             raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+                tenant_id=tenant_id,
+                webhook_id=webhook_id,
+                delivery_id=delivery_id,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -494,7 +555,12 @@ class WebhooksResource(SyncAPIResource):
         if not delivery_id:
             raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
         return self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}",
+                tenant_id=tenant_id,
+                webhook_id=webhook_id,
+                delivery_id=delivery_id,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -553,7 +619,9 @@ class WebhooksResource(SyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return self._post(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/test",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/test", tenant_id=tenant_id, webhook_id=webhook_id
+            ),
             body=maybe_transform({"event": event}, webhook_test_params.WebhookTestParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -563,6 +631,60 @@ class WebhooksResource(SyncAPIResource):
 
 
 class AsyncWebhooksResource(AsyncAPIResource):
+    """Configure webhook endpoints for real-time notifications.
+
+    Webhooks notify your application when email events occur:
+    - Email delivered, bounced, or failed
+    - Email opened or link clicked
+    - Spam complaint received
+
+    **Quick Reference:**
+    - `POST /webhooks` - Create a webhook endpoint
+    - `GET /webhooks` - List all webhooks
+    - `POST /webhooks/{id}/test` - Test a webhook with sample data
+    - `PATCH /webhooks/{id}` - Update webhook configuration
+    - `DELETE /webhooks/{id}` - Remove a webhook
+    - `GET /webhooks/{id}/deliveries` - List delivery attempts
+    - `GET /webhooks/{id}/deliveries/{deliveryId}` - Get delivery details
+    - `POST /webhooks/{id}/deliveries/{deliveryId}/replay` - Replay a delivery
+
+    ## Webhook Signatures
+
+    All webhooks are cryptographically signed using RSA-SHA256 for security.
+    Each webhook request includes:
+
+    | Header | Description |
+    |--------|-------------|
+    | `X-Ark-Signature` | Base64-encoded RSA-SHA256 signature of the request body |
+    | `X-Ark-Signature-KID` | Key ID identifying which public key was used |
+
+    Verify signatures by fetching the public key from:
+    ```
+    GET https://mail.arkhq.io/.well-known/jwks.json
+    ```
+
+    ```javascript
+    const crypto = require('crypto');
+
+    async function verifyWebhook(payload, signatureBase64, publicKey) {
+      const signature = Buffer.from(signatureBase64, 'base64');
+      const verifier = crypto.createVerify('RSA-SHA256');
+      verifier.update(payload);
+      return verifier.verify(publicKey, signature);
+    }
+
+    // In your webhook handler:
+    const isValid = await verifyWebhook(
+      rawBody,
+      req.headers['x-ark-signature'],
+      cachedPublicKey
+    );
+    ```
+
+    **Important:** Always verify signatures before processing webhook data.
+    See the [Webhook Integration Guide](/guides/webhook-integration) for complete examples.
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncWebhooksResourceWithRawResponse:
         """
@@ -658,7 +780,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/webhooks",
+            path_template("/tenants/{tenant_id}/webhooks", tenant_id=tenant_id),
             body=await async_maybe_transform(
                 {
                     "name": name,
@@ -704,7 +826,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -745,7 +867,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._patch(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             body=await async_maybe_transform(
                 {
                     "all_events": all_events,
@@ -788,7 +910,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not tenant_id:
             raise ValueError(f"Expected a non-empty value for `tenant_id` but received {tenant_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/webhooks",
+            path_template("/tenants/{tenant_id}/webhooks", tenant_id=tenant_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -824,7 +946,7 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._delete(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}",
+            path_template("/tenants/{tenant_id}/webhooks/{webhook_id}", tenant_id=tenant_id, webhook_id=webhook_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -903,7 +1025,9 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries", tenant_id=tenant_id, webhook_id=webhook_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -971,7 +1095,12 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not delivery_id:
             raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}/replay",
+                tenant_id=tenant_id,
+                webhook_id=webhook_id,
+                delivery_id=delivery_id,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1019,7 +1148,12 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not delivery_id:
             raise ValueError(f"Expected a non-empty value for `delivery_id` but received {delivery_id!r}")
         return await self._get(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/deliveries/{delivery_id}",
+                tenant_id=tenant_id,
+                webhook_id=webhook_id,
+                delivery_id=delivery_id,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1078,7 +1212,9 @@ class AsyncWebhooksResource(AsyncAPIResource):
         if not webhook_id:
             raise ValueError(f"Expected a non-empty value for `webhook_id` but received {webhook_id!r}")
         return await self._post(
-            f"/tenants/{tenant_id}/webhooks/{webhook_id}/test",
+            path_template(
+                "/tenants/{tenant_id}/webhooks/{webhook_id}/test", tenant_id=tenant_id, webhook_id=webhook_id
+            ),
             body=await async_maybe_transform({"event": event}, webhook_test_params.WebhookTestParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
